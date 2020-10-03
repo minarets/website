@@ -1,14 +1,20 @@
 {
-  "name": "nextjs",
+  "name": "minarets_website",
+  "description": "A community website for Dave Matthews Band fans to interact and listen to fan taped show archives.",
   "version": "0.1.0",
   "private": true,
+  "author": "Jim Geurts",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/minarets/website/issues"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
-    "next": "9.5.1",
+    "next": "9.5.3",
     "react": "16.13.1",
     "react-dom": "16.13.1"
   }
