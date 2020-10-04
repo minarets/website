@@ -1,0 +1,43 @@
+@import "~bootstrap/scss/bootstrap";
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+    .sticky#{$infix}-bottom {
+      position: sticky;
+      bottom: 0;
+      z-index: $zindex-sticky;
+    }
+  }
+}
+
+html, body {
+  height: 100% !important;
+}
+
+#__next {
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.bg-dark {
+  .nav-link {
+    svg {
+      fill: $navbar-dark-color;
+    }
+
+    &:hover {
+      svg {
+        fill: $navbar-dark-hover-color;
+      }
+    }
+
+    &:active {
+      svg {
+        fill: $navbar-dark-active-color;
+      }
+    }
+  }
+}

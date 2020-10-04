@@ -75,6 +75,13 @@ module.exports = {
     'jsdoc/require-returns-type': 'error',
     'jsdoc/valid-types': 'error',
 
+    // Disable href validation for next.js Link
+    "jsx-a11y/anchor-is-valid": [ "error", {
+      "components": [ "Link" ],
+      "specialLink": [ "hrefLeft", "hrefRight" ],
+      "aspects": [ "invalidHref", "preferButton" ]
+    }],
+
     'promise/always-return': 'error',
     'promise/always-catch': 'off',
     'promise/catch-or-return': ['error', { allowThen: true }],
