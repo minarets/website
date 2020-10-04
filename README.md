@@ -15,11 +15,14 @@ on [Next.js](https://nextjs.org) and hosted by [Vercel](https://vercel.com).
 
 ### Getting Started
 
+Install dependencies:
+```bash
+yarn install
+```
+
 First, run the development server:
 
 ```bash
-npm run dev
-# or
 yarn dev
 ```
 
