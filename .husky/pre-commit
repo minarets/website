@@ -1,0 +1,4 @@
+#!/bin/sh
+. "$(dirname $0)/_/husky.sh"
+
+/usr/local/opt/node@12/bin/node node_modules/.bin/lint-staged
