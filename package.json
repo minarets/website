@@ -20,7 +20,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "tsc --noEmit && eslint  --fix --ext .ts,.tsx components pages",
+    "lint": "tsc --noEmit && eslint  --fix --ext .ts,.tsx api components pages",
     "lint-staged": "lint-staged",
     "postinstall": "husky install",
     "prepublish": "pinst --disable",
@@ -33,6 +33,8 @@
   },
   "dependencies": {
     "bootstrap": "^5.0.0-alpha2",
+    "cross-fetch": "^3.0.6",
+    "moment": "^2.29.0",
     "next": "9.5.3",
     "react": "16.13.1",
     "react-dom": "16.13.1",

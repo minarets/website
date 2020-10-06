@@ -56,6 +56,8 @@ module.exports = {
       },
     ],
 
+    'import/prefer-default-export': 'off',
+
     'jsdoc/check-alignment': 'error',
     'jsdoc/check-indentation': 'off',
     'jsdoc/check-param-names': 'off',
@@ -160,6 +162,7 @@ module.exports = {
     '@typescript-eslint/unified-signatures': 'error',
 
     // Override airbnb
+    'class-methods-use-this': 'off',
     eqeqeq: ['error', 'smart'],
     'func-names': 'error',
     'id-length': ['error', { exceptions: ['_', '$', 'e', 'i', 'j', 'k', 'q', 'x', 'y'] }],

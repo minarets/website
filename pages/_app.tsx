@@ -3,8 +3,9 @@ import * as React from 'react';
 import type { AppProps } from 'next/app';
 import '../styles/globals.scss';
 
-function MyApp({ Component }: AppProps): ReactElement {
-  return <Component />;
+function App({ Component, pageProps }: AppProps): ReactElement {
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  return <Component {...pageProps} />;
 }
 
-export default MyApp;
+export default App;
