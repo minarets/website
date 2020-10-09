@@ -15,31 +15,12 @@ function ConcertAndLinkRow({ compact, concert }: IProps): ReactElement {
   return (
     <div className="row">
       <div className={compact ? 'col-2' : 'col-1'}>
-        <Link
-          href={{
-            pathname: '/artists/[id]/[slug]',
-            query: {
-              id: concert.artist.id,
-              slug: slugify(concert.artist.name),
-            },
-          }}
-        >
+        <Link href={`/artists/${concert.artist.id}/${slugify(concert.artist.name)}`}>
           <a title={concert.artist.name}>{concert.artist.abbr}</a>
         </Link>
       </div>
       <div className="col">
-        <Link
-          href={{
-            pathname: '/concerts/[year]/[month]/[day]/[slug]',
-            query: {
-              id: concert.id,
-              year: concertDate.format('YYYY'),
-              month: concertDate.format('MM'),
-              day: concertDate.format('DD'),
-              slug: slugify(concert.name),
-            },
-          }}
-        >
+        <Link href={`/concerts/${concertDate.format('yyyy')}/${concertDate.format('MM')}/${concertDate.format('DD')}/${slugify(concert.name)}`}>
           <a>
             {concertDate.format('yyyy-MM-DD')}: {concert.name}
           </a>
