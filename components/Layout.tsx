@@ -66,7 +66,7 @@ export default function Layout({ title, children }: LayoutParams): ReactElement 
         <div className="footer mt-auto py-3 bg-light shadow sticky-xl-bottom">
           <div className="container-fluid">
             <a className="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="https://vercel.com?utm_source=minarets&utm_campaign=oss" target="_blank" rel="noopener noreferrer">
-              Powered by <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
+              <img src="/powered-by-vercel.svg" alt="Powered by Vercel" className={styles.logo} />
             </a>
           </div>
         </div>
