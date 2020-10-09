@@ -22,6 +22,11 @@ export default function Layout(): ReactElement {
           </Link>
         </li>
         <li className="nav-item">
+          <Link href="/artists">
+            <a className="nav-link">Artists</a>
+          </Link>
+        </li>
+        <li className="nav-item">
           <Link href="/playlists">
             <a className="nav-link">Playlists</a>
           </Link>
