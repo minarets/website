@@ -1,6 +1,6 @@
 export interface ListResponse<T> {
   items: T[];
-  items_per_page: number;
+  itemsPerPage: number;
   page: number;
   total: number;
 }

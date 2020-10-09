@@ -9,8 +9,8 @@ export interface BasicConcert {
   artist: BasicArtist;
   tour: BasicTour;
   venue: BasicVenue;
-  favorite_count: number;
-  play_count: number;
-  quality_rating_count: number;
-  quality_rating: number;
+  favoriteCount: number;
+  playCount: number;
+  qualityRatingCount: number;
+  qualityRating: number;
 }
