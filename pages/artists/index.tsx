@@ -12,16 +12,16 @@ interface IProps {
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
-  const api = new Artists();
+  const artistsApi = new Artists();
   const [
     allArtistResults, //
     popularArtistResults,
   ] = await Promise.all([
-    api.listArtists({
+    artistsApi.listArtists({
       sortAsc: 'Name',
       itemsPerPage: 10,
     }),
-    api.listArtists({
+    artistsApi.listArtists({
       sortDesc: 'ConcertCount',
       itemsPerPage: 10,
     }),
@@ -32,8 +32,8 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
       allArtists: allArtistResults.items,
       popularArtists: popularArtistResults.items,
     },
-    // Re-generate the data at most every 5 minutes
-    revalidate: 300,
+    // Re-generate the data at most every 24 hours
+    revalidate: 86400,
   };
 }
 
@@ -41,24 +41,30 @@ export default function Page({ allArtists, popularArtists }: IProps): ReactEleme
   return (
     <Layout title="Artists">
       <section>
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">All Artists</h2>
+        <div className="row">
+          <div className="col-md">
+            <div className="card">
+              <div className="card-header">
+                <h2 className="card-title">All Artists</h2>
+              </div>
+              <div className="card-body">
+                {allArtists.map((artist) => (
+                  <ArtistWithConcertCountLinkRow artist={artist} key={artist.id} />
+                ))}
+              </div>
+            </div>
           </div>
-          <div className="card-body">
-            {allArtists.map((artist) => (
-              <ArtistWithConcertCountLinkRow artist={artist} key={artist.id} />
-            ))}
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Popular Artists</h2>
-          </div>
-          <div className="card-body">
-            {popularArtists.map((artist) => (
-              <ArtistWithConcertCountLinkRow artist={artist} key={artist.id} />
-            ))}
+          <div className="col-md">
+            <div className="card">
+              <div className="card-header">
+                <h2 className="card-title">Popular Artists</h2>
+              </div>
+              <div className="card-body">
+                {popularArtists.map((artist) => (
+                  <ArtistWithConcertCountLinkRow artist={artist} key={artist.id} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
