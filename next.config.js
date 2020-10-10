@@ -1,5 +1,7 @@
 'use strict';
 
+// const { Artists } = require('./api/minarets');
+
 module.exports = {
   poweredByHeader: false,
   reactStrictMode: true,
@@ -8,16 +10,21 @@ module.exports = {
     // const artists = await artistApi.listAllArtists();
 
     return [
-/*      ...artists.map((artist) => {
-        return {
-          source: `/artists/${artist.id}`,
-          destination: `/artists/${artist.id}/${slugify(artist.name)}`,
-          permanent: false,
-        };
-      }),*/
+      // ...artists.map((artist) => {
+      //   return {
+      //     source: `/artists/${artist.id}`,
+      //     destination: `/artists/${artist.id}/${slugify(artist.name)}`,
+      //     permanent: false,
+      //   };
+      // }),
       {
         source: '/Artists/Detail/:slug*',
         destination: '/artists/:slug*',
+        permanent: true,
+      },
+      {
+        source: '/Artists/RandomConcert/:slug*',
+        destination: '/artists/:slug*/random',
         permanent: true,
       },
       {
