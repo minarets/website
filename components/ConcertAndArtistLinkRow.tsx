@@ -10,7 +10,7 @@ interface IProps {
   concert: BasicConcert;
 }
 
-function ConcertAndLinkRow({ compact, concert }: IProps): ReactElement {
+function ConcertAndArtistLinkRow({ compact, concert }: IProps): ReactElement {
   const concertDate = moment(concert.date);
   return (
     <div className="row">
@@ -30,8 +30,8 @@ function ConcertAndLinkRow({ compact, concert }: IProps): ReactElement {
   );
 }
 
-ConcertAndLinkRow.defaultProps = {
+ConcertAndArtistLinkRow.defaultProps = {
   compact: false,
 };
 
-export default ConcertAndLinkRow;
+export default ConcertAndArtistLinkRow;

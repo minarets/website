@@ -5,7 +5,7 @@ import moment from 'moment';
 import Layout from '../components/Layout';
 import { BasicConcert } from '../api/minarets/types/BasicConcert';
 import { Concerts } from '../api/minarets';
-import ConcertAndLinkRow from '../components/ConcertAndArtisLinkRow';
+import ConcertAndArtistLinkRow from '../components/ConcertAndArtistLinkRow';
 
 interface IProps {
   popularConcerts: BasicConcert[];
@@ -14,22 +14,22 @@ interface IProps {
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
-  const concerts = new Concerts();
+  const concertsApi = new Concerts();
   const [
     popularConcertsResults, //
     newConcertsResults,
     latestConcertsResults,
   ] = await Promise.all([
-    concerts.listConcerts({
+    concertsApi.listConcerts({
       sortDesc: 'Popular',
       itemsPerPage: 10,
       since: moment().subtract(1, 'w').startOf('day').toDate(),
     }),
-    concerts.listConcerts({
+    concertsApi.listConcerts({
       sortDesc: 'ApprovedOn',
       itemsPerPage: 10,
     }),
-    concerts.listConcerts({
+    concertsApi.listConcerts({
       sortDesc: 'ConcertDate',
       itemsPerPage: 10,
     }),
@@ -56,7 +56,7 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts }: I
           </div>
           <div className="card-body">
             {popularConcerts.map((concert) => (
-              <ConcertAndLinkRow concert={concert} key={concert.id} />
+              <ConcertAndArtistLinkRow concert={concert} key={concert.id} />
             ))}
           </div>
         </div>
@@ -66,7 +66,7 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts }: I
           </div>
           <div className="card-body">
             {newConcerts.map((concert) => (
-              <ConcertAndLinkRow concert={concert} key={concert.id} />
+              <ConcertAndArtistLinkRow concert={concert} key={concert.id} />
             ))}
           </div>
         </div>
@@ -76,7 +76,7 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts }: I
           </div>
           <div className="card-body">
             {latestConcerts.map((concert) => (
-              <ConcertAndLinkRow concert={concert} key={concert.id} />
+              <ConcertAndArtistLinkRow concert={concert} key={concert.id} />
             ))}
           </div>
         </div>
