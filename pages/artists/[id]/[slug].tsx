@@ -137,7 +137,7 @@ export default function Page({ artist, latestConcertsByTour, popularConcerts, ne
               </div>
               <div className="card-body">
                 {latestConcertsByTour.map((latestConcerts: TourWithConcerts) => (
-                  <div>
+                  <div key={`${latestConcerts.tour.id}_${latestConcerts.concerts[0].id}`}>
                     <div className="pb-4">
                       <TourBreadcrumbRow tour={latestConcerts.tour} toursById={toursById} key={latestConcerts.tour.id} />
                     </div>
