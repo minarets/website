@@ -65,9 +65,18 @@ export default function Layout({ title, children }: LayoutParams): ReactElement 
       <footer className="flex-shrink-0">
         <div className="footer mt-auto py-3 bg-light shadow sticky-xl-bottom">
           <div className="container-fluid">
-            <a className="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="https://vercel.com?utm_source=minarets&utm_campaign=oss" target="_blank" rel="noopener noreferrer">
-              <img src="/powered-by-vercel.svg" alt="Powered by Vercel" className={styles.logo} />
-            </a>
+            <div className="row">
+              <div className="col text-left">
+                <a className="navbar-brand" href="https://vercel.com?utm_source=minarets&utm_campaign=oss" target="_blank" rel="noopener noreferrer">
+                  <img src="/powered-by-vercel.svg" alt="Powered by Vercel" className={styles.logo} />
+                </a>
+              </div>
+              <div className="col text-right">
+                <a className="navbar-brand" href="https://github.com/minarets/website" target="_blank" rel="noopener noreferrer">
+                  <img src="/github.svg" alt="Open Source" className={styles.logo} />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
