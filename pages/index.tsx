@@ -13,6 +13,39 @@ interface IProps {
   latestConcerts: BasicConcert[];
 }
 
+export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
+  const concerts = new Concerts();
+  const [
+    popularConcertsResults, //
+    newConcertsResults,
+    latestConcertsResults,
+  ] = await Promise.all([
+    concerts.listConcerts({
+      sortDesc: 'Popular',
+      itemsPerPage: 10,
+      since: moment().subtract(1, 'w').startOf('day').toDate(),
+    }),
+    concerts.listConcerts({
+      sortDesc: 'ApprovedOn',
+      itemsPerPage: 10,
+    }),
+    concerts.listConcerts({
+      sortDesc: 'ConcertDate',
+      itemsPerPage: 10,
+    }),
+  ]);
+
+  return {
+    props: {
+      popularConcerts: popularConcertsResults.items,
+      newConcerts: newConcertsResults.items,
+      latestConcerts: latestConcertsResults.items,
+    },
+    // Re-generate the data at most every 5 minutes
+    revalidate: 300,
+  };
+}
+
 export default function Page({ popularConcerts, newConcerts, latestConcerts }: IProps): ReactElement {
   return (
     <Layout title="A community for Dave Matthews Band fans">
@@ -50,37 +83,4 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts }: I
       </section>
     </Layout>
   );
-}
-
-export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
-  const concerts = new Concerts();
-  const [
-    popularConcertsResults, //
-    newConcertsResults,
-    latestConcertsResults,
-  ] = await Promise.all([
-    concerts.listConcerts({
-      sortDesc: 'Popular',
-      itemsPerPage: 10,
-      since: moment().subtract(1, 'w').startOf('day').toDate(),
-    }),
-    concerts.listConcerts({
-      sortDesc: 'ApprovedOn',
-      itemsPerPage: 10,
-    }),
-    concerts.listConcerts({
-      sortDesc: 'ConcertDate',
-      itemsPerPage: 10,
-    }),
-  ]);
-
-  return {
-    props: {
-      popularConcerts: popularConcertsResults.items,
-      newConcerts: newConcertsResults.items,
-      latestConcerts: latestConcertsResults.items,
-    },
-    // Re-generate the data at most every 5 minutes
-    revalidate: 300,
-  };
 }

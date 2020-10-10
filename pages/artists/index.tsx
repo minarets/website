@@ -11,6 +11,32 @@ interface IProps {
   popularArtists: Artist[];
 }
 
+export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
+  const api = new Artists();
+  const [
+    allArtistResults, //
+    popularArtistResults,
+  ] = await Promise.all([
+    api.listArtists({
+      sortAsc: 'Name',
+      itemsPerPage: 10,
+    }),
+    api.listArtists({
+      sortDesc: 'ConcertCount',
+      itemsPerPage: 10,
+    }),
+  ]);
+
+  return {
+    props: {
+      allArtists: allArtistResults.items,
+      popularArtists: popularArtistResults.items,
+    },
+    // Re-generate the data at most every 5 minutes
+    revalidate: 300,
+  };
+}
+
 export default function Page({ allArtists, popularArtists }: IProps): ReactElement {
   return (
     <Layout title="Artists">
@@ -38,30 +64,4 @@ export default function Page({ allArtists, popularArtists }: IProps): ReactEleme
       </section>
     </Layout>
   );
-}
-
-export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
-  const api = new Artists();
-  const [
-    allArtistResults, //
-    popularArtistResults,
-  ] = await Promise.all([
-    api.listArtists({
-      sortAsc: 'Name',
-      itemsPerPage: 10,
-    }),
-    api.listArtists({
-      sortDesc: 'ConcertCount',
-      itemsPerPage: 10,
-    }),
-  ]);
-
-  return {
-    props: {
-      allArtists: allArtistResults.items,
-      popularArtists: popularArtistResults.items,
-    },
-    // Re-generate the data at most every 5 minutes
-    revalidate: 300,
-  };
 }
