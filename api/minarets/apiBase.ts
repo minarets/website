@@ -6,6 +6,10 @@ interface IGetParams {
   query: Record<string, string>;
 }
 
+interface IPostParams {
+  body: BodyInit;
+}
+
 function convertToBase64(str: string): string {
   try {
     return btoa(str);
@@ -48,6 +52,22 @@ export abstract class ApiBase {
     const response = await fetch(urlString.href, {
       method: 'GET',
       headers: new Headers(this.defaultHeaders),
+    });
+
+    if (response.ok) {
+      return response;
+    }
+
+    const error: ErrorWithResponse = new Error(response.statusText);
+    error.response = response;
+    throw error;
+  }
+
+  protected async post(url: string, { body }: IPostParams): Promise<Response> {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: new Headers(this.defaultHeaders),
+      body,
     });
 
     if (response.ok) {

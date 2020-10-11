@@ -18,6 +18,10 @@ export interface IListConcertsByTourRequest extends IListConcertsRequest {
   tourSlug: string;
 }
 
+export interface IListConcertsByVenueRequest extends IListConcertsRequest {
+  venueId: number;
+}
+
 export class Concerts extends ApiBase {
   public async listConcerts(request: IListConcertsRequest): Promise<ListResponse<BasicConcert>> {
     const query = this.queryParams(request);
@@ -38,6 +42,14 @@ export class Concerts extends ApiBase {
     const { tourSlug, ...queryParams } = request;
     const query = this.queryParams(queryParams);
     const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/tours/${tourSlug}/concerts`, { query });
+
+    return (await response.json()) as ListResponse<BasicConcert>;
+  }
+
+  public async listConcertsByVenue(request: IListConcertsByVenueRequest): Promise<ListResponse<BasicConcert>> {
+    const { venueId, ...queryParams } = request;
+    const query = this.queryParams(queryParams);
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/venues/${venueId}/concerts`, { query });
 
     return (await response.json()) as ListResponse<BasicConcert>;
   }
