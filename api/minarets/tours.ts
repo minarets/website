@@ -6,12 +6,12 @@ import { ListAllResponse } from './types/ListAllResponse';
 import { ListResponse } from './types/ListResponse';
 
 export class Tours extends ApiBase {
-  public async getTour(id: string): Promise<TourWithChildren> {
-    if (!id) {
+  public async getTour(idOrSlug: string): Promise<TourWithChildren> {
+    if (!idOrSlug) {
       throw new Error('Unable to get tour by empty id.');
     }
 
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/tours/${id}`);
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/tours/${idOrSlug}`);
 
     return (await response.json()) as TourWithChildren;
   }
