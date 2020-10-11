@@ -66,6 +66,8 @@ export class Venues extends ApiBase {
             formattedAddress += lookup.result[0].lastLine;
           }
 
+          console.log(`Found address for venue: ${venue.id}:\n${formattedAddress}`);
+
           await this.post(`${process.env.MINARETS_API_URL || ''}/api/venues/${venue.id}/setFormattedAddress`, {
             body: JSON.stringify({
               id: venue.id,
