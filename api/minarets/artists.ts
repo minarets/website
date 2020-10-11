@@ -1,6 +1,6 @@
 import { ApiBase } from './apiBase';
 import { Artist } from './types/Artist';
-import { ArtistIdAndName } from './types/ArtistIdAndName';
+import { ArtistSummary } from './types/ArtistSummary';
 import { ListAllResponse } from './types/ListAllResponse';
 import { ListResponse } from './types/ListResponse';
 
@@ -22,10 +22,10 @@ export class Artists extends ApiBase {
     return (await response.json()) as Artist;
   }
 
-  public async listAllArtists(): Promise<ListAllResponse<ArtistIdAndName>> {
+  public async listAllArtists(): Promise<ListAllResponse<ArtistSummary>> {
     const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/artists/all`);
 
-    return (await response.json()) as ListAllResponse<ArtistIdAndName>;
+    return (await response.json()) as ListAllResponse<ArtistSummary>;
   }
 
   public async listArtists(request: IListArtistsRequest): Promise<ListResponse<Artist>> {

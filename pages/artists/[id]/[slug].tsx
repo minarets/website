@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ReactElement } from 'react';
 import { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import { Artists, Concerts, Tours } from '../../../api/minarets';
-import { ArtistIdAndName } from '../../../api/minarets/types/ArtistIdAndName';
+import { ArtistSummary } from '../../../api/minarets/types/ArtistSummary';
 import { Artist } from '../../../api/minarets/types/Artist';
 import { slugify } from '../../../api/stringService';
 import Layout from '../../../components/Layout';
@@ -13,9 +13,9 @@ import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import { BasicConcert } from '../../../api/minarets/types/BasicConcert';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const api = new Artists();
-  const artists = await api.listAllArtists();
-  const paths = artists.items.map((artist: ArtistIdAndName) => `/artists/${artist.id}/${slugify(artist.name)}`);
+  const artistsApi = new Artists();
+  const artists = await artistsApi.listAllArtists();
+  const paths = artists.items.map((artist: ArtistSummary) => `/artists/${artist.id}/${slugify(artist.name)}`);
 
   return {
     paths,
@@ -116,16 +116,12 @@ export default function Page({ artist, latestConcertsByTour, popularConcerts, ne
           <h1>{artist.name}</h1>
         </header>
 
-        <div className="row">
-          <div className="col-md">
-            <div className="card">
-              <div className="card-header">
-                <h2 className="card-title">Artist Information</h2>
-              </div>
-              <div className="card-body">
-                <strong>Concerts: </strong> {artist.concertCount}
-              </div>
-            </div>
+        <div className="card">
+          <div className="card-header">
+            <h2 className="card-title">Artist Information</h2>
+          </div>
+          <div className="card-body">
+            <strong>Concerts: </strong> {artist.concertCount}
           </div>
         </div>
 
@@ -137,10 +133,8 @@ export default function Page({ artist, latestConcertsByTour, popularConcerts, ne
               </div>
               <div className="card-body">
                 {latestConcertsByTour.map((latestConcerts: TourWithConcerts) => (
-                  <div key={`${latestConcerts.tour.id}_${latestConcerts.concerts[0].id}`}>
-                    <div className="pb-4">
-                      <TourBreadcrumbRow tour={latestConcerts.tour} toursById={toursById} key={latestConcerts.tour.id} />
-                    </div>
+                  <div className="pb-4" key={`${latestConcerts.tour.id}_${latestConcerts.concerts[0].id}`}>
+                    <TourBreadcrumbRow tour={latestConcerts.tour} toursById={toursById} key={latestConcerts.tour.id} />
 
                     {latestConcerts.concerts.map((concert) => (
                       <ConcertLinkRow concert={concert} key={concert.id} />

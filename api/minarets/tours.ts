@@ -1,6 +1,6 @@
 import { ApiBase } from './apiBase';
 import { Tour } from './types/Tour';
-import { TourIdAndName } from './types/TourIdAndName';
+import { TourSummary } from './types/TourSummary';
 import { TourWithChildren } from './types/TourWithChildren';
 import { ListAllResponse } from './types/ListAllResponse';
 import { ListResponse } from './types/ListResponse';
@@ -16,10 +16,10 @@ export class Tours extends ApiBase {
     return (await response.json()) as TourWithChildren;
   }
 
-  public async listAllTours(): Promise<ListAllResponse<TourIdAndName>> {
+  public async listAllTours(): Promise<ListAllResponse<TourSummary>> {
     const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/tours/all`);
 
-    return (await response.json()) as ListAllResponse<TourIdAndName>;
+    return (await response.json()) as ListAllResponse<TourSummary>;
   }
 
   public async listTours(): Promise<ListResponse<Tour>> {
