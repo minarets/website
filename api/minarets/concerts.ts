@@ -10,6 +10,10 @@ export interface IListConcertsRequest {
   since?: Date;
 }
 
+export interface IListConcertsByArtistRequest extends IListConcertsRequest {
+  artistId: number;
+}
+
 export interface IListConcertsByTourRequest extends IListConcertsRequest {
   tourSlug: string;
 }
@@ -18,6 +22,14 @@ export class Concerts extends ApiBase {
   public async listConcerts(request: IListConcertsRequest): Promise<ListResponse<BasicConcert>> {
     const query = this.queryParams(request);
     const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/concerts`, { query });
+
+    return (await response.json()) as ListResponse<BasicConcert>;
+  }
+
+  public async listConcertsByArtist(request: IListConcertsByArtistRequest): Promise<ListResponse<BasicConcert>> {
+    const { artistId, ...queryParams } = request;
+    const query = this.queryParams(queryParams);
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/artists/${artistId}/concerts`, { query });
 
     return (await response.json()) as ListResponse<BasicConcert>;
   }

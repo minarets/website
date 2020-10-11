@@ -51,15 +51,18 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     tourResults,
   ] = await Promise.all([
     artistsApi.getArtist(params.id),
-    concertsApi.listConcerts({
+    concertsApi.listConcertsByArtist({
+      artistId: params.id,
       sortDesc: 'Popular',
       itemsPerPage: 15,
     }),
-    concertsApi.listConcerts({
+    concertsApi.listConcertsByArtist({
+      artistId: params.id,
       sortDesc: 'ApprovedOn',
       itemsPerPage: 10,
     }),
-    concertsApi.listConcerts({
+    concertsApi.listConcertsByArtist({
+      artistId: params.id,
       sortDesc: 'ConcertDate',
       itemsPerPage: 20,
     }),
