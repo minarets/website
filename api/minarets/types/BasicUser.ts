@@ -1,5 +1,5 @@
 export interface BasicUser {
-  id: string;
+  id: number;
   name: string;
   isDonor: boolean;
 }

@@ -1,4 +1,4 @@
 export interface CompilationIdAndName {
-  id: string;
+  id: number;
   name: string;
 }

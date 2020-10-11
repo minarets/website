@@ -26,7 +26,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 
 interface IParams {
   params: {
-    id: string;
+    id: number;
   };
 }
 

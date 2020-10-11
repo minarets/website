@@ -1,4 +1,4 @@
 export interface PlaylistSummary {
-  id: string;
+  id: number;
   name: string;
 }

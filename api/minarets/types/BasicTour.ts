@@ -1,5 +1,5 @@
 export interface BasicTour {
-  id: string;
+  id: number;
   name: string;
   slug: string;
   startsOn: string;

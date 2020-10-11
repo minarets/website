@@ -12,7 +12,7 @@ export interface IListArtistsRequest {
 }
 
 export class Artists extends ApiBase {
-  public async getArtist(id: string): Promise<Artist> {
+  public async getArtist(id: number): Promise<Artist> {
     if (!id) {
       throw new Error('Unable to get artist by empty id.');
     }
