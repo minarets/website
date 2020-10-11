@@ -5,7 +5,7 @@ import { BasicVenue } from './BasicVenue';
 export interface BasicConcert {
   id: string;
   name: string;
-  date: Date;
+  date: string;
   artist: BasicArtist;
   tour: BasicTour;
   venue: BasicVenue;
