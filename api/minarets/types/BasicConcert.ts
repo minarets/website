@@ -3,7 +3,7 @@ import { BasicTour } from './BasicTour';
 import { BasicVenue } from './BasicVenue';
 
 export interface BasicConcert {
-  id: number;
+  id: string;
   name: string;
   date: string;
   artist: BasicArtist;

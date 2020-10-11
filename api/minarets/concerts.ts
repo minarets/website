@@ -1,6 +1,21 @@
 import { ApiBase } from './apiBase';
 import { BasicConcert } from './types/BasicConcert';
 import { ListResponse } from './types/ListResponse';
+import { Concert } from './types/Concert';
+
+export interface ISearchConcertsRequest {
+  page?: number;
+  itemsPerPage?: number;
+  artistId?: number;
+  query: string;
+}
+
+export interface IGetRandomConcertRequest {
+  page?: number;
+  itemsPerPage?: number;
+  artistId?: number;
+  tourId?: number;
+}
 
 export interface IListConcertsRequest {
   page?: number;
@@ -14,6 +29,14 @@ export interface IListConcertsByArtistRequest extends IListConcertsRequest {
   artistId: number;
 }
 
+export interface IListConcertsByCompilationRequest extends IListConcertsRequest {
+  compilationId: string;
+}
+
+export interface IListConcertsByPlaylistRequest extends IListConcertsRequest {
+  playlistId: string;
+}
+
 export interface IListConcertsByTourRequest extends IListConcertsRequest {
   tourSlug: string;
 }
@@ -23,9 +46,45 @@ export interface IListConcertsByVenueRequest extends IListConcertsRequest {
 }
 
 export class Concerts extends ApiBase {
+  public async getConcert(id: string): Promise<Concert> {
+    if (!id) {
+      throw new Error('Unable to get concert by empty id.');
+    }
+
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/concerts/${id}`);
+
+    return (await response.json()) as Concert;
+  }
+
+  public async getConcertByUrlParts(year: string, month: string, day: string, slug: string): Promise<Concert> {
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/concerts/${year}/${month}/${day}/${slug}`);
+
+    return (await response.json()) as Concert;
+  }
+
+  public async getRandomConcert(request: IGetRandomConcertRequest = {}): Promise<Concert> {
+    const query = this.queryParams(request);
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/concerts/random`, { query });
+
+    return (await response.json()) as Concert;
+  }
+
+  public async searchConcerts(request: ISearchConcertsRequest): Promise<Concert> {
+    const query = this.queryParams(request);
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/concerts/search`, { query });
+
+    return (await response.json()) as Concert;
+  }
+
   public async listConcerts(request: IListConcertsRequest): Promise<ListResponse<BasicConcert>> {
     const query = this.queryParams(request);
     const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/concerts`, { query });
+
+    return (await response.json()) as ListResponse<BasicConcert>;
+  }
+
+  public async listRelatedConcerts(id: string): Promise<ListResponse<BasicConcert>> {
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/concerts/${id}/related`);
 
     return (await response.json()) as ListResponse<BasicConcert>;
   }
@@ -34,6 +93,22 @@ export class Concerts extends ApiBase {
     const { artistId, ...queryParams } = request;
     const query = this.queryParams(queryParams);
     const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/artists/${artistId}/concerts`, { query });
+
+    return (await response.json()) as ListResponse<BasicConcert>;
+  }
+
+  public async listConcertsByCompilation(request: IListConcertsByCompilationRequest): Promise<ListResponse<BasicConcert>> {
+    const { compilationId, ...queryParams } = request;
+    const query = this.queryParams(queryParams);
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/compilations/${compilationId}/concerts`, { query });
+
+    return (await response.json()) as ListResponse<BasicConcert>;
+  }
+
+  public async listConcertsByPlaylist(request: IListConcertsByPlaylistRequest): Promise<ListResponse<BasicConcert>> {
+    const { playlistId, ...queryParams } = request;
+    const query = this.queryParams(queryParams);
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/playlists/${playlistId}/concerts`, { query });
 
     return (await response.json()) as ListResponse<BasicConcert>;
   }
