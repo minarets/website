@@ -3,7 +3,7 @@ import { URL } from 'url';
 import { ErrorWithResponse } from './types/ErrorWithResponse';
 
 interface IGetParams {
-  query: Record<string, unknown>;
+  query: Record<string, string>;
 }
 
 function convertToBase64(str: string): string {
@@ -21,19 +21,28 @@ export abstract class ApiBase {
     'X-ApiKey': process.env.MINARETS_API_KEY || '',
   };
 
-  protected async get(url: string, { query }: IGetParams = { query: {} }): Promise<Response> {
-    const urlString = new URL(url);
-    for (const [key, value] of Object.entries(query)) {
+  protected queryParams<T>(input: T): Record<string, string> {
+    const result: Record<string, string> = {};
+    for (const [key, value] of Object.entries(input)) {
       if (value === null || value === '' || value === undefined) {
         continue;
       }
 
       if (value instanceof Date) {
-        urlString.searchParams.set(key, value.toISOString());
+        result[key] = value.toISOString();
       } else {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-        urlString.searchParams.set(key, `${value}`);
+        result[key] = `${value}`;
       }
+    }
+
+    return result;
+  }
+
+  protected async get(url: string, { query }: IGetParams = { query: {} }): Promise<Response> {
+    const urlString = new URL(url);
+    for (const [key, value] of Object.entries(query)) {
+      urlString.searchParams.set(key, value);
     }
 
     const response = await fetch(urlString.href, {

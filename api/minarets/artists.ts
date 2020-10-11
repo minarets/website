@@ -29,7 +29,8 @@ export class Artists extends ApiBase {
   }
 
   public async listArtists(request: IListArtistsRequest): Promise<ListResponse<Artist>> {
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/artists`, { query: request as Record<string, unknown> });
+    const query = this.queryParams(request);
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/artists`, { query });
 
     return (await response.json()) as ListResponse<Artist>;
   }

@@ -12,7 +12,8 @@ export interface IListConcertsRequest {
 
 export class Concerts extends ApiBase {
   public async listConcerts(request: IListConcertsRequest): Promise<ListResponse<BasicConcert>> {
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/concerts`, { query: request as Record<string, unknown> });
+    const query = this.queryParams(request);
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/concerts`, { query });
 
     return (await response.json()) as ListResponse<BasicConcert>;
   }
