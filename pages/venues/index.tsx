@@ -1,8 +1,9 @@
+import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
-import { ReactElement } from 'react';
-import { GetStaticPropsResult } from 'next';
+import type { ReactElement } from 'react';
+
 import { Venues } from '../../api/minarets';
-import { Venue } from '../../api/minarets/types/Venue';
+import type { Venue } from '../../api/minarets/types/Venue';
 import Layout from '../../components/Layout';
 import VenueWithConcertCountLinkRow from '../../components/VenueWithConcertCountLinkRow';
 

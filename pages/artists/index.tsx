@@ -1,10 +1,11 @@
+import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
-import { ReactElement } from 'react';
-import { GetStaticPropsResult } from 'next';
+import type { ReactElement } from 'react';
+
 import { Artists } from '../../api/minarets';
-import { Artist } from '../../api/minarets/types/Artist';
-import Layout from '../../components/Layout';
+import type { Artist } from '../../api/minarets/types/Artist';
 import ArtistWithConcertCountLinkRow from '../../components/ArtistWithConcertCountLinkRow';
+import Layout from '../../components/Layout';
 
 interface IProps {
   allArtists: Artist[];

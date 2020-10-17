@@ -1,6 +1,8 @@
 import * as React from 'react';
-import { ReactElement } from 'react';
-import { Tour } from '../api/minarets/types/Tour';
+import type { ReactElement } from 'react';
+
+import type { Tour } from '../api/minarets/types/Tour';
+
 import TourBreadcrumb from './TourBreadcrumb';
 
 interface IProps {

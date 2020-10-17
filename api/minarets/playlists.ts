@@ -1,8 +1,8 @@
 import { ApiBase } from './apiBase';
-import { Playlist } from './types/Playlist';
-import { PlaylistSummary } from './types/PlaylistSummary';
-import { ListAllResponse } from './types/ListAllResponse';
-import { ListResponse } from './types/ListResponse';
+import type { ListAllResponse } from './types/ListAllResponse';
+import type { ListResponse } from './types/ListResponse';
+import type { Playlist } from './types/Playlist';
+import type { PlaylistSummary } from './types/PlaylistSummary';
 
 export interface IListPlaylistsRequest {
   page?: number;

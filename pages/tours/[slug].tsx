@@ -1,13 +1,14 @@
+import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import * as React from 'react';
-import { ReactElement } from 'react';
-import { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import type { ReactElement } from 'react';
+
 import { Tours, Concerts } from '../../api/minarets';
-import { TourSummary } from '../../api/minarets/types/TourSummary';
+import type { Tour } from '../../api/minarets/types/Tour';
+import type { TourSummary } from '../../api/minarets/types/TourSummary';
+import type { TourWithConcerts } from '../../api/types/TourWithConcerts';
+import ConcertLinkRow from '../../components/ConcertLinkRow';
 import Layout from '../../components/Layout';
 import TourBreadcrumbRow from '../../components/TourBreadcrumbRow';
-import { Tour } from '../../api/minarets/types/Tour';
-import { TourWithConcerts } from '../../api/types/TourWithConcerts';
-import ConcertLinkRow from '../../components/ConcertLinkRow';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const toursApi = new Tours();

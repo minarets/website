@@ -1,6 +1,6 @@
-import * as React from 'react';
 import Link from 'next/link';
-import { ReactElement } from 'react';
+import * as React from 'react';
+import type { ReactElement } from 'react';
 
 export default function Layout(): ReactElement {
   return (

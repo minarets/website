@@ -1,8 +1,8 @@
 import { ApiBase } from './apiBase';
-import { Artist } from './types/Artist';
-import { ArtistSummary } from './types/ArtistSummary';
-import { ListAllResponse } from './types/ListAllResponse';
-import { ListResponse } from './types/ListResponse';
+import type { Artist } from './types/Artist';
+import type { ArtistSummary } from './types/ArtistSummary';
+import type { ListAllResponse } from './types/ListAllResponse';
+import type { ListResponse } from './types/ListResponse';
 
 export interface IListArtistsRequest {
   page?: number;

@@ -1,11 +1,12 @@
-import * as React from 'react';
-import { ReactElement } from 'react';
-import { GetStaticPropsResult } from 'next';
 import moment from 'moment';
-import Layout from '../components/Layout';
-import { BasicConcert } from '../api/minarets/types/BasicConcert';
+import type { GetStaticPropsResult } from 'next';
+import * as React from 'react';
+import type { ReactElement } from 'react';
+
 import { Concerts } from '../api/minarets';
+import type { BasicConcert } from '../api/minarets/types/BasicConcert';
 import ConcertAndArtistLinkRow from '../components/ConcertAndArtistLinkRow';
+import Layout from '../components/Layout';
 
 interface IProps {
   popularConcerts: BasicConcert[];

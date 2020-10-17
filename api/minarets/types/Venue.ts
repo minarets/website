@@ -1,4 +1,4 @@
-import { BasicVenue } from './BasicVenue';
+import type { BasicVenue } from './BasicVenue';
 
 export interface Venue extends BasicVenue {
   concertCount: number;

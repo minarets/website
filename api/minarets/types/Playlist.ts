@@ -1,6 +1,6 @@
-import { BasicPlaylist } from './BasicPlaylist';
-import { BasicUser } from './BasicUser';
-import { TrackWithExtendedInformation } from './TrackWithExtendedInformation';
+import type { BasicPlaylist } from './BasicPlaylist';
+import type { BasicUser } from './BasicUser';
+import type { TrackWithExtendedInformation } from './TrackWithExtendedInformation';
 
 export interface Playlist extends BasicPlaylist {
   createdBy: BasicUser;

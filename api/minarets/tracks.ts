@@ -1,6 +1,6 @@
 import { ApiBase } from './apiBase';
-import { ListResponse } from './types/ListResponse';
-import { TrackWithExtendedInformation } from './types/TrackWithExtendedInformation';
+import type { ListResponse } from './types/ListResponse';
+import type { TrackWithExtendedInformation } from './types/TrackWithExtendedInformation';
 
 export interface IListTracksRequest {
   page?: number;

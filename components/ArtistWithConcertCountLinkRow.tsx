@@ -1,8 +1,9 @@
-import * as React from 'react';
 import Link from 'next/link';
-import { ReactElement } from 'react';
+import * as React from 'react';
+import type { ReactElement } from 'react';
+
+import type { Artist } from '../api/minarets/types/Artist';
 import { slugify } from '../api/stringService';
-import { Artist } from '../api/minarets/types/Artist';
 
 interface IProps {
   artist: Artist;

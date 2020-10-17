@@ -57,6 +57,13 @@ module.exports = {
     ],
 
     'import/prefer-default-export': 'off',
+    'import/order': [
+      'error',
+      {
+        'newlines-between': 'always',
+        alphabetize: { order: 'asc', caseInsensitive: true },
+      },
+    ],
 
     'jsdoc/check-alignment': 'error',
     'jsdoc/check-indentation': 'off',
@@ -109,6 +116,7 @@ module.exports = {
     '@typescript-eslint/adjacent-overload-signatures': 'error',
     '@typescript-eslint/consistent-type-assertions': 'error',
     '@typescript-eslint/consistent-type-definitions': 'error',
+    '@typescript-eslint/consistent-type-imports': 'error',
     '@typescript-eslint/no-extraneous-class': 'error',
     '@typescript-eslint/explicit-function-return-type': 'error',
     '@typescript-eslint/explicit-member-accessibility': ['error'],

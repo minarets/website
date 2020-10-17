@@ -1,4 +1,4 @@
-import { BasicTour } from './BasicTour';
+import type { BasicTour } from './BasicTour';
 
 export interface Tour extends BasicTour {
   parentId?: number;

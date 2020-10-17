@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+
 import Layout from '../components/Layout';
 
 export default function NotFound(): ReactElement {

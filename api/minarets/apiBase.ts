@@ -1,6 +1,8 @@
-import fetch from 'cross-fetch';
 import { URL } from 'url';
-import { ErrorWithResponse } from './types/ErrorWithResponse';
+
+import fetch from 'cross-fetch';
+
+import type { ErrorWithResponse } from './types/ErrorWithResponse';
 
 interface IGetParams {
   query: Record<string, string>;

@@ -1,5 +1,5 @@
-import { Track } from './Track';
-import { BasicCompilation } from './BasicCompilation';
+import type { BasicCompilation } from './BasicCompilation';
+import type { Track } from './Track';
 
 export interface Compilation extends BasicCompilation {
   description: string;

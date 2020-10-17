@@ -1,8 +1,9 @@
-import * as React from 'react';
 import Link from 'next/link';
-import { ReactElement } from 'react';
+import * as React from 'react';
+import type { ReactElement } from 'react';
+
+import type { Venue } from '../api/minarets/types/Venue';
 import { slugify } from '../api/stringService';
-import { Venue } from '../api/minarets/types/Venue';
 
 interface IProps {
   venue: Venue;

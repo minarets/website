@@ -1,9 +1,9 @@
 import { ApiBase } from './apiBase';
-import { Tour } from './types/Tour';
-import { TourSummary } from './types/TourSummary';
-import { TourWithChildren } from './types/TourWithChildren';
-import { ListAllResponse } from './types/ListAllResponse';
-import { ListResponse } from './types/ListResponse';
+import type { ListAllResponse } from './types/ListAllResponse';
+import type { ListResponse } from './types/ListResponse';
+import type { Tour } from './types/Tour';
+import type { TourSummary } from './types/TourSummary';
+import type { TourWithChildren } from './types/TourWithChildren';
 
 export class Tours extends ApiBase {
   public async getTour(idOrSlug: string): Promise<TourWithChildren> {

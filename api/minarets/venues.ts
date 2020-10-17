@@ -1,9 +1,10 @@
 import SmartyStreetSDK from 'smartystreets-javascript-sdk';
+
 import { ApiBase } from './apiBase';
-import { Venue } from './types/Venue';
-import { VenueSummary } from './types/VenueSummary';
-import { ListAllResponse } from './types/ListAllResponse';
-import { ListResponse } from './types/ListResponse';
+import type { ListAllResponse } from './types/ListAllResponse';
+import type { ListResponse } from './types/ListResponse';
+import type { Venue } from './types/Venue';
+import type { VenueSummary } from './types/VenueSummary';
 
 export interface IListVenuesRequest {
   page?: number;

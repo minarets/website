@@ -1,16 +1,17 @@
+import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import * as React from 'react';
-import { ReactElement } from 'react';
-import { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import type { ReactElement } from 'react';
+
 import { Artists, Concerts, Tours } from '../../../api/minarets';
-import { ArtistSummary } from '../../../api/minarets/types/ArtistSummary';
-import { Artist } from '../../../api/minarets/types/Artist';
+import type { Artist } from '../../../api/minarets/types/Artist';
+import type { ArtistSummary } from '../../../api/minarets/types/ArtistSummary';
+import type { BasicConcert } from '../../../api/minarets/types/BasicConcert';
+import type { Tour } from '../../../api/minarets/types/Tour';
 import { slugify } from '../../../api/stringService';
+import type { TourWithConcerts } from '../../../api/types/TourWithConcerts';
+import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
-import { Tour } from '../../../api/minarets/types/Tour';
-import { TourWithConcerts } from '../../../api/types/TourWithConcerts';
-import ConcertLinkRow from '../../../components/ConcertLinkRow';
-import { BasicConcert } from '../../../api/minarets/types/BasicConcert';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const artistsApi = new Artists();

@@ -1,8 +1,9 @@
-import * as React from 'react';
-import Link from 'next/link';
-import { ReactElement } from 'react';
 import moment from 'moment';
-import { BasicConcert } from '../api/minarets/types/BasicConcert';
+import Link from 'next/link';
+import * as React from 'react';
+import type { ReactElement } from 'react';
+
+import type { BasicConcert } from '../api/minarets/types/BasicConcert';
 import { slugify } from '../api/stringService';
 
 interface IProps {

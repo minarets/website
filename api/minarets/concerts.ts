@@ -1,7 +1,7 @@
 import { ApiBase } from './apiBase';
-import { BasicConcert } from './types/BasicConcert';
-import { ListResponse } from './types/ListResponse';
-import { Concert } from './types/Concert';
+import type { BasicConcert } from './types/BasicConcert';
+import type { Concert } from './types/Concert';
+import type { ListResponse } from './types/ListResponse';
 
 export interface ISearchConcertsRequest {
   page?: number;

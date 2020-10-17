@@ -1,8 +1,8 @@
 import { ApiBase } from './apiBase';
-import { Compilation } from './types/Compilation';
-import { CompilationSummary } from './types/CompilationSummary';
-import { ListAllResponse } from './types/ListAllResponse';
-import { ListResponse } from './types/ListResponse';
+import type { Compilation } from './types/Compilation';
+import type { CompilationSummary } from './types/CompilationSummary';
+import type { ListAllResponse } from './types/ListAllResponse';
+import type { ListResponse } from './types/ListResponse';
 
 export interface IListCompilationsRequest {
   page?: number;

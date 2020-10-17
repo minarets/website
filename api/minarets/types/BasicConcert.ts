@@ -1,11 +1,12 @@
-import { BasicArtist } from './BasicArtist';
-import { BasicTour } from './BasicTour';
-import { BasicVenue } from './BasicVenue';
+import type { BasicArtist } from './BasicArtist';
+import type { BasicTour } from './BasicTour';
+import type { BasicVenue } from './BasicVenue';
 
 export interface BasicConcert {
   id: string;
   name: string;
   date: string;
+  notes: string;
   artist: BasicArtist;
   tour: BasicTour;
   venue: BasicVenue;

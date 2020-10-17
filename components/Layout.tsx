@@ -1,9 +1,11 @@
-import * as React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { ReactElement } from 'react';
-import SideBarMenu from './SideBarMenu';
+import * as React from 'react';
+import type { ReactElement } from 'react';
+
 import styles from '../styles/Home.module.css';
+
+import SideBarMenu from './SideBarMenu';
 
 interface LayoutParams {
   title: string;

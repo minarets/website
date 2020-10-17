@@ -1,8 +1,9 @@
+import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
-import { ReactElement } from 'react';
-import { GetStaticPropsResult } from 'next';
+import type { ReactElement } from 'react';
+
 import { Tours } from '../../api/minarets';
-import { TourWithChildren } from '../../api/minarets/types/TourWithChildren';
+import type { TourWithChildren } from '../../api/minarets/types/TourWithChildren';
 import Layout from '../../components/Layout';
 import styles from '../../styles/Tours.module.css';
 
