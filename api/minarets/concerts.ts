@@ -1,5 +1,6 @@
 import { ApiBase } from './apiBase';
 import type { BasicConcert } from './types/BasicConcert';
+import type { BasicConcertWithNotes } from './types/BasicConcertWithNotes';
 import type { Concert } from './types/Concert';
 import type { ListResponse } from './types/ListResponse';
 
@@ -30,7 +31,7 @@ export interface IListConcertsByArtistRequest extends IListConcertsRequest {
 }
 
 export interface IListConcertsByCompilationRequest extends IListConcertsRequest {
-  compilationId: string;
+  compilationId: number;
 }
 
 export interface IListConcertsByPlaylistRequest extends IListConcertsRequest {
@@ -97,7 +98,7 @@ export class Concerts extends ApiBase {
     return (await response.json()) as ListResponse<BasicConcert>;
   }
 
-  public async listConcertsByCompilation(request: IListConcertsByCompilationRequest): Promise<ListResponse<BasicConcert>> {
+  public async listConcertsByCompilation(request: IListConcertsByCompilationRequest): Promise<ListResponse<BasicConcertWithNotes>> {
     const { compilationId, ...queryParams } = request;
     const query = this.queryParams(queryParams);
     const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/compilations/${compilationId}/concerts`, { query });

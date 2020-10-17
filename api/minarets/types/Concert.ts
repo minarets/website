@@ -1,10 +1,11 @@
-import { Track } from './Track';
-import { BasicConcert } from './BasicConcert';
+import type { BasicConcertWithNotes } from './BasicConcertWithNotes';
+import type { Track } from './Track';
+import type { Venue } from './Venue';
 
-export interface Concert extends BasicConcert {
+export interface Concert extends BasicConcertWithNotes {
+  venue: Venue;
   trackCount: number;
   tracks: Track[];
-  notes: string;
   recordingInformation: string;
   dmbalmanacUrl: string;
   downloadUrl: string;
