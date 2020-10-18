@@ -52,13 +52,13 @@ function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, 
           </div>
         )}
       </div>
-      <div className="col-3 col-sm-2 col-lg-1 text-right">
+      <div className="col-3 col-sm-2 col-lg-1 text-right d-none">
         <span>...</span>
         <div className="track-menu">
           <ul className="navbar-nav mr-auto mb-2 mb-lg-0">
-            {/*<li className="nav-item">Add to Queue</li>
+            <li className="nav-item">Add to Queue</li>
             <li className="nav-item">Add to Playlist</li>
-            <li className="nav-item">Remove from this Playlist</li>*/}
+            <li className="nav-item">Remove from this Playlist</li>
             <li className="nav-item">Copy Song Link</li>
             {concertUrl && (
               <li className="nav-item">
