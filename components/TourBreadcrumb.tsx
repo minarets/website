@@ -1,17 +1,17 @@
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import type { Tour } from '../api/minarets/types/Tour';
 import { slugify } from '../api/stringService';
+import type { LimitedTour } from '../api/types/LimitedTour';
 
 interface IProps {
-  tour: Tour;
-  toursById: Record<number, Tour>;
+  tour: LimitedTour;
+  toursById: Record<number, LimitedTour>;
   skipParent?: boolean;
 }
 
 function TourBreadcrumb({ tour, toursById, skipParent }: IProps): ReactElement {
-  let parentTour: Tour | undefined;
+  let parentTour: LimitedTour | undefined;
   if (!skipParent && tour.parentId) {
     parentTour = toursById[tour.parentId];
   }
@@ -20,7 +20,7 @@ function TourBreadcrumb({ tour, toursById, skipParent }: IProps): ReactElement {
     <span>
       {parentTour && (
         <span>
-          <TourBreadcrumb tour={parentTour} toursById={toursById} key={parentTour.id} /> &raquo;{' '}
+          <TourBreadcrumb tour={parentTour} toursById={toursById} /> &raquo;{' '}
         </span>
       )}
       <a href={`/tours/${slugify(tour.name)}`} title={tour.name}>

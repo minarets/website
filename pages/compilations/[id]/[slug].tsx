@@ -3,14 +3,18 @@ import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { extractTokenDetailsFromConcertNote } from '../../../api/concertService';
+import { extractTokenDetailsFromConcertNote, getConcertUrl } from '../../../api/concertService';
 import { Compilations, Concerts, Tours } from '../../../api/minarets';
-import type { BasicConcertWithNotes } from '../../../api/minarets/types/BasicConcertWithNotes';
+import type { BasicArtist } from '../../../api/minarets/types/BasicArtist';
 import type { Compilation } from '../../../api/minarets/types/Compilation';
 import type { CompilationSummary } from '../../../api/minarets/types/CompilationSummary';
-import type { Tour } from '../../../api/minarets/types/Tour';
+import { pick } from '../../../api/objectService';
 import { slugify } from '../../../api/stringService';
-import type { TourWithConcerts } from '../../../api/types/TourWithConcerts';
+import type { LimitedArtist } from '../../../api/types/LimitedArtist';
+import type { LimitedConcert } from '../../../api/types/LimitedConcert';
+import type { LimitedConcertWithTokenDetails } from '../../../api/types/LimitedConcertWithTokenDetails';
+import type { LimitedTour } from '../../../api/types/LimitedTour';
+import type { LimitedTourWithLimitedConcerts } from '../../../api/types/LimitedTourWithLimitedConcerts';
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
@@ -34,11 +38,16 @@ interface IParams {
   };
 }
 
+type LimitedConcertWithTokenDetailsAndArtistId = LimitedConcertWithTokenDetails & {
+  artistId: BasicArtist['id'];
+};
+
 interface IProps {
   compilation: Compilation;
-  relatedConcertsByTour: TourWithConcerts[];
-  concertAdditionalDetailsByTokenByConcertId: Record<string, Record<string, string>>;
-  toursById: Record<string, Tour>;
+  relatedConcertsByTour: LimitedTourWithLimitedConcerts[];
+  toursById: Record<string, LimitedTour>;
+  concertsById: Record<string, LimitedConcertWithTokenDetailsAndArtistId>;
+  artistsById: Record<number, LimitedArtist>;
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
@@ -54,13 +63,13 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     concertsApi.listConcertsByCompilation({
       compilationId: params.id,
       sortAsc: 'ConcertDate',
-      itemsPerPage: 20,
+      itemsPerPage: 100000,
     }),
     toursApi.listTours(),
   ]);
 
-  const toursById = tourResults.items.reduce((acc: Record<string, Tour>, tour) => {
-    acc[tour.id] = tour;
+  const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {
+    acc[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
 
     return acc;
   }, {});
@@ -69,17 +78,26 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     return new Date(item1.date).getTime() - new Date(item2.date).getTime();
   });
 
-  const concertAdditionalDetailsByTokenByConcertId: Record<string, Record<string, string>> = {};
-  const concertsByTourId: Record<string, BasicConcertWithNotes[]> = {};
+  const artistsById: Record<number, LimitedArtist> = {};
+  const concertsById: Record<string, LimitedConcertWithTokenDetailsAndArtistId> = {};
+  const concertsByTourId: Record<string, LimitedConcert[]> = {};
   for (const concert of concertsResults.items) {
-    const { detailsByToken: concertAdditionalDetailsByToken } = extractTokenDetailsFromConcertNote(concert);
-    concertAdditionalDetailsByTokenByConcertId[concert.id] = concertAdditionalDetailsByToken;
+    const { detailsByToken: tokenDetails } = extractTokenDetailsFromConcertNote(concert);
+    concertsById[concert.id] = {
+      ...pick(concert, 'id', 'date', 'name'),
+      tokenDetails,
+      artistId: concert.artist.id,
+    };
+
+    if (!artistsById[concert.artist.id]) {
+      artistsById[concert.artist.id] = pick(concert.artist, 'id', 'name', 'abbr');
+    }
 
     concertsByTourId[concert.tour.id] = concertsByTourId[concert.tour.id] || [];
-    concertsByTourId[concert.tour.id].push(concert);
+    concertsByTourId[concert.tour.id].push(pick(concert, 'id', 'date', 'name'));
   }
 
-  const relatedConcertsByTour: TourWithConcerts[] = [];
+  const relatedConcertsByTour: LimitedTourWithLimitedConcerts[] = [];
   for (const concert of concertsResults.items) {
     if (concertsByTourId[concert.tour.id]) {
       relatedConcertsByTour.push({
@@ -94,16 +112,17 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
   return {
     props: {
       compilation,
+      concertsById,
       relatedConcertsByTour,
       toursById,
-      concertAdditionalDetailsByTokenByConcertId,
+      artistsById,
     },
     // Re-generate the data at most every 24 hours
     revalidate: 86400,
   };
 }
 
-export default function Page({ compilation, relatedConcertsByTour, concertAdditionalDetailsByTokenByConcertId, toursById }: IProps): ReactElement {
+export default function Page({ compilation, concertsById, relatedConcertsByTour, toursById, artistsById }: IProps): ReactElement {
   const createdOn = moment(compilation.createdOn);
 
   return (
@@ -111,10 +130,10 @@ export default function Page({ compilation, relatedConcertsByTour, concertAdditi
       <div className="content">
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
-            <li className="breadcrum-item">
+            <li className="breadcrumb-item">
               <a href="/compilations">Compilations</a>
             </li>
-            <li className="breadcrum-item active" aria-current="page">
+            <li className="breadcrumb-item active" aria-current="page">
               {compilation.name}
             </li>
           </ol>
@@ -155,9 +174,21 @@ export default function Page({ compilation, relatedConcertsByTour, concertAdditi
             <h2 className="card-title">Tracks</h2>
           </div>
           <div className="card-body">
-            {compilation.tracks.map((track, index) => (
-              <TrackLinkRow concertAdditionalDetailsByToken={concertAdditionalDetailsByTokenByConcertId[track.concertId]} track={track} trackNumber={index + 1} />
-            ))}
+            {compilation.tracks.map((track, index) => {
+              const concert = concertsById[track.concertId];
+              const concertUrl = getConcertUrl(concert);
+              const artist = artistsById[concert.artistId];
+              const artistUrl = `/artists/${artist.id}/${slugify(artist.name)}`;
+              return (
+                <TrackLinkRow
+                  concertAdditionalDetailsByToken={concert.tokenDetails} //
+                  track={track}
+                  trackNumber={index + 1}
+                  concertUrl={concertUrl}
+                  artistUrl={artistUrl}
+                />
+              );
+            })}
           </div>
 
           <div className="card">
@@ -165,7 +196,7 @@ export default function Page({ compilation, relatedConcertsByTour, concertAdditi
               <h2 className="card-title">Related Concerts</h2>
             </div>
             <div className="card-body">
-              {relatedConcertsByTour.map((tourWithConcerts: TourWithConcerts) => (
+              {relatedConcertsByTour.map((tourWithConcerts: LimitedTourWithLimitedConcerts) => (
                 <div className="pb-4" key={`${tourWithConcerts.tour.id}_${tourWithConcerts.concerts[0].id}`}>
                   <TourBreadcrumbRow tour={tourWithConcerts.tour} toursById={toursById} key={tourWithConcerts.tour.id} />
 

@@ -5,7 +5,9 @@ import type { ReactElement } from 'react';
 import { Tours, Concerts } from '../../api/minarets';
 import type { Tour } from '../../api/minarets/types/Tour';
 import type { TourSummary } from '../../api/minarets/types/TourSummary';
-import type { TourWithConcerts } from '../../api/types/TourWithConcerts';
+import { pick } from '../../api/objectService';
+import type { LimitedTour } from '../../api/types/LimitedTour';
+import type { LimitedTourWithLimitedConcerts } from '../../api/types/LimitedTourWithLimitedConcerts';
 import ConcertLinkRow from '../../components/ConcertLinkRow';
 import Layout from '../../components/Layout';
 import TourBreadcrumbRow from '../../components/TourBreadcrumbRow';
@@ -30,8 +32,8 @@ interface IParams {
 
 interface IProps {
   tour: Tour;
-  concertsByTour: TourWithConcerts[];
-  toursById: Record<number, Tour>;
+  concertsByTour: LimitedTourWithLimitedConcerts[];
+  toursById: Record<number, LimitedTour>;
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
@@ -50,14 +52,14 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     }),
   ]);
 
-  const toursById = tour.children.reduce((acc: Record<string, Tour>, childTour) => {
-    acc[childTour.id] = childTour;
+  const toursById = tour.children.reduce((acc: Record<string, LimitedTour>, childTour) => {
+    acc[childTour.id] = pick(childTour, 'id', 'name', 'parentId', 'slug');
 
     return acc;
   }, {});
-  toursById[tour.id] = tour;
+  toursById[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
 
-  const concertsByTour: TourWithConcerts[] = [];
+  const concertsByTour: LimitedTourWithLimitedConcerts[] = [];
   for (const concert of concertResults.items) {
     if (!concertsByTour.length || concertsByTour[concertsByTour.length - 1].tour.id !== concert.tour.id) {
       concertsByTour.push({
@@ -66,7 +68,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
       });
     }
 
-    concertsByTour[concertsByTour.length - 1].concerts.push(concert);
+    concertsByTour[concertsByTour.length - 1].concerts.push(pick(concert, 'id', 'date', 'name'));
   }
 
   return {
@@ -81,7 +83,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
 }
 
 export default function Page({ tour, concertsByTour, toursById }: IProps): ReactElement {
-  let parentTour: Tour | undefined;
+  let parentTour: LimitedTour | undefined;
   if (tour.parentId) {
     parentTour = toursById[tour.parentId];
   }
@@ -91,7 +93,7 @@ export default function Page({ tour, concertsByTour, toursById }: IProps): React
       <div className="content">
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
-            <li className="breadcrum-item">
+            <li className="breadcrumb-item">
               <a href="/tours">Tours</a>
             </li>
             {parentTour && (
@@ -99,7 +101,7 @@ export default function Page({ tour, concertsByTour, toursById }: IProps): React
                 <a href={`/tours/${parentTour.slug}`}>{parentTour.name}</a>
               </li>
             )}
-            <li className="breadcrum-item active" aria-current="page">
+            <li className="breadcrumb-item active" aria-current="page">
               {tour.name}
             </li>
           </ol>
@@ -123,7 +125,7 @@ export default function Page({ tour, concertsByTour, toursById }: IProps): React
             <h2 className="card-title">Concerts</h2>
           </div>
           <div className="card-body">
-            {concertsByTour.map((latestConcerts: TourWithConcerts) => (
+            {concertsByTour.map((latestConcerts: LimitedTourWithLimitedConcerts) => (
               <div className="pb-4" key={`${latestConcerts.tour.id}_${latestConcerts.concerts[0].id}`}>
                 <TourBreadcrumbRow tour={latestConcerts.tour} toursById={toursById} key={latestConcerts.tour.id} />
 

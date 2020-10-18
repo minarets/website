@@ -1,11 +1,24 @@
+import moment from 'moment';
+
+import type { BasicConcert } from './minarets/types/BasicConcert';
 import type { BasicConcertWithNotes } from './minarets/types/BasicConcertWithNotes';
+import { slugify } from './stringService';
 
 interface IExtractTokenDetailsFromConcertNoteResult {
   noteLines: string[];
   detailsByToken: Record<string, string>;
 }
 
-export function extractTokenDetailsFromConcertNote(concert: BasicConcertWithNotes): IExtractTokenDetailsFromConcertNoteResult {
+export function getConcertUrl(concert: Pick<BasicConcert, 'date' | 'name'>): string {
+  if (!concert) {
+    return '';
+  }
+
+  const concertDate = moment(concert.date);
+  return `/concerts/${concertDate.format('yyyy')}/${concertDate.format('MM')}/${concertDate.format('DD')}/${slugify(concert.name)}`;
+}
+
+export function extractTokenDetailsFromConcertNote(concert: Pick<BasicConcertWithNotes, 'notes'>): IExtractTokenDetailsFromConcertNoteResult {
   const detailsByToken: Record<string, string> = {};
   const noteLines: string[] = [];
   let hasMoreTokens = true;

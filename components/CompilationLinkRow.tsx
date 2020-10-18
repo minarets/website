@@ -6,7 +6,7 @@ import type { Compilation } from '../api/minarets/types/Compilation';
 import { slugify } from '../api/stringService';
 
 interface IProps {
-  compilation: Compilation;
+  compilation: Pick<Compilation, 'id' | 'name'>;
 }
 
 function CompilationLinkRow({ compilation }: IProps): ReactElement {

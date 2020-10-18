@@ -3,11 +3,11 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
+import { getConcertUrl } from '../api/concertService';
 import type { BasicConcert } from '../api/minarets/types/BasicConcert';
-import { slugify } from '../api/stringService';
 
 interface IProps {
-  concert: BasicConcert;
+  concert: Pick<BasicConcert, 'date' | 'name'>;
 }
 
 function ConcertLinkRow({ concert }: IProps): ReactElement {
@@ -15,7 +15,7 @@ function ConcertLinkRow({ concert }: IProps): ReactElement {
   return (
     <div className="row">
       <div className="col">
-        <Link href={`/concerts/${concertDate.format('yyyy')}/${concertDate.format('MM')}/${concertDate.format('DD')}/${slugify(concert.name)}`}>
+        <Link href={getConcertUrl(concert)}>
           <a>
             {concertDate.format('yyyy-MM-DD')}: {concert.name}
           </a>

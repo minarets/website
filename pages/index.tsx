@@ -4,14 +4,17 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import { Concerts } from '../api/minarets';
-import type { BasicConcert } from '../api/minarets/types/BasicConcert';
+import { pick } from '../api/objectService';
+import type { LimitedArtist } from '../api/types/LimitedArtist';
+import type { LimitedConcertWithArtistId } from '../api/types/LimitedConcertWithArtistId';
 import ConcertAndArtistLinkRow from '../components/ConcertAndArtistLinkRow';
 import Layout from '../components/Layout';
 
 interface IProps {
-  popularConcerts: BasicConcert[];
-  newConcerts: BasicConcert[];
-  latestConcerts: BasicConcert[];
+  popularConcerts: LimitedConcertWithArtistId[];
+  newConcerts: LimitedConcertWithArtistId[];
+  latestConcerts: LimitedConcertWithArtistId[];
+  artistsById: Record<number, LimitedArtist>;
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
@@ -36,18 +39,56 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
     }),
   ]);
 
+  const artistsById: Record<number, LimitedArtist> = {};
+  const popularConcerts: LimitedConcertWithArtistId[] = [];
+  for (const concert of popularConcertsResults.items) {
+    if (!artistsById[concert.artist.id]) {
+      artistsById[concert.artist.id] = pick(concert.artist, 'id', 'name', 'abbr');
+    }
+
+    popularConcerts.push({
+      ...pick(concert, 'id', 'date', 'name'),
+      artistId: concert.artist.id,
+    });
+  }
+
+  const newConcerts: LimitedConcertWithArtistId[] = [];
+  for (const concert of newConcertsResults.items) {
+    if (!artistsById[concert.artist.id]) {
+      artistsById[concert.artist.id] = pick(concert.artist, 'id', 'name', 'abbr');
+    }
+
+    newConcerts.push({
+      ...pick(concert, 'id', 'date', 'name'),
+      artistId: concert.artist.id,
+    });
+  }
+
+  const latestConcerts: LimitedConcertWithArtistId[] = [];
+  for (const concert of latestConcertsResults.items) {
+    if (!artistsById[concert.artist.id]) {
+      artistsById[concert.artist.id] = pick(concert.artist, 'id', 'name', 'abbr');
+    }
+
+    latestConcerts.push({
+      ...pick(concert, 'id', 'date', 'name'),
+      artistId: concert.artist.id,
+    });
+  }
+
   return {
     props: {
-      popularConcerts: popularConcertsResults.items,
-      newConcerts: newConcertsResults.items,
-      latestConcerts: latestConcertsResults.items,
+      popularConcerts,
+      newConcerts,
+      latestConcerts,
+      artistsById,
     },
     // Re-generate the data at most every 5 minutes
     revalidate: 300,
   };
 }
 
-export default function Page({ popularConcerts, newConcerts, latestConcerts }: IProps): ReactElement {
+export default function Page({ popularConcerts, newConcerts, latestConcerts, artistsById }: IProps): ReactElement {
   return (
     <Layout title="A community for Dave Matthews Band fans">
       <section>
@@ -57,7 +98,7 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts }: I
           </div>
           <div className="card-body">
             {popularConcerts.map((concert) => (
-              <ConcertAndArtistLinkRow concert={concert} key={concert.id} />
+              <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
             ))}
           </div>
         </div>
@@ -67,7 +108,7 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts }: I
           </div>
           <div className="card-body">
             {newConcerts.map((concert) => (
-              <ConcertAndArtistLinkRow concert={concert} key={concert.id} />
+              <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
             ))}
           </div>
         </div>
@@ -77,7 +118,7 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts }: I
           </div>
           <div className="card-body">
             {latestConcerts.map((concert) => (
-              <ConcertAndArtistLinkRow concert={concert} key={concert.id} />
+              <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
             ))}
           </div>
         </div>

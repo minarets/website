@@ -5,6 +5,7 @@ export function slugify(input: string | undefined | null): string {
 
   return input
     .toLowerCase()
-    .replace(/[^\w ]+/g, '')
-    .replace(/ +/g, '-');
+    .trim()
+    .replace(/[^\w\s]+/g, '')
+    .replace(/\s+/g, '-');
 }

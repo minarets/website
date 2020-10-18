@@ -3,12 +3,13 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import { Venues, Concerts, Tours } from '../../../api/minarets';
-import type { BasicConcert } from '../../../api/minarets/types/BasicConcert';
-import type { Tour } from '../../../api/minarets/types/Tour';
 import type { Venue } from '../../../api/minarets/types/Venue';
 import type { VenueSummary } from '../../../api/minarets/types/VenueSummary';
+import { pick } from '../../../api/objectService';
 import { slugify } from '../../../api/stringService';
-import type { TourWithConcerts } from '../../../api/types/TourWithConcerts';
+import type { LimitedConcert } from '../../../api/types/LimitedConcert';
+import type { LimitedTour } from '../../../api/types/LimitedTour';
+import type { LimitedTourWithLimitedConcerts } from '../../../api/types/LimitedTourWithLimitedConcerts';
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
@@ -34,10 +35,10 @@ interface IParams {
 
 interface IProps {
   venue: Venue;
-  latestConcertsByTour: TourWithConcerts[];
-  popularConcerts: BasicConcert[];
-  newConcerts: BasicConcert[];
-  toursById: Record<number, Tour>;
+  latestConcertsByTour: LimitedTourWithLimitedConcerts[];
+  popularConcerts: LimitedConcert[];
+  newConcerts: LimitedConcert[];
+  toursById: Record<number, LimitedTour>;
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
@@ -75,13 +76,13 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     venue.formattedAddress = await venuesApi.setVenueFormattedAddress(venue);
   }
 
-  const toursById = tourResults.items.reduce((acc: Record<string, Tour>, tour) => {
-    acc[tour.id] = tour;
+  const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {
+    acc[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
 
     return acc;
   }, {});
 
-  const latestConcertsByTour: TourWithConcerts[] = [];
+  const latestConcertsByTour: LimitedTourWithLimitedConcerts[] = [];
   for (const concert of latestConcertResults.items) {
     if (!latestConcertsByTour.length || latestConcertsByTour[latestConcertsByTour.length - 1].tour.id !== concert.tour.id) {
       latestConcertsByTour.push({
@@ -90,15 +91,15 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
       });
     }
 
-    latestConcertsByTour[latestConcertsByTour.length - 1].concerts.push(concert);
+    latestConcertsByTour[latestConcertsByTour.length - 1].concerts.push(pick(concert, 'id', 'date', 'name'));
   }
 
   return {
     props: {
       venue,
       latestConcertsByTour,
-      popularConcerts: popularConcertResults.items,
-      newConcerts: newConcertResults.items,
+      popularConcerts: popularConcertResults.items.map((concert) => pick(concert, 'id', 'date', 'name')),
+      newConcerts: newConcertResults.items.map((concert) => pick(concert, 'id', 'date', 'name')),
       toursById,
     },
     // Re-generate the data at most every 24 hours
@@ -112,10 +113,10 @@ export default function Page({ venue, latestConcertsByTour, popularConcerts, new
       <div className="content">
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
-            <li className="breadcrum-item">
+            <li className="breadcrumb-item">
               <a href="/venues">Venues</a>
             </li>
-            <li className="breadcrum-item active" aria-current="page">
+            <li className="breadcrumb-item active" aria-current="page">
               {venue.name}
             </li>
           </ol>
@@ -154,7 +155,7 @@ export default function Page({ venue, latestConcertsByTour, popularConcerts, new
                 <h2 className="card-title">Latest Concerts</h2>
               </div>
               <div className="card-body">
-                {latestConcertsByTour.map((latestConcerts: TourWithConcerts) => (
+                {latestConcertsByTour.map((latestConcerts: LimitedTourWithLimitedConcerts) => (
                   <div className="pb-4" key={`${latestConcerts.tour.id}_${latestConcerts.concerts[0].id}`}>
                     <TourBreadcrumbRow tour={latestConcerts.tour} toursById={toursById} key={latestConcerts.tour.id} />
 

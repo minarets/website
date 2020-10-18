@@ -1,13 +1,13 @@
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import type { Tour } from '../api/minarets/types/Tour';
+import type { LimitedTour } from '../api/types/LimitedTour';
 
 import TourBreadcrumb from './TourBreadcrumb';
 
 interface IProps {
-  tour: Tour;
-  toursById: Record<number, Tour>;
+  tour: LimitedTour;
+  toursById: Record<number, LimitedTour>;
   skipParent?: boolean;
 }
 

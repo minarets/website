@@ -6,7 +6,7 @@ import type { Artist } from '../api/minarets/types/Artist';
 import { slugify } from '../api/stringService';
 
 interface IProps {
-  artist: Artist;
+  artist: Pick<Artist, 'id' | 'name' | 'concertCount'>;
 }
 
 function ArtistWithConcertCountLinkRow({ artist }: IProps): ReactElement {
