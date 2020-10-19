@@ -12,7 +12,7 @@ interface IPostParams {
   body: BodyInit;
 }
 
-function convertToBase64(str: string): string {
+export function convertToBase64(str: string): string {
   try {
     return btoa(str);
   } catch {
