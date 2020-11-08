@@ -6,7 +6,6 @@ import type { SessionProvider } from 'next-auth/client';
 import { v4 as uuid } from 'uuid';
 
 import type { BasicUser } from '../minarets/types/BasicUser';
-import type { BasicUserWithToken } from '../minarets/types/BasicUserWithToken';
 import type { User } from '../minarets/types/User';
 import { Users } from '../minarets/users';
 
@@ -27,12 +26,12 @@ type EmailSessionProvider = SessionProvider & {
 };
 
 interface IGetAdapterResult {
-  createUser(profile: ICreateUserParams): Promise<BasicUserWithToken>;
-  getUser(id: number): Promise<User>;
-  getUserByEmail(email: string): Promise<User>;
-  getUserByProviderAccountId(providerId: string, providerAccountId: string): Promise<User>;
+  createUser(profile: ICreateUserParams): Promise<User>;
+  getUser(id: number): Promise<User | null>;
+  getUserByEmail(email: string): Promise<User | null>;
+  getUserByProviderAccountId(providerId: string, providerAccountId: string): Promise<User | null>;
   updateUser(profile: BasicUser): Promise<User>;
-  linkAccount(userId: string, providerId: string, providerType: string, providerAccountId: string, refreshToken: string, accessToken: string, accessTokenExpires: number): Promise<void>;
+  linkAccount(userId: number, providerId: string, providerType: string, providerAccountId: string): Promise<void>;
   createSession(user: Pick<BasicUser, 'id'>): Promise<ISession>;
   getSession(sessionToken: string): Promise<ISession | null>;
   updateSession(session: ISession, force: boolean): Promise<ISession>;
@@ -48,6 +47,12 @@ interface ICreateUserParams {
   image: string;
 }
 
+interface IUpdateUserParams extends User {
+  emailVerified: Date;
+}
+
+// NOTE: The adapter type definition differs from ours. TODO to submit a PR to update the type def for nextauth
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default () => {
   function getAdapter({ baseUrl }: AppOptions): IGetAdapterResult {
     const redisClient = new Redis(process.env.REDIS_URL);
@@ -55,44 +60,38 @@ export default () => {
     const oneDayAsMilliseconds = 24 * oneHourAsMilliseconds;
     const thirtyDaysAsMilliseconds = 30 * oneDayAsMilliseconds;
 
-    async function createUser(params: ICreateUserParams): Promise<BasicUserWithToken> {
+    async function createUser(params: ICreateUserParams): Promise<User> {
       const usersApi = new Users();
-      // TODO: Need to make a new api to register users... Also, check that next-auth will try logging in before creating
-      // TODO: Add image to user object
-      return usersApi.createUser({
-        username: params.email.substr(0, params.email.indexOf('@')),
-        email: params.email,
-        password: '',
-      });
+      return usersApi.createUser(params);
     }
 
-    async function getUser(id: number): Promise<User> {
+    async function getUser(id: number): Promise<User | null> {
       const usersApi = new Users();
       return usersApi.getUser(id);
     }
 
-    async function getUserByEmail(email: string): Promise<User> {
+    async function getUserByEmail(email: string): Promise<User | null> {
       const usersApi = new Users();
       return usersApi.getUserByEmail(email);
     }
 
-    async function getUserByProviderAccountId(providerId: string, providerAccountId: string): Promise<User> {
+    async function getUserByProviderAccountId(providerId: string, providerAccountId: string): Promise<User | null> {
       const usersApi = new Users();
-      return usersApi.getUserByProviderAccount(providerId, providerAccountId);
+      return usersApi.getUserByProvider(providerId, providerAccountId);
     }
 
-    async function updateUser(user: BasicUser): Promise<User> {
+    async function updateUser(request: IUpdateUserParams): Promise<User> {
       const usersApi = new Users();
-      return usersApi.updateUser({
-        userId: user.id,
-        name: user.name,
+      return usersApi.setEmailVerified({
+        id: request.id,
+        emailVerified: request.emailVerified,
       });
     }
 
-    async function linkAccount(userId, providerId, providerType, providerAccountId, refreshToken, accessToken, accessTokenExpires): Promise<void> {
+    async function linkAccount(userId: number, providerId: string, _providerType: string, providerAccountId: string): Promise<void> {
       const usersApi = new Users();
-      await usersApi.linkUserWithProviderAccount({
-        userId,
+      await usersApi.linkUserWithProvider({
+        id: userId,
         providerId,
         providerAccountId,
       });
