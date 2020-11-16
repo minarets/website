@@ -2,10 +2,10 @@ import { createHash } from 'crypto';
 
 import Redis from 'ioredis';
 import type { AppOptions } from 'next-auth';
+import type { Adapter, AdapterInstance } from 'next-auth/adapters';
 import type { SessionProvider } from 'next-auth/client';
 import { v4 as uuid } from 'uuid';
 
-import type { BasicUser } from '../minarets/types/BasicUser';
 import type { User } from '../minarets/types/User';
 import { Users } from '../minarets/users';
 
@@ -25,59 +25,84 @@ type EmailSessionProvider = SessionProvider & {
   maxAge: number | undefined;
 };
 
-interface IGetAdapterResult {
-  createUser(profile: ICreateUserParams): Promise<User>;
-  getUser(id: number): Promise<User | null>;
-  getUserByEmail(email: string): Promise<User | null>;
-  getUserByProviderAccountId(providerId: string, providerAccountId: string): Promise<User | null>;
-  updateUser(profile: BasicUser): Promise<User>;
-  linkAccount(userId: number, providerId: string, providerType: string, providerAccountId: string): Promise<void>;
-  createSession(user: Pick<BasicUser, 'id'>): Promise<ISession>;
-  getSession(sessionToken: string): Promise<ISession | null>;
-  updateSession(session: ISession, force: boolean): Promise<ISession>;
-  deleteSession(sessionToken: string): Promise<void>;
-  createVerificationRequest?(identifier: string, url: string, token: string, secret: string, provider: EmailSessionProvider, options: AppOptions): Promise<IVerificationRequest>;
-  getVerificationRequest?(identifier: string, verificationToken: string, secret: string, provider: SessionProvider): Promise<IVerificationRequest | null>;
-  deleteVerificationRequest?(identifier: string, verificationToken: string, secret: string, provider: SessionProvider): Promise<void>;
-}
-
-interface ICreateUserParams {
+interface IProfile {
+  id: string;
   name: string;
   email: string;
   image: string;
+}
+
+interface ICreateUserParams extends IProfile {
+  emailVerified?: Date;
 }
 
 interface IUpdateUserParams extends User {
   emailVerified: Date;
 }
 
-// NOTE: The adapter type definition differs from ours. TODO to submit a PR to update the type def for nextauth
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default () => {
-  function getAdapter({ baseUrl }: AppOptions): IGetAdapterResult {
+// interface IGetAdapterResult {
+//   createUser(profile: ICreateUserParams): Promise<User>;
+//   getUser(id: number): Promise<User | null>;
+//   getUserByEmail(email: string): Promise<User | null>;
+//   getUserByProviderAccountId(providerId: string, providerAccountId: string): Promise<User | null>;
+//   updateUser(profile: IUpdateUserParams): Promise<User>;
+//   linkAccount(userId: number, providerId: string, providerType: string, providerAccountId: string): Promise<void>;
+//   createSession(user: Pick<BasicUser, 'id'>): Promise<ISession>;
+//   getSession(sessionToken: string): Promise<ISession | null>;
+//   updateSession(session: ISession, force: boolean): Promise<ISession>;
+//   deleteSession(sessionToken: string): Promise<void>;
+//   createVerificationRequest?(identifier: string, url: string, token: string, secret: string, provider: EmailSessionProvider, options: AppOptions): Promise<IVerificationRequest>;
+//   getVerificationRequest?(identifier: string, verificationToken: string, secret: string, provider: SessionProvider): Promise<IVerificationRequest | null>;
+//   deleteVerificationRequest?(identifier: string, verificationToken: string, secret: string, provider: SessionProvider): Promise<void>;
+// }
+
+export default (): Adapter<User, IProfile, ISession, IVerificationRequest> => {
+  function getAdapter({ baseUrl }: AppOptions): Promise<AdapterInstance<User, IProfile, ISession, IVerificationRequest>> {
     const redisClient = new Redis(process.env.REDIS_URL);
     const oneHourAsMilliseconds = 60 * 60 * 1000;
     const oneDayAsMilliseconds = 24 * oneHourAsMilliseconds;
     const thirtyDaysAsMilliseconds = 30 * oneDayAsMilliseconds;
 
-    async function createUser(params: ICreateUserParams): Promise<User> {
-      const usersApi = new Users();
-      return usersApi.createUser(params);
+    function setFallbackImage(user: User | null): User | null {
+      if (!user) {
+        return user;
+      }
+
+      if (user.image) {
+        return user;
+      }
+
+      const hash = createHash('md5')
+        .update(user.email || 'invalid@example.com')
+        .digest('hex');
+
+      return {
+        ...user,
+        image: `https://www.gravatar.com/avatar/${hash}?d=identicon`,
+      };
     }
 
-    async function getUser(id: number): Promise<User | null> {
+    async function createUser(profile: ICreateUserParams): Promise<User> {
       const usersApi = new Users();
-      return usersApi.getUser(id);
+      return usersApi.createUser(profile);
+    }
+
+    async function getUser(id: string): Promise<User | null> {
+      const usersApi = new Users();
+      const user = await usersApi.getUser(id);
+      return setFallbackImage(user);
     }
 
     async function getUserByEmail(email: string): Promise<User | null> {
       const usersApi = new Users();
-      return usersApi.getUserByEmail(email);
+      const user = await usersApi.getUserByEmail(email);
+      return setFallbackImage(user);
     }
 
     async function getUserByProviderAccountId(providerId: string, providerAccountId: string): Promise<User | null> {
       const usersApi = new Users();
-      return usersApi.getUserByProvider(providerId, providerAccountId);
+      const user = await usersApi.getUserByProvider(providerId, providerAccountId);
+      return setFallbackImage(user);
     }
 
     async function updateUser(request: IUpdateUserParams): Promise<User> {
@@ -88,7 +113,7 @@ export default () => {
       });
     }
 
-    async function linkAccount(userId: number, providerId: string, _providerType: string, providerAccountId: string): Promise<void> {
+    async function linkAccount(userId: string, providerId: string, _providerType: string, providerAccountId: string): Promise<void> {
       const usersApi = new Users();
       await usersApi.linkUserWithProvider({
         id: userId,
@@ -97,7 +122,7 @@ export default () => {
       });
     }
 
-    async function createSession(user: Pick<BasicUser, 'id'>): Promise<ISession> {
+    async function createSession(user: User): Promise<ISession> {
       const expires = new Date();
       expires.setTime(expires.getTime() + thirtyDaysAsMilliseconds);
 
@@ -186,7 +211,7 @@ export default () => {
       await redisClient.del(key);
     }
 
-    return {
+    return Promise.resolve({
       createUser,
       getUser,
       getUserByEmail,
@@ -200,7 +225,7 @@ export default () => {
       createVerificationRequest,
       getVerificationRequest,
       deleteVerificationRequest,
-    };
+    });
   }
 
   return {

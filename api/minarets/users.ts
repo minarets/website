@@ -8,18 +8,18 @@ export interface ICreateUserRequest {
 }
 
 interface ISetEmailVerifiedRequest {
-  id: number;
+  id: string | number;
   emailVerified: Date;
 }
 
 interface ILinkUserWithProviderRequest {
-  id: number;
+  id: string | number;
   providerId: string;
   providerAccountId: string;
 }
 
 export class Users extends ApiBase {
-  public async getUser(id: number): Promise<User | null> {
+  public async getUser(id: string | number): Promise<User | null> {
     try {
       const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/users/${id}`);
 
@@ -55,12 +55,6 @@ export class Users extends ApiBase {
       return null;
     }
   }
-
-  // public async getCurrentUser(): Promise<BasicUser> {
-  //   const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/users/current`);
-  //
-  //   return (await response.json()) as BasicUser;
-  // }
 
   public async createUser(request: ICreateUserRequest): Promise<User> {
     const response = await this.post(`${process.env.MINARETS_API_URL || ''}/api/users/create`, {
