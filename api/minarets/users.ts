@@ -2,9 +2,9 @@ import { ApiBase } from './apiBase';
 import type { User } from './types/User';
 
 export interface ICreateUserRequest {
-  name: string;
-  email: string;
-  image: string;
+  name?: string;
+  email: string | null;
+  image?: string | null;
 }
 
 interface ISetEmailVerifiedRequest {

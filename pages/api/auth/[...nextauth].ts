@@ -36,7 +36,6 @@ if (process.env.NEXTAUTH_GOOGLE_ID && process.env.NEXTAUTH_GOOGLE_SECRET) {
 
 const options: InitOptions = {
   secret: process.env.AUTH_SECRET,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   adapter: MinaretsAdapter(),
   providers,
   callbacks: {
