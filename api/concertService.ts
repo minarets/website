@@ -2,6 +2,7 @@ import moment from 'moment';
 
 import type { BasicConcert } from './minarets/types/BasicConcert';
 import type { BasicConcertWithNotes } from './minarets/types/BasicConcertWithNotes';
+import type { ConcertSummary } from './minarets/types/ConcertSummary';
 import { slugify } from './stringService';
 
 interface IExtractTokenDetailsFromConcertNoteResult {
@@ -9,12 +10,35 @@ interface IExtractTokenDetailsFromConcertNoteResult {
   detailsByToken: Record<string, string>;
 }
 
-export function getConcertUrl(concert: Pick<BasicConcert, 'date' | 'name'>): string {
+export function getConcertTitle(concert: BasicConcert): string {
+  const concertDate = moment.utc(concert.date);
+
+  return `${concertDate.format('yyyy-MM-dd')} - ${concert.name} - ${concert.artist.name}`;
+}
+
+export function getConcertDescription(concert: BasicConcert): string {
+  let alternateVenueName = '';
+  if (concert.name !== concert.venue.name) {
+    alternateVenueName = ` (${concert.venue.name})`;
+  }
+
+  const concertDate = moment.utc(concert.date);
+  return `${concert.artist.name} concert at ${concert.name}${alternateVenueName} on ${concertDate.format('MMMM d, YYYY')}`;
+}
+
+export function getConcertKeywords(concert: BasicConcert): string {
+  const concertDate = moment.utc(concert.date);
+  return `${concert.artist.name},${concert.artist.abbr},concert,show,${concert.name !== concert.venue.name ? `${concert.name},` : ''}${concert.venue.name},${concertDate.format(
+    'MMMM,YYYY,YYYY-MM-DD',
+  )}`;
+}
+
+export function getConcertUrl(concert: ConcertSummary): string {
   if (!concert) {
     return '';
   }
 
-  const concertDate = moment(concert.date);
+  const concertDate = moment.utc(concert.date);
   return `/concerts/${concertDate.format('yyyy')}/${concertDate.format('MM')}/${concertDate.format('DD')}/${slugify(concert.name)}`;
 }
 
