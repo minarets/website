@@ -104,7 +104,7 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts, art
         </div>
         <div className="card">
           <div className="card-header">
-            <h2 className="card-title">New Concerts</h2>
+            <h2 className="card-title">Recently Added Concerts</h2>
           </div>
           <div className="card-body">
             {newConcerts.map((concert) => (

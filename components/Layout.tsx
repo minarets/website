@@ -62,7 +62,9 @@ export default function Layout({ title, children }: LayoutParams): ReactElement 
                 </a>
               </Link>
             )}
-            {session && !loading && <img className="img-fluid" src={session.user.image} alt={`${session.user.name} - ${(session.user as IExtendedNextAuthUser).token}`} />}
+            {session && !loading && session.user && session.user.image && (
+              <img className="img-fluid" src={session.user.image} alt={`${session.user.name || ''} - ${(session.user as IExtendedNextAuthUser).token}`} />
+            )}
           </ul>
         </header>
 
