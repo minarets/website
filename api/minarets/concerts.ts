@@ -2,6 +2,8 @@ import { ApiBase } from './apiBase';
 import type { BasicConcert } from './types/BasicConcert';
 import type { BasicConcertWithNotes } from './types/BasicConcertWithNotes';
 import type { Concert } from './types/Concert';
+import type { ConcertSummary } from './types/ConcertSummary';
+import type { ListAllResponse } from './types/ListAllResponse';
 import type { ListResponse } from './types/ListResponse';
 
 export interface ISearchConcertsRequest {
@@ -75,6 +77,12 @@ export class Concerts extends ApiBase {
     const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/concerts/search`, { query });
 
     return (await response.json()) as Concert;
+  }
+
+  public async listAllConcerts(): Promise<ListAllResponse<ConcertSummary>> {
+    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/concerts/all`);
+
+    return (await response.json()) as ListAllResponse<ConcertSummary>;
   }
 
   public async listConcerts(request: IListConcertsRequest): Promise<ListResponse<BasicConcert>> {

@@ -123,7 +123,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
 }
 
 export default function Page({ compilation, concertsById, relatedConcertsByTour, toursById, artistsById }: IProps): ReactElement {
-  const createdOn = moment(compilation.createdOn);
+  const createdOn = moment.utc(compilation.createdOn);
 
   return (
     <Layout title={compilation.name}>
@@ -186,6 +186,7 @@ export default function Page({ compilation, concertsById, relatedConcertsByTour,
                   trackNumber={index + 1}
                   concertUrl={concertUrl}
                   artistUrl={artistUrl}
+                  key={track.id}
                 />
               );
             })}

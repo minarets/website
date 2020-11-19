@@ -1,11 +1,10 @@
 import type { BasicArtist } from './BasicArtist';
 import type { BasicTour } from './BasicTour';
 import type { BasicVenue } from './BasicVenue';
+import type { ConcertSummary } from './ConcertSummary';
 
-export interface BasicConcert {
+export interface BasicConcert extends ConcertSummary {
   id: string;
-  name: string;
-  date: string;
   notes: string;
   artist: BasicArtist;
   tour: BasicTour;
