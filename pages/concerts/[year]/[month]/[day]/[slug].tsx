@@ -20,7 +20,6 @@ import TrackLinkRow from '../../../../../components/TrackLinkRow';
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const concertsApi = new Concerts();
   const concerts = await concertsApi.listAllConcerts();
-  console.log(`Concert static paths: ${concerts.items.length}`);
   const paths = concerts.items.map((concert: ConcertSummary) => getConcertUrl(concert));
 
   return {
@@ -133,9 +132,9 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
 
         <header>
           {(previousConcert || nextConcert) && (
-            <div>
+            <div className="row">
               {previousConcert && (
-                <small>
+                <small className="col">
                   <Link href={getConcertUrl(previousConcert)}>
                     <a>
                       &#8592; {moment.utc(previousConcert.date).format('yyyy-MM-DD')} &#8212; {previousConcert.name}
@@ -144,7 +143,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
                 </small>
               )}
               {nextConcert && (
-                <small>
+                <small className="col text-right">
                   <Link href={getConcertUrl(nextConcert)}>
                     <a>
                       {moment.utc(nextConcert.date).format('yyyy-MM-DD')} &#8212; {nextConcert.name} &#8594;
@@ -222,7 +221,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
           </div>
         </div>
 
-        {noteLines.length && (
+        {!!noteLines.length && (
           <div className="card">
             <div className="card-header">
               <h2 className="card-title">Notes</h2>
@@ -235,9 +234,9 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
           </div>
         )}
 
-        {concert.posterUrl && (
+        {!!concert.posterUrl && (
           <div className="card">
-            <img className="card-img-top" src={concert.posterUrl} alt="Concert poster" />
+            <img className="card-img-top" src={`https://meetattheshow.com${concert.posterUrl}`} alt="Concert poster" />
           </div>
         )}
 

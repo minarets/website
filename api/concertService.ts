@@ -13,7 +13,7 @@ interface IExtractTokenDetailsFromConcertNoteResult {
 export function getConcertTitle(concert: BasicConcert): string {
   const concertDate = moment.utc(concert.date);
 
-  return `${concertDate.format('yyyy-MM-dd')} - ${concert.name} - ${concert.artist.name}`;
+  return `${concertDate.format('yyyy-MM-DD')} - ${concert.name} - ${concert.artist.name}`;
 }
 
 export function getConcertDescription(concert: BasicConcert): string {
