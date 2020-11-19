@@ -14,7 +14,7 @@ interface IProps {
 }
 
 function ConcertAndArtistLinkRow({ artist, concert }: IProps): ReactElement {
-  const concertDate = moment(concert.date);
+  const concertDate = moment.utc(concert.date);
   return (
     <div className="row">
       <div className="col-3 col-sm-2 col-lg-1">
