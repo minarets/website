@@ -97,6 +97,9 @@ module.exports = {
     'promise/no-native': 'off',
     'promise/param-names': 'error',
 
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "error",
+
     'security/detect-buffer-noassert': 'error',
     'security/detect-child-process': 'error',
     'security/detect-disable-mustache-escape': 'error',
