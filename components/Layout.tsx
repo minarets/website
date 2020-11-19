@@ -11,6 +11,8 @@ import SideBarMenu from './SideBarMenu';
 
 interface LayoutParams {
   title: string;
+  description?: string;
+  keywords?: string;
   children: ReactElement;
 }
 
@@ -18,13 +20,15 @@ interface IExtendedNextAuthUser extends NextAuthUser {
   token: string;
 }
 
-export default function Layout({ title, children }: LayoutParams): ReactElement {
+function Layout({ title, description, keywords, children }: LayoutParams): ReactElement {
   const [session, loading] = useSession();
 
   return (
     <>
       <Head>
         <title>{title} · Minarets</title>
+        {description && <meta name="description" content={description} />}
+        {keywords && <meta name="keywords" content={keywords} />}
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <link rel="icon" href="/favicon.ico" />
@@ -100,3 +104,10 @@ export default function Layout({ title, children }: LayoutParams): ReactElement 
     </>
   );
 }
+
+Layout.defaultProps = {
+  description: '',
+  keywords: '',
+};
+
+export default Layout;
