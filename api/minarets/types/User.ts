@@ -1,11 +1,9 @@
-import type { BasicUser } from './BasicUser';
+import type { BasicUserWithToken } from './BasicUserWithToken';
 
-export interface User extends BasicUser {
-  emailHash: string;
-  lastActiveOn: string;
-  createdOn: string;
-  location: string;
-  aboutMe: string;
-  website: string;
-  isModerator: boolean;
+export interface User extends BasicUserWithToken {
+  email: string;
+  image: string;
+  isAdministrator?: boolean;
+  isModerator?: boolean;
+  isEditor?: boolean;
 }

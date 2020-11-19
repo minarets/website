@@ -1,3 +1,5 @@
+import type { User as NextAuthUser } from 'next-auth';
+import { useSession } from 'next-auth/client';
 import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
@@ -12,7 +14,13 @@ interface LayoutParams {
   children: ReactElement;
 }
 
+interface IExtendedNextAuthUser extends NextAuthUser {
+  token: string;
+}
+
 export default function Layout({ title, children }: LayoutParams): ReactElement {
+  const [session, loading] = useSession();
+
   return (
     <>
       <Head>
@@ -47,6 +55,14 @@ export default function Layout({ title, children }: LayoutParams): ReactElement 
                 </a>
               </Link>
             </li>
+            {!session && !loading && (
+              <Link href="/api/auth/signin">
+                <a className="nav-link" title="Login">
+                  Login
+                </a>
+              </Link>
+            )}
+            {session && !loading && <img className="img-fluid" src={session.user.image} alt={`${session.user.name} - ${(session.user as IExtendedNextAuthUser).token}`} />}
           </ul>
         </header>
 
