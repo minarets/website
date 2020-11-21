@@ -37,7 +37,7 @@ export interface IListConcertsByCompilationRequest extends IListConcertsRequest 
 }
 
 export interface IListConcertsByPlaylistRequest extends IListConcertsRequest {
-  playlistId: string;
+  playlistId: number;
 }
 
 export interface IListConcertsByTourRequest extends IListConcertsRequest {

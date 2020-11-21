@@ -8,6 +8,7 @@ module.exports = {
   async redirects() {
     // const artistApi = new Artists();
     // const artists = await artistApi.listAllArtists();
+    // TODO: Add redirects for venues, compilations, playlists, and concerts
 
     return [
       // ...artists.map((artist) => {
