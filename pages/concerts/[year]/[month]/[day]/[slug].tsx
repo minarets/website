@@ -251,13 +251,13 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
 
         <div className="row">
           {!!concert.posterUrl && (
-            <div className="col-lg-6 order-lg-last">
+            <div className="col-md-6 order-md-last">
               <div className="card">
                 <img className="card-img-top" src={`https://meetattheshow.com${concert.posterUrl}`} alt="Concert poster" />
               </div>
             </div>
           )}
-          <div className="col-lg-6">
+          <div className="col-md-6">
             <div className="card">
               <div className="card-header">
                 <h2 className="card-title">Related Concerts</h2>
@@ -283,7 +283,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
             )}
           </div>
           {!concert.posterUrl && (
-            <div className="col-lg-6">
+            <div className="col-md-6">
               <div className="card">
                 <div className="card-header">
                   <h2 className="card-title">Venue Concerts</h2>
