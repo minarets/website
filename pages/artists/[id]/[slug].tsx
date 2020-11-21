@@ -2,21 +2,18 @@ import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Artists, Concerts, Tours } from '../../../api/minarets';
-import type { Artist } from '../../../api/minarets/types/Artist';
-import type { ArtistSummary } from '../../../api/minarets/types/ArtistSummary';
+import { Minarets } from '../../../api/minarets';
+import type { Artist, ArtistSummary } from '../../../api/minarets/types';
 import { pick } from '../../../api/objectService';
 import { slugify } from '../../../api/stringService';
-import type { LimitedConcert } from '../../../api/types/LimitedConcert';
-import type { LimitedTour } from '../../../api/types/LimitedTour';
-import type { LimitedTourWithLimitedConcerts } from '../../../api/types/LimitedTourWithLimitedConcerts';
+import type { LimitedConcert, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../api/types';
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const artistsApi = new Artists();
-  const artists = await artistsApi.listAllArtists();
+  const api = new Minarets();
+  const artists = await api.artists.listAllArtists();
   const paths = artists.items.map((artist: ArtistSummary) => `/artists/${artist.id}/${slugify(artist.name)}`);
 
   return {
@@ -41,9 +38,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  const artistsApi = new Artists();
-  const concertsApi = new Concerts();
-  const toursApi = new Tours();
+  const api = new Minarets();
 
   const [
     artist, //
@@ -52,23 +47,23 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     latestConcertResults,
     tourResults,
   ] = await Promise.all([
-    artistsApi.getArtist(params.id),
-    concertsApi.listConcertsByArtist({
+    api.artists.getArtist(params.id),
+    api.concerts.listConcertsByArtist({
       artistId: params.id,
       sortDesc: 'Popular',
       itemsPerPage: 15,
     }),
-    concertsApi.listConcertsByArtist({
+    api.concerts.listConcertsByArtist({
       artistId: params.id,
       sortDesc: 'ApprovedOn',
       itemsPerPage: 10,
     }),
-    concertsApi.listConcertsByArtist({
+    api.concerts.listConcertsByArtist({
       artistId: params.id,
       sortDesc: 'ConcertDate',
       itemsPerPage: 20,
     }),
-    toursApi.listTours(),
+    api.tours.listTours(),
   ]);
 
   const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {

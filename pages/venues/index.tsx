@@ -2,8 +2,8 @@ import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Venues } from '../../api/minarets';
-import type { Venue } from '../../api/minarets/types/Venue';
+import { Minarets } from '../../api/minarets';
+import type { Venue } from '../../api/minarets/types';
 import Layout from '../../components/Layout';
 import VenueWithConcertCountLinkRow from '../../components/VenueWithConcertCountLinkRow';
 
@@ -12,8 +12,8 @@ interface IProps {
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
-  const venuesApi = new Venues();
-  const venues = await venuesApi.listVenues({
+  const api = new Minarets();
+  const venues = await api.venues.listVenues({
     sortAsc: 'Name',
     itemsPerPage: 10,
   });

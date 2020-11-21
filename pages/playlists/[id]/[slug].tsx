@@ -4,25 +4,19 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import { extractTokenDetailsFromConcertNote, getConcertUrl } from '../../../api/concertService';
-import { Playlists, Concerts, Tours } from '../../../api/minarets';
-import type { BasicArtist } from '../../../api/minarets/types/BasicArtist';
-import type { Playlist } from '../../../api/minarets/types/Playlist';
-import type { PlaylistSummary } from '../../../api/minarets/types/PlaylistSummary';
+import { Minarets } from '../../../api/minarets';
+import type { BasicArtist, Playlist, PlaylistSummary } from '../../../api/minarets/types';
 import { pick } from '../../../api/objectService';
 import { slugify } from '../../../api/stringService';
-import type { LimitedArtist } from '../../../api/types/LimitedArtist';
-import type { LimitedConcert } from '../../../api/types/LimitedConcert';
-import type { LimitedConcertWithTokenDetails } from '../../../api/types/LimitedConcertWithTokenDetails';
-import type { LimitedTour } from '../../../api/types/LimitedTour';
-import type { LimitedTourWithLimitedConcerts } from '../../../api/types/LimitedTourWithLimitedConcerts';
+import type { LimitedArtist, LimitedConcert, LimitedConcertWithTokenDetails, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../api/types';
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../components/TrackLinkRow';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const playlistsApi = new Playlists();
-  const playlists = await playlistsApi.listAllPlaylists();
+  const api = new Minarets();
+  const playlists = await api.playlists.listAllPlaylists();
   const paths = playlists.items.map((playlist: PlaylistSummary) => `/playlists/${playlist.id}/${slugify(playlist.name)}`);
 
   return {
@@ -51,21 +45,19 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  const playlistsApi = new Playlists();
-  const concertsApi = new Concerts();
-  const toursApi = new Tours();
+  const api = new Minarets();
   const [
     playlist, //
     concertsResults,
     tourResults,
   ] = await Promise.all([
-    playlistsApi.getPlaylist(params.id),
-    concertsApi.listConcertsByPlaylist({
+    api.playlists.getPlaylist(params.id),
+    api.concerts.listConcertsByPlaylist({
       playlistId: params.id,
       sortAsc: 'ConcertDate',
       itemsPerPage: 100000,
     }),
-    toursApi.listTours(),
+    api.tours.listTours(),
   ]);
 
   const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {

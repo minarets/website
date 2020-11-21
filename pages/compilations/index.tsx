@@ -2,8 +2,8 @@ import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Compilations } from '../../api/minarets';
-import type { Compilation } from '../../api/minarets/types/Compilation';
+import { Minarets } from '../../api/minarets';
+import type { Compilation } from '../../api/minarets/types';
 import CompilationLinkRow from '../../components/CompilationLinkRow';
 import Layout from '../../components/Layout';
 
@@ -14,22 +14,22 @@ interface IProps {
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
-  const compilationsApi = new Compilations();
+  const api = new Minarets();
 
   const [
     allCompilationResults, //
     popularCompilationResults,
     recentCompilationResults,
   ] = await Promise.all([
-    compilationsApi.listCompilations({
+    api.compilations.listCompilations({
       sortAsc: 'Name',
       itemsPerPage: 30,
     }),
-    compilationsApi.listCompilations({
+    api.compilations.listCompilations({
       sortDesc: 'Popular',
       itemsPerPage: 15,
     }),
-    compilationsApi.listCompilations({
+    api.compilations.listCompilations({
       sortDesc: 'ModifiedOn',
       itemsPerPage: 15,
     }),

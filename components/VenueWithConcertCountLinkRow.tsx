@@ -2,7 +2,7 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import type { Venue } from '../api/minarets/types/Venue';
+import type { Venue } from '../api/minarets/types';
 import { slugify } from '../api/stringService';
 
 interface IProps {

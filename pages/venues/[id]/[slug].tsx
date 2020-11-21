@@ -2,22 +2,19 @@ import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Venues, Concerts, Tours } from '../../../api/minarets';
-import type { Venue } from '../../../api/minarets/types/Venue';
-import type { VenueSummary } from '../../../api/minarets/types/VenueSummary';
+import { Minarets } from '../../../api/minarets';
+import type { Venue, VenueSummary } from '../../../api/minarets/types';
 import { pick } from '../../../api/objectService';
 import { slugify } from '../../../api/stringService';
-import type { LimitedConcert } from '../../../api/types/LimitedConcert';
-import type { LimitedTour } from '../../../api/types/LimitedTour';
-import type { LimitedTourWithLimitedConcerts } from '../../../api/types/LimitedTourWithLimitedConcerts';
+import type { LimitedConcert, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../api/types';
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 import VenueAddress from '../../../components/VenueAddress';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const venuesApi = new Venues();
-  const venues = await venuesApi.listAllVenues();
+  const api = new Minarets();
+  const venues = await api.venues.listAllVenues();
   const paths = venues.items.map((venue: VenueSummary) => `/venues/${venue.id}/${slugify(venue.name)}`);
 
   return {
@@ -42,9 +39,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  const venuesApi = new Venues();
-  const concertsApi = new Concerts();
-  const toursApi = new Tours();
+  const api = new Minarets();
 
   const [
     venue, //
@@ -53,27 +48,27 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     latestConcertResults,
     tourResults,
   ] = await Promise.all([
-    venuesApi.getVenue(params.id),
-    concertsApi.listConcertsByVenue({
+    api.venues.getVenue(params.id),
+    api.concerts.listConcertsByVenue({
       venueId: params.id,
       sortDesc: 'Popular',
       itemsPerPage: 15,
     }),
-    concertsApi.listConcertsByVenue({
+    api.concerts.listConcertsByVenue({
       venueId: params.id,
       sortDesc: 'ApprovedOn',
       itemsPerPage: 10,
     }),
-    concertsApi.listConcertsByVenue({
+    api.concerts.listConcertsByVenue({
       venueId: params.id,
       sortDesc: 'ConcertDate',
       itemsPerPage: 20,
     }),
-    toursApi.listTours(),
+    api.tours.listTours(),
   ]);
 
   if (!venue.formattedAddress) {
-    venue.formattedAddress = await venuesApi.setVenueFormattedAddress(venue);
+    venue.formattedAddress = await api.venues.setVenueFormattedAddress(venue);
   }
 
   const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {

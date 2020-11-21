@@ -2,8 +2,8 @@ import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Tours } from '../../api/minarets';
-import type { TourWithChildren } from '../../api/minarets/types/TourWithChildren';
+import { Minarets } from '../../api/minarets';
+import type { TourWithChildren } from '../../api/minarets/types';
 import Layout from '../../components/Layout';
 import styles from '../../styles/Tours.module.css';
 
@@ -12,8 +12,8 @@ interface IProps {
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
-  const toursApi = new Tours();
-  const tourResults = await toursApi.listTours();
+  const api = new Minarets();
+  const tourResults = await api.tours.listTours();
 
   const toursById = tourResults.items.reduce((acc: Record<string, TourWithChildren>, tour) => {
     acc[tour.id] = {

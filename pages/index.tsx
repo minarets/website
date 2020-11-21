@@ -3,10 +3,9 @@ import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Concerts } from '../api/minarets';
+import { Minarets } from '../api/minarets';
 import { pick } from '../api/objectService';
-import type { LimitedArtist } from '../api/types/LimitedArtist';
-import type { LimitedConcertWithArtistId } from '../api/types/LimitedConcertWithArtistId';
+import type { LimitedArtist, LimitedConcertWithArtistId } from '../api/types';
 import ConcertAndArtistLinkRow from '../components/ConcertAndArtistLinkRow';
 import Layout from '../components/Layout';
 
@@ -18,22 +17,22 @@ interface IProps {
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
-  const concertsApi = new Concerts();
+  const api = new Minarets();
   const [
     popularConcertsResults, //
     newConcertsResults,
     latestConcertsResults,
   ] = await Promise.all([
-    concertsApi.listConcerts({
+    api.concerts.listConcerts({
       sortDesc: 'Popular',
       itemsPerPage: 10,
       since: moment().subtract(1, 'w').startOf('day').toDate(),
     }),
-    concertsApi.listConcerts({
+    api.concerts.listConcerts({
       sortDesc: 'ApprovedOn',
       itemsPerPage: 10,
     }),
-    concertsApi.listConcerts({
+    api.concerts.listConcerts({
       sortDesc: 'ConcertDate',
       itemsPerPage: 10,
     }),

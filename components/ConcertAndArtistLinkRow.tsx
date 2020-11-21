@@ -5,8 +5,7 @@ import type { ReactElement } from 'react';
 
 import { getConcertUrl } from '../api/concertService';
 import { slugify } from '../api/stringService';
-import type { LimitedArtist } from '../api/types/LimitedArtist';
-import type { LimitedConcert } from '../api/types/LimitedConcert';
+import type { LimitedArtist, LimitedConcert } from '../api/types';
 
 interface IProps {
   artist: LimitedArtist;

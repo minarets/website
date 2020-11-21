@@ -2,19 +2,17 @@ import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Tours, Concerts } from '../../api/minarets';
-import type { Tour } from '../../api/minarets/types/Tour';
-import type { TourSummary } from '../../api/minarets/types/TourSummary';
+import { Minarets } from '../../api/minarets';
+import type { Tour, TourSummary } from '../../api/minarets/types';
 import { pick } from '../../api/objectService';
-import type { LimitedTour } from '../../api/types/LimitedTour';
-import type { LimitedTourWithLimitedConcerts } from '../../api/types/LimitedTourWithLimitedConcerts';
+import type { LimitedTour, LimitedTourWithLimitedConcerts } from '../../api/types';
 import ConcertLinkRow from '../../components/ConcertLinkRow';
 import Layout from '../../components/Layout';
 import TourBreadcrumbRow from '../../components/TourBreadcrumbRow';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const toursApi = new Tours();
-  const tours = await toursApi.listAllTours();
+  const api = new Minarets();
+  const tours = await api.tours.listAllTours();
   const paths = tours.items.map((tour: TourSummary) => `/tours/${tour.slug}`);
 
   return {
@@ -37,15 +35,14 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  const toursApi = new Tours();
-  const concertsApi = new Concerts();
+  const api = new Minarets();
 
   const [
     tour, //
     concertResults,
   ] = await Promise.all([
-    toursApi.getTour(params.slug),
-    concertsApi.listConcertsByTour({
+    api.tours.getTour(params.slug),
+    api.concerts.listConcertsByTour({
       tourSlug: params.slug,
       sortAsc: 'ConcertDate',
       itemsPerPage: 10000,

@@ -4,25 +4,19 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import { extractTokenDetailsFromConcertNote, getConcertUrl } from '../../../api/concertService';
-import { Compilations, Concerts, Tours } from '../../../api/minarets';
-import type { BasicArtist } from '../../../api/minarets/types/BasicArtist';
-import type { Compilation } from '../../../api/minarets/types/Compilation';
-import type { CompilationSummary } from '../../../api/minarets/types/CompilationSummary';
+import { Minarets } from '../../../api/minarets';
+import type { BasicArtist, Compilation, CompilationSummary } from '../../../api/minarets/types';
 import { pick } from '../../../api/objectService';
 import { slugify } from '../../../api/stringService';
-import type { LimitedArtist } from '../../../api/types/LimitedArtist';
-import type { LimitedConcert } from '../../../api/types/LimitedConcert';
-import type { LimitedConcertWithTokenDetails } from '../../../api/types/LimitedConcertWithTokenDetails';
-import type { LimitedTour } from '../../../api/types/LimitedTour';
-import type { LimitedTourWithLimitedConcerts } from '../../../api/types/LimitedTourWithLimitedConcerts';
+import type { LimitedArtist, LimitedConcert, LimitedConcertWithTokenDetails, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../api/types';
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../components/TrackLinkRow';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const compilationsApi = new Compilations();
-  const compilations = await compilationsApi.listAllCompilations();
+  const api = new Minarets();
+  const compilations = await api.compilations.listAllCompilations();
   const paths = compilations.items.map((compilation: CompilationSummary) => `/compilations/${compilation.id}/${slugify(compilation.name)}`);
 
   return {
@@ -51,21 +45,19 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  const compilationsApi = new Compilations();
-  const concertsApi = new Concerts();
-  const toursApi = new Tours();
+  const api = new Minarets();
   const [
     compilation, //
     concertsResults,
     tourResults,
   ] = await Promise.all([
-    compilationsApi.getCompilation(params.id),
-    concertsApi.listConcertsByCompilation({
+    api.compilations.getCompilation(params.id),
+    api.concerts.listConcertsByCompilation({
       compilationId: params.id,
       sortAsc: 'ConcertDate',
       itemsPerPage: 100000,
     }),
-    toursApi.listTours(),
+    api.tours.listTours(),
   ]);
 
   const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {

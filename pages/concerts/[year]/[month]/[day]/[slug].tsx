@@ -5,21 +5,19 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import { extractTokenDetailsFromConcertNote, getConcertDescription, getConcertKeywords, getConcertTitle, getConcertUrl } from '../../../../../api/concertService';
-import { Concerts, Tours } from '../../../../../api/minarets';
-import type { Concert } from '../../../../../api/minarets/types/Concert';
-import type { ConcertSummary } from '../../../../../api/minarets/types/ConcertSummary';
+import { Minarets } from '../../../../../api/minarets';
+import type { Concert, ConcertSummary } from '../../../../../api/minarets/types';
 import { pick } from '../../../../../api/objectService';
 import { slugify } from '../../../../../api/stringService';
-import type { LimitedConcert } from '../../../../../api/types/LimitedConcert';
-import type { LimitedTour } from '../../../../../api/types/LimitedTour';
+import type { LimitedConcert, LimitedTour } from '../../../../../api/types';
 import ConcertLinkRow from '../../../../../components/ConcertLinkRow';
 import Layout from '../../../../../components/Layout';
 import TourBreadcrumbRow from '../../../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../../../components/TrackLinkRow';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const concertsApi = new Concerts();
-  const concerts = await concertsApi.listAllConcerts();
+  const api = new Minarets();
+  const concerts = await api.concerts.listAllConcerts();
   const paths = concerts.items.map((concert: ConcertSummary) => getConcertUrl(concert));
 
   return {
@@ -50,10 +48,9 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  const concertsApi = new Concerts();
-  const toursApi = new Tours();
+  const api = new Minarets();
 
-  const concert = await concertsApi.getConcertByUrlParts(params.year, params.month, params.day, params.slug);
+  const concert = await api.concerts.getConcertByUrlParts(params.year, params.month, params.day, params.slug);
   if (!concert) {
     return {
       notFound: true,
@@ -65,9 +62,9 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     venueConcertResults,
     tourResults,
   ] = await Promise.all([
-    concertsApi.listRelatedConcerts(concert.id), //
-    concertsApi.listConcertsByVenue({ venueId: concert.venue.id }),
-    toursApi.listTours(),
+    api.concerts.listRelatedConcerts(concert.id), //
+    api.concerts.listConcertsByVenue({ venueId: concert.venue.id }),
+    api.tours.listTours(),
   ]);
 
   const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {

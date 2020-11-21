@@ -6,8 +6,8 @@ import type { Adapter, AdapterInstance, Profile, Session, VerificationRequest } 
 import type { SessionProvider } from 'next-auth/client';
 import { v4 as uuid } from 'uuid';
 
-import type { User } from '../minarets/types/User';
-import { Users } from '../minarets/users';
+import { Minarets } from '../minarets';
+import type { User } from '../minarets/types';
 
 interface ISendVerificationRequestParams {
   identifier: string;
@@ -58,47 +58,39 @@ export default (): Adapter<User, Profile, Session, VerificationRequest> => {
     }
 
     async function createUser(profile: ICreateUserParams): Promise<User> {
-      console.log(`createUser: ${JSON.stringify(profile)}`);
-      const usersApi = new Users();
-      return usersApi.createUser(profile);
+      const api = new Minarets();
+      return api.users.createUser(profile);
     }
 
     async function getUser(id: string): Promise<User | null> {
-      console.log(`getUser: ${id}`);
-      const usersApi = new Users();
-      const user = await usersApi.getUser(id);
-      console.log(`getUser - result: ${JSON.stringify(user)}`);
+      const api = new Minarets();
+      const user = await api.users.getUser(id);
       return setFallbackImage(user);
     }
 
     async function getUserByEmail(email: string): Promise<User | null> {
-      console.log(`getUserByEmail: ${email}`);
-      const usersApi = new Users();
-      const user = await usersApi.getUserByEmail(email);
-      console.log(`getUserByEmail - result: ${JSON.stringify(user)}`);
+      const api = new Minarets();
+      const user = await api.users.getUserByEmail(email);
       return setFallbackImage(user);
     }
 
     async function getUserByProviderAccountId(providerId: string, providerAccountId: string): Promise<User | null> {
-      console.log(`getUserByProviderAccountId: ${providerId} - ${providerAccountId}`);
-      const usersApi = new Users();
-      const user = await usersApi.getUserByProvider(providerId, providerAccountId);
+      const api = new Minarets();
+      const user = await api.users.getUserByProvider(providerId, providerAccountId);
       return setFallbackImage(user);
     }
 
     async function updateUser(request: IUpdateUserParams): Promise<User> {
-      console.log(`updateUser: ${JSON.stringify(request)}`);
-      const usersApi = new Users();
-      return usersApi.setEmailVerified({
+      const api = new Minarets();
+      return api.users.setEmailVerified({
         id: request.id,
         emailVerified: request.emailVerified,
       });
     }
 
     async function linkAccount(userId: string, providerId: string, _providerType: string, providerAccountId: string): Promise<void> {
-      console.log(`linkAccount: ${userId} - ${_providerType} ${providerId}:${providerAccountId}`);
-      const usersApi = new Users();
-      await usersApi.linkUserWithProvider({
+      const api = new Minarets();
+      await api.users.linkUserWithProvider({
         id: userId,
         providerId,
         providerAccountId,

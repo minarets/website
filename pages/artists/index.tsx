@@ -2,8 +2,8 @@ import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Artists } from '../../api/minarets';
-import type { Artist } from '../../api/minarets/types/Artist';
+import { Minarets } from '../../api/minarets';
+import type { Artist } from '../../api/minarets/types';
 import ArtistWithConcertCountLinkRow from '../../components/ArtistWithConcertCountLinkRow';
 import Layout from '../../components/Layout';
 
@@ -13,16 +13,16 @@ interface IProps {
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
-  const artistsApi = new Artists();
+  const api = new Minarets();
   const [
     allArtistResults, //
     popularArtistResults,
   ] = await Promise.all([
-    artistsApi.listArtists({
+    api.artists.listArtists({
       sortAsc: 'Name',
       itemsPerPage: 10,
     }),
-    artistsApi.listArtists({
+    api.artists.listArtists({
       sortDesc: 'ConcertCount',
       itemsPerPage: 10,
     }),

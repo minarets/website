@@ -2,7 +2,7 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import type { Track } from '../api/minarets/types/Track';
+import type { Track } from '../api/minarets/types';
 
 interface IProps {
   concertUrl?: string;

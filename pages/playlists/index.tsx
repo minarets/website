@@ -2,8 +2,8 @@ import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Playlists } from '../../api/minarets';
-import type { Playlist } from '../../api/minarets/types/Playlist';
+import { Minarets } from '../../api/minarets';
+import type { Playlist } from '../../api/minarets/types';
 import Layout from '../../components/Layout';
 import PlaylistLinkRow from '../../components/PlaylistLinkRow';
 
@@ -14,22 +14,22 @@ interface IProps {
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
-  const playlistsApi = new Playlists();
+  const api = new Minarets();
 
   const [
     allPlaylistResults, //
     popularPlaylistResults,
     recentPlaylistResults,
   ] = await Promise.all([
-    playlistsApi.listPlaylists({
+    api.playlists.listPlaylists({
       sortAsc: 'Name',
       itemsPerPage: 30,
     }),
-    playlistsApi.listPlaylists({
+    api.playlists.listPlaylists({
       sortDesc: 'Popular',
       itemsPerPage: 15,
     }),
-    playlistsApi.listPlaylists({
+    api.playlists.listPlaylists({
       sortDesc: 'ModifiedOn',
       itemsPerPage: 15,
     }),

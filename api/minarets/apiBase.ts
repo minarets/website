@@ -21,11 +21,22 @@ export function convertToBase64(str: string): string {
 }
 
 export abstract class ApiBase {
-  protected defaultHeaders = {
-    Authorization: `Basic ${convertToBase64(`${process.env.MINARETS_API_TOKEN || ''}`)}`,
-    'Content-Type': 'application/json',
-    'X-ApiKey': process.env.MINARETS_API_KEY || '',
-  };
+  private apiKey: string;
+
+  private apiToken: string;
+
+  protected defaultHeaders: Record<string, string>;
+
+  public constructor(apiKey: string, apiToken: string) {
+    this.apiKey = apiKey;
+    this.apiToken = apiToken;
+
+    this.defaultHeaders = {
+      Authorization: `Basic ${convertToBase64(`${this.apiToken}`)}`,
+      'Content-Type': 'application/json',
+      'X-ApiKey': this.apiKey,
+    };
+  }
 
   protected queryParams<T>(input: T): Record<string, string> {
     const result: Record<string, string> = {};

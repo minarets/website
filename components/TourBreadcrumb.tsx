@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import { slugify } from '../api/stringService';
-import type { LimitedTour } from '../api/types/LimitedTour';
+import type { LimitedTour } from '../api/types';
 
 interface IProps {
   tour: LimitedTour;
