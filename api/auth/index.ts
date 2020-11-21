@@ -31,8 +31,9 @@ interface IUpdateUserParams extends User {
 }
 
 export default (): Adapter<User, Profile, Session, VerificationRequest> => {
+  const redisClient = new Redis(process.env.REDIS_URL);
+
   function getAdapter({ baseUrl }: AppOptions): Promise<AdapterInstance<User, Profile, Session, VerificationRequest>> {
-    const redisClient = new Redis(process.env.REDIS_URL);
     const oneHourAsMilliseconds = 60 * 60 * 1000;
     const oneDayAsMilliseconds = 24 * oneHourAsMilliseconds;
     const thirtyDaysAsMilliseconds = 30 * oneDayAsMilliseconds;
