@@ -153,7 +153,9 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
               )}
             </div>
           )}
-          <h1>{concert.name}</h1>
+          <h1>
+            {moment.utc(concert.date).format('yyyy-MM-DD')} - {concert.name}
+          </h1>
         </header>
 
         <div>
@@ -228,38 +230,72 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
             </div>
             <div className="card-body">
               {noteLines.map((noteLine) => (
-                <div>{noteLine}</div>
+                <div key={noteLine}>{noteLine}</div>
               ))}
             </div>
           </div>
         )}
 
-        {!!concert.posterUrl && (
+        {!!concert.recordingInformation && (
           <div className="card">
-            <img className="card-img-top" src={`https://meetattheshow.com${concert.posterUrl}`} alt="Concert poster" />
+            <div className="card-header">
+              <h2 className="card-title">Recording Information</h2>
+            </div>
+            <div className="card-body">
+              {concert.recordingInformation.split('\n').map((line) => (
+                <div key={line}>{line}</div>
+              ))}
+            </div>
           </div>
         )}
 
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Related Concerts</h2>
-          </div>
-          <div className="card-body">
-            {relatedConcerts.map((relatedConcert) => (
-              <ConcertLinkRow concert={relatedConcert} key={relatedConcert.id} />
-            ))}
-          </div>
-        </div>
+        <div className="row">
+          {!!concert.posterUrl && (
+            <div className="col-lg-6 order-lg-last">
+              <div className="card">
+                <img className="card-img-top" src={`https://meetattheshow.com${concert.posterUrl}`} alt="Concert poster" />
+              </div>
+            </div>
+          )}
+          <div className="col-lg-6">
+            <div className="card">
+              <div className="card-header">
+                <h2 className="card-title">Related Concerts</h2>
+              </div>
+              <div className="card-body">
+                {relatedConcerts.map((relatedConcert) => (
+                  <ConcertLinkRow concert={relatedConcert} key={relatedConcert.id} />
+                ))}
+              </div>
+            </div>
 
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Venue Concerts</h2>
+            {!!concert.posterUrl && (
+              <div className="card">
+                <div className="card-header">
+                  <h2 className="card-title">Venue Concerts</h2>
+                </div>
+                <div className="card-body">
+                  {venueConcerts.map((venueConcert) => (
+                    <ConcertLinkRow concert={venueConcert} key={venueConcert.id} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-          <div className="card-body">
-            {venueConcerts.map((venueConcert) => (
-              <ConcertLinkRow concert={venueConcert} key={venueConcert.id} />
-            ))}
-          </div>
+          {!concert.posterUrl && (
+            <div className="col-lg-6">
+              <div className="card">
+                <div className="card-header">
+                  <h2 className="card-title">Venue Concerts</h2>
+                </div>
+                <div className="card-body">
+                  {venueConcerts.map((venueConcert) => (
+                    <ConcertLinkRow concert={venueConcert} key={venueConcert.id} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </Layout>
