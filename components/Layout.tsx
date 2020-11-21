@@ -5,6 +5,7 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import styles from '../styles/Home.module.css';
 
 import SideBarMenu from './SideBarMenu';
@@ -22,6 +23,7 @@ interface IExtendedNextAuthUser extends NextAuthUser {
 
 function Layout({ title, description, keywords, children }: LayoutParams): ReactElement {
   const [session, loading] = useSession();
+  useDocumentTitle(title);
 
   return (
     <>
