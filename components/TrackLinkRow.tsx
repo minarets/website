@@ -9,7 +9,7 @@ interface IProps {
   artistUrl?: string;
   concertAdditionalDetailsByToken: Record<string, string>;
   track: Track;
-  trackNumber: number;
+  trackNumber?: number;
 }
 
 function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, track, trackNumber }: IProps): ReactElement {
@@ -40,9 +40,7 @@ function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, 
   // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard#Using_the_Clipboard_API
   return (
     <div className="row">
-      <div className="d-none d-sm-flex col-sm-2 col-lg-1">
-        <span className={hasTrackNotes ? 'align-top' : 'align-middle'}>{trackNumber}</span>
-      </div>
+      <div className="d-none d-sm-flex col-sm-2 col-lg-1">{!!trackNumber && <span className={hasTrackNotes ? 'align-top' : 'align-middle'}>{trackNumber}</span>}</div>
       <div className="col text-truncate">
         <div>{trackName}</div>
         {hasTrackNotes && (
@@ -58,6 +56,7 @@ function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, 
           <ul className="navbar-nav mr-auto mb-2 mb-lg-0">
             <li className="nav-item">Add to Queue</li>
             <li className="nav-item">Add to Playlist</li>
+            <li className="nav-item">Remove from Queue</li>
             <li className="nav-item">Remove from this Playlist</li>
             <li className="nav-item">Copy Song Link</li>
             {concertUrl && (
@@ -87,6 +86,7 @@ function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, 
 TrackLinkRow.defaultProps = {
   concertUrl: '',
   artistUrl: '',
+  trackNumber: undefined,
 };
 
 export default TrackLinkRow;
