@@ -25,6 +25,8 @@ function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, 
         } else {
           trackNotes.push(trackNote);
         }
+      } else if (char === '-') {
+        // skip
       } else {
         trackName += ` ${char}`;
       }
