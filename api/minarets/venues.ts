@@ -1,10 +1,7 @@
 import SmartyStreetSDK from 'smartystreets-javascript-sdk';
 
 import { ApiBase } from './apiBase';
-import type { ListAllResponse } from './types/ListAllResponse';
-import type { ListResponse } from './types/ListResponse';
-import type { Venue } from './types/Venue';
-import type { VenueSummary } from './types/VenueSummary';
+import type { ListAllResponse, ListResponse, Venue, VenueSummary } from './types';
 
 export interface IListVenuesRequest {
   page?: number;
@@ -19,20 +16,20 @@ export class Venues extends ApiBase {
       throw new Error('Unable to get venue by empty id.');
     }
 
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/venues/${id}`);
+    const response = await this.get(`${this.apiUrl}/api/venues/${id}`);
 
     return (await response.json()) as Venue;
   }
 
   public async listAllVenues(): Promise<ListAllResponse<VenueSummary>> {
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/venues/all`);
+    const response = await this.get(`${this.apiUrl}/api/venues/all`);
 
     return (await response.json()) as ListAllResponse<VenueSummary>;
   }
 
   public async listVenues(request: IListVenuesRequest): Promise<ListResponse<Venue>> {
     const query = this.queryParams(request);
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/venues`, { query });
+    const response = await this.get(`${this.apiUrl}/api/venues`, { query });
 
     return (await response.json()) as ListResponse<Venue>;
   }
@@ -69,7 +66,7 @@ export class Venues extends ApiBase {
 
           console.log(`Found address for venue: ${venue.id}:\n${formattedAddress}`);
 
-          await this.post(`${process.env.MINARETS_API_URL || ''}/api/venues/${venue.id}/setFormattedAddress`, {
+          await this.post(`${this.apiUrl}/api/venues/${venue.id}/setFormattedAddress`, {
             body: JSON.stringify({
               id: venue.id,
               formattedAddress,

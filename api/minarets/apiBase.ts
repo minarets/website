@@ -2,7 +2,7 @@ import { URL } from 'url';
 
 import fetch from 'cross-fetch';
 
-import type { ErrorWithResponse } from './types/ErrorWithResponse';
+import type { ErrorWithResponse } from './types';
 
 interface IGetParams {
   query: Record<string, string>;
@@ -25,11 +25,14 @@ export abstract class ApiBase {
 
   private apiToken: string;
 
+  protected apiUrl: string;
+
   protected defaultHeaders: Record<string, string>;
 
-  public constructor(apiKey: string, apiToken: string) {
+  public constructor(apiKey: string, apiToken: string, apiUrl: string) {
     this.apiKey = apiKey;
     this.apiToken = apiToken;
+    this.apiUrl = apiUrl;
 
     this.defaultHeaders = {
       Authorization: `Basic ${convertToBase64(`${this.apiToken}`)}`,

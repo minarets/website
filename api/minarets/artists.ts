@@ -1,8 +1,5 @@
 import { ApiBase } from './apiBase';
-import type { Artist } from './types/Artist';
-import type { ArtistSummary } from './types/ArtistSummary';
-import type { ListAllResponse } from './types/ListAllResponse';
-import type { ListResponse } from './types/ListResponse';
+import type { Artist, ArtistSummary, ListAllResponse, ListResponse } from './types';
 
 export interface IListArtistsRequest {
   page?: number;
@@ -17,20 +14,20 @@ export class Artists extends ApiBase {
       throw new Error('Unable to get artist by empty id.');
     }
 
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/artists/${id}`);
+    const response = await this.get(`${this.apiUrl}/api/artists/${id}`);
 
     return (await response.json()) as Artist;
   }
 
   public async listAllArtists(): Promise<ListAllResponse<ArtistSummary>> {
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/artists/all`);
+    const response = await this.get(`${this.apiUrl}/api/artists/all`);
 
     return (await response.json()) as ListAllResponse<ArtistSummary>;
   }
 
   public async listArtists(request: IListArtistsRequest): Promise<ListResponse<Artist>> {
     const query = this.queryParams(request);
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/artists`, { query });
+    const response = await this.get(`${this.apiUrl}/api/artists`, { query });
 
     return (await response.json()) as ListResponse<Artist>;
   }

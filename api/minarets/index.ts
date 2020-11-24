@@ -25,7 +25,7 @@ export class Minarets {
 
   protected venuesApi: Venues;
 
-  public constructor(apiToken = process?.env?.MINARETS_API_TOKEN, apiKey = process?.env?.MINARETS_API_KEY) {
+  public constructor(apiToken = process?.env?.MINARETS_API_TOKEN, apiKey = process?.env?.MINARETS_API_KEY, apiUrl = process?.env?.MINARETS_API_URL || 'https://meetattheshow.com') {
     if (!apiToken) {
       throw new Error('Minarets apiToken is not defined');
     }
@@ -36,13 +36,13 @@ export class Minarets {
 
     this.apiKey = apiKey;
     this.apiToken = apiToken;
-    this.artistsApi = new Artists(apiKey, apiToken);
-    this.compilationsApi = new Compilations(apiKey, apiToken);
-    this.concertsApi = new Concerts(apiKey, apiToken);
-    this.playlistsApi = new Playlists(apiKey, apiToken);
-    this.toursApi = new Tours(apiKey, apiToken);
-    this.usersApi = new Users(apiKey, apiToken);
-    this.venuesApi = new Venues(apiKey, apiToken);
+    this.artistsApi = new Artists(apiKey, apiToken, apiUrl);
+    this.compilationsApi = new Compilations(apiKey, apiToken, apiUrl);
+    this.concertsApi = new Concerts(apiKey, apiToken, apiUrl);
+    this.playlistsApi = new Playlists(apiKey, apiToken, apiUrl);
+    this.toursApi = new Tours(apiKey, apiToken, apiUrl);
+    this.usersApi = new Users(apiKey, apiToken, apiUrl);
+    this.venuesApi = new Venues(apiKey, apiToken, apiUrl);
   }
 
   public get artists(): Artists {

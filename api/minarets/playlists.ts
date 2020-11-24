@@ -1,8 +1,5 @@
 import { ApiBase } from './apiBase';
-import type { ListAllResponse } from './types/ListAllResponse';
-import type { ListResponse } from './types/ListResponse';
-import type { Playlist } from './types/Playlist';
-import type { PlaylistSummary } from './types/PlaylistSummary';
+import type { ListAllResponse, ListResponse, Playlist, PlaylistSummary } from './types';
 
 export interface IListPlaylistsRequest {
   page?: number;
@@ -17,20 +14,20 @@ export class Playlists extends ApiBase {
       throw new Error('Unable to get playlist by empty id.');
     }
 
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/playlists/${id}`);
+    const response = await this.get(`${this.apiUrl}/api/playlists/${id}`);
 
     return (await response.json()) as Playlist;
   }
 
   public async listAllPlaylists(): Promise<ListAllResponse<PlaylistSummary>> {
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/playlists/all`);
+    const response = await this.get(`${this.apiUrl}/api/playlists/all`);
 
     return (await response.json()) as ListAllResponse<PlaylistSummary>;
   }
 
   public async listPlaylists(request: IListPlaylistsRequest): Promise<ListResponse<Playlist>> {
     const query = this.queryParams(request);
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/playlists`, { query });
+    const response = await this.get(`${this.apiUrl}/api/playlists`, { query });
 
     return (await response.json()) as ListResponse<Playlist>;
   }

@@ -1,5 +1,5 @@
 import { ApiBase } from './apiBase';
-import type { User } from './types/User';
+import type { User } from './types';
 
 export interface ICreateUserRequest {
   name?: string;
@@ -21,7 +21,7 @@ interface ILinkUserWithProviderRequest {
 export class Users extends ApiBase {
   public async getUser(id: string | number): Promise<User | null> {
     try {
-      const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/users/${id}`);
+      const response = await this.get(`${this.apiUrl}/api/users/${id}`);
 
       return (await response.json()) as User;
     } catch (ex) {
@@ -34,7 +34,7 @@ export class Users extends ApiBase {
       const query = this.queryParams({
         email,
       });
-      const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/users/findByEmail`, { query });
+      const response = await this.get(`${this.apiUrl}/api/users/findByEmail`, { query });
 
       return (await response.json()) as User;
     } catch (ex) {
@@ -48,7 +48,7 @@ export class Users extends ApiBase {
         providerId,
         providerAccountId,
       });
-      const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/users/findByProvider`, { query });
+      const response = await this.get(`${this.apiUrl}/api/users/findByProvider`, { query });
 
       return (await response.json()) as User;
     } catch (ex) {
@@ -57,7 +57,7 @@ export class Users extends ApiBase {
   }
 
   public async createUser(request: ICreateUserRequest): Promise<User> {
-    const response = await this.post(`${process.env.MINARETS_API_URL || ''}/api/users/create`, {
+    const response = await this.post(`${this.apiUrl}/api/users/create`, {
       body: JSON.stringify(request),
     });
 
@@ -65,7 +65,7 @@ export class Users extends ApiBase {
   }
 
   public async setEmailVerified(request: ISetEmailVerifiedRequest): Promise<User> {
-    const response = await this.post(`${process.env.MINARETS_API_URL || ''}/api/users/${request.id}/setEmailVerified`, {
+    const response = await this.post(`${this.apiUrl}/api/users/${request.id}/setEmailVerified`, {
       body: JSON.stringify(request),
     });
 
@@ -73,7 +73,7 @@ export class Users extends ApiBase {
   }
 
   public async linkUserWithProvider(request: ILinkUserWithProviderRequest): Promise<User> {
-    const response = await this.post(`${process.env.MINARETS_API_URL || ''}/api/users/${request.id}/linkWithProvider`, {
+    const response = await this.post(`${this.apiUrl}/api/users/${request.id}/linkWithProvider`, {
       body: JSON.stringify(request),
     });
 

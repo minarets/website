@@ -1,6 +1,5 @@
 import { ApiBase } from './apiBase';
-import type { ListResponse } from './types/ListResponse';
-import type { TrackWithExtendedInformation } from './types/TrackWithExtendedInformation';
+import type { ListResponse, TrackWithExtendedInformation } from './types';
 
 export interface IListTracksRequest {
   page?: number;
@@ -13,7 +12,7 @@ export interface IListTracksRequest {
 export class Tracks extends ApiBase {
   // public async playTrack(id: string): Promise<void> {
   //   // TODO: Need to authenticate in order to call this
-  //   await this.post(`${process.env.MINARETS_API_URL || ''}/api/tracks/trackPlay`, {
+  //   await this.post(`${this.apiUrl}/api/tracks/trackPlay`, {
   //     body: JSON.stringify({
   //       id,
   //     }),
@@ -22,7 +21,7 @@ export class Tracks extends ApiBase {
 
   public async listTracks(request: IListTracksRequest): Promise<ListResponse<TrackWithExtendedInformation>> {
     const query = this.queryParams(request);
-    const response = await this.get(`${process.env.MINARETS_API_URL || ''}/api/tracks`, { query });
+    const response = await this.get(`${this.apiUrl}/api/tracks`, { query });
 
     return (await response.json()) as ListResponse<TrackWithExtendedInformation>;
   }
