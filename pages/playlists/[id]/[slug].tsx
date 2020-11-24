@@ -178,7 +178,7 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
                   trackNumber={index + 1}
                   concertUrl={concertUrl}
                   artistUrl={artistUrl}
-                  key={track.id}
+                  key={track.uniqueId || track.id}
                 />
               );
             })}

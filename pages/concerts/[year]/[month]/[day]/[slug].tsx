@@ -213,7 +213,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
                   trackNumber={index + 1}
                   concertUrl={concertUrl}
                   artistUrl={artistUrl}
-                  key={track.id}
+                  key={track.uniqueId || track.id}
                 />
               );
             })}

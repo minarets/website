@@ -1,5 +1,6 @@
 export interface Track {
   id: string;
+  uniqueId: string;
   name: string;
   additionalInfo: string;
   concertId: string;
