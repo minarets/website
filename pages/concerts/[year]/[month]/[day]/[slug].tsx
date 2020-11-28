@@ -38,8 +38,8 @@ interface IParams {
 
 interface IProps {
   concert: Concert;
-  previousConcert: LimitedConcert | undefined;
-  nextConcert: LimitedConcert | undefined;
+  previousConcert: LimitedConcert | null;
+  nextConcert: LimitedConcert | null;
   detailsByToken: Record<string, string>;
   noteLines: string[];
   relatedConcerts: LimitedConcert[];
@@ -75,8 +75,8 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
 
   const { noteLines, detailsByToken } = extractTokenDetailsFromConcertNote(concert);
 
-  let previousConcert: LimitedConcert | undefined;
-  let nextConcert: LimitedConcert | undefined;
+  let previousConcert: LimitedConcert | null = null;
+  let nextConcert: LimitedConcert | null = null;
   const relatedConcerts: LimitedConcert[] = [];
   for (const relatedConcert of relatedConcertResults.items) {
     const limitedConcert = pick(relatedConcert, 'id', 'date', 'name');
