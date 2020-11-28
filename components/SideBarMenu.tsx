@@ -1,8 +1,39 @@
+import { useSession } from 'next-auth/client';
 import Link from 'next/link';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
-export default function Layout(): ReactElement {
+import type { ListAllResponse, PlaylistSummary } from '../api/minarets/types';
+import { slugify } from '../api/stringService';
+
+async function getPlaylists(): Promise<PlaylistSummary[]> {
+  console.log(`getPlaylist - start`);
+  const response = await fetch('/api/minarets/getMyPlaylists');
+  if (response.ok) {
+    console.log(`getPlaylist - json()`);
+    const result = (await response.json()) as ListAllResponse<PlaylistSummary>;
+    console.log(`getPlaylist - ok!`);
+    return result.items;
+  }
+
+  console.log(`getPlaylist - :(`);
+  return [];
+}
+
+export default function Layout(): React.ReactElement {
+  const [session] = useSession();
+  const [playlists, setPlaylists] = React.useState<PlaylistSummary[]>([]);
+  const setPlaylistsCb = React.useCallback((items: PlaylistSummary[]) => {
+    setPlaylists(items);
+  }, []);
+
+  React.useEffect(() => {
+    if (session) {
+      getPlaylists()
+        .then(setPlaylistsCb)
+        .catch((err) => console.error(err));
+    }
+  }, [session, setPlaylistsCb]);
+
   return (
     <div className="position-sticky pt-3">
       <ul className="nav flex-column">
@@ -30,13 +61,17 @@ export default function Layout(): ReactElement {
           <Link href="/playlists">
             <a className="nav-link">Playlists</a>
           </Link>
-          <ul className="nav flex-column">
-            <li className="nav-item pl-2">
-              <Link href="/playlists/1/my-ideal-setlist">
-                <a className="nav-link">My Ideal Set List</a>
-              </Link>
-            </li>
-          </ul>
+          {!!playlists.length && (
+            <ul className="nav flex-column">
+              {playlists.map((playlist) => (
+                <li className="nav-item pl-2" key={playlist.id}>
+                  <Link href={`/playlists/${playlist.id}/${slugify(playlist.name)}`}>
+                    <a className="nav-link">{playlist.name}</a>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </li>
         <li className="nav-item">
           <Link href="/compilations">

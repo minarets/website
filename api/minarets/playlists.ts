@@ -31,4 +31,10 @@ export class Playlists extends ApiBase {
 
     return (await response.json()) as ListResponse<Playlist>;
   }
+
+  public async listMyPlaylists(): Promise<ListAllResponse<PlaylistSummary>> {
+    const response = await this.get(`${this.apiUrl}/api/playlists/my`);
+
+    return (await response.json()) as ListAllResponse<PlaylistSummary>;
+  }
 }
