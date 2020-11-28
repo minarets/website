@@ -14,7 +14,7 @@ interface IQueueContextProviderProps {
   children: React.ReactNode;
 }
 
-export const QueueContextProvider = ({ children }: IQueueContextProviderProps): React.ReactNode => {
+export const QueueContextProvider = ({ children }: IQueueContextProviderProps): React.ReactElement => {
   const [queue] = React.useState<IQueue>({ currentTrack: undefined, queueItems: [], historyItems: [] });
 
   return <QueueContext.Provider value={queue}>{children}</QueueContext.Provider>;
