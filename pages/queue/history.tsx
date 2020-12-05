@@ -6,10 +6,10 @@ import { getConcertUrl } from '../../api/concertService';
 import { slugify } from '../../api/stringService';
 import Layout from '../../components/Layout';
 import TrackLinkRow from '../../components/TrackLinkRow';
-import { usePlayer } from '../../hooks/usePlayer';
+import { usePlayerState } from '../../contexts/PlayerContext';
 
 export default function Page(): ReactElement {
-  const { historyItems } = usePlayer();
+  const { historyItems } = usePlayerState();
 
   return (
     <Layout title="Play Queue">

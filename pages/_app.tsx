@@ -5,7 +5,7 @@ import type { ReactElement } from 'react';
 import * as React from 'react';
 
 import '../styles/globals.scss';
-import { PlayerContextProvider } from '../contexts/PlayerContext';
+import { PlayerProvider } from '../contexts/PlayerContext';
 
 interface IPageProps {
   session: Session;
@@ -17,10 +17,10 @@ function App({ Component, pageProps }: AppProps<IPageProps>): ReactElement {
 
   return (
     <Provider session={session}>
-      <PlayerContextProvider>
+      <PlayerProvider>
         {/* eslint-disable-next-line react/jsx-props-no-spreading */}
         <Component {...pageProps} />
-      </PlayerContextProvider>
+      </PlayerProvider>
     </Provider>
   );
 }
