@@ -35,6 +35,10 @@
   align-items: center;
 }
 
+.playerVisible {
+  padding-bottom: 90px;
+}
+
 .title a {
   color: #0070f3;
   text-decoration: none;

@@ -189,6 +189,7 @@ module.exports = {
       'LabeledStatement',
       'WithStatement',
     ],
+    'no-void': 'off',
     'prefer-spread': 'error',
     'prefer-destructuring': 'off',
   },

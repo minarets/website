@@ -1,0 +1,11 @@
+.playerBar {
+  position: fixed;
+  left: 0px;
+  bottom: 0px;
+  height: 90px;
+  min-width: 620px;
+  width: 100%;
+  // TODO: Reference ~bootstrap/scss/variables.$zindex-fixed
+  z-index: 1030;
+  background: #1e1e1e;
+}
