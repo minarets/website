@@ -34,15 +34,15 @@
   "dependencies": {
     "bootstrap": "^5.0.0-beta1",
     "cross-fetch": "3.0.6",
-    "gapless.js": "^2.1.0",
+    "gapless.js": "^2.2.3",
     "ioredis": "4.19.4",
     "moment": "2.29.1",
-    "next": "10.0.3",
+    "next": "10.0.4",
     "next-auth": "3.1.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "sass": "1.30.0",
-    "smartystreets-javascript-sdk": "1.6.2",
+    "smartystreets-javascript-sdk": "1.6.3",
     "uuid": "8.3.2"
   },
   "devDependencies": {
