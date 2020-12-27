@@ -1,0 +1,41 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+.headerNavbar {
+  display: flex;
+  flex-direction: row;
+
+  a {
+    color: $dark;
+    fill: $dark;
+
+    &:link,
+    &:visited {
+      color: $dark;
+      fill: $dark;
+    }
+
+    &:active,
+    &:focus,
+    &:hover {
+      color: $secondary;
+      fill: $secondary;
+    }
+  }
+}
+
+.randomButton {
+  line-height: normal;
+}
+
+.userImage {
+  height: 2.2em;
+}
+
+.playerVisible {
+  padding-bottom: 90px;
+}
+
+.logo {
+  height: 1.5em;
+}

@@ -6,7 +6,7 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
-import styles from '../styles/Home.module.css';
+import styles from '../styles/Layout.module.scss';
 
 import Player from './Player';
 import SideBarMenu from './SideBarMenu';
@@ -39,41 +39,32 @@ function Layout({ title, description, keywords, children }: LayoutParams): React
 
       <div className={session ? styles.playerVisible : ''}>
         <div className="flex-grow-1">
-          <header className="navbar navbar-dark bg-dark flex-md-nowrap p-0 shadow">
+          <header className={`${styles.headerNavbar} px-3 py-1`}>
             <Link href="/">
-              <a className="navbar-brand col-md-3 col-lg-2 mr-0 px-3">Home</a>
+              <a className="navbar-brand">Minarets</a>
             </Link>
-            <button
-              className="navbar-toggler position-absolute d-md-none collapsed"
-              type="button"
-              data-toggle="collapse"
-              data-target="#sidebarMenu"
-              aria-controls="sidebarMenu"
-              aria-expanded="false"
-              aria-label="Toggle navigation"
-            >
-              <span className="navbar-toggler-icon" />
-            </button>
-            <input className="form-control form-control-dark w-100" type="text" placeholder="Search for concerts by date, songs, venues..." aria-label="Search" />
-            <ul className="navbar-nav px-3">
-              <li className="nav-item text-nowrap">
-                <Link href="/concerts/random">
-                  <a className="nav-link" title="Random concert">
-                    <img src="/random.svg" alt="Random concert" />
-                  </a>
-                </Link>
-              </li>
-              {!session && !loading && (
-                <Link href="/api/auth/signin">
-                  <a className="nav-link" title="Login">
-                    Login
-                  </a>
-                </Link>
-              )}
-              {session && !loading && session.user && session.user.image && (
-                <img className="img-fluid" src={session.user.image} alt={`${session.user.name || ''} - ${(session.user as IExtendedNextAuthUser).token}`} />
-              )}
-            </ul>
+            <div className="flex-grow-1 px-3">
+              {/*<input className="form-control form-control-dark w-100" type="text" placeholder="Search for concerts by date, songs, venues..." aria-label="Search" />*/}
+            </div>
+            <div className="pe-3 my-auto">
+              <Link href="/concerts/random">
+                <a title="Random concert" className={styles.randomButton}>
+                  <img src="/random.svg" alt="Random concert" />
+                </a>
+              </Link>
+            </div>
+            {(!session || (session.user && session.user.image)) && !loading && (
+              <div className="my-auto">
+                {!session && !loading && (
+                  <Link href="/api/auth/signin">
+                    <a title="Login">Login</a>
+                  </Link>
+                )}
+                {session && !loading && session.user && session.user.image && (
+                  <img className={`rounded ${styles.userImage}`} src={session.user.image} alt={`${session.user.name || ''} - ${(session.user as IExtendedNextAuthUser).token}`} />
+                )}
+              </div>
+            )}
           </header>
 
           <div className="container-fluid">

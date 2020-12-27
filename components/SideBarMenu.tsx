@@ -6,12 +6,9 @@ import type { ListAllResponse, PlaylistSummary } from '../api/minarets/types';
 import { slugify } from '../api/stringService';
 
 async function getPlaylists(): Promise<PlaylistSummary[]> {
-  console.log(`getPlaylist - start`);
   const response = await fetch('/api/minarets/getMyPlaylists');
   if (response.ok) {
-    console.log(`getPlaylist - json()`);
     const result = (await response.json()) as ListAllResponse<PlaylistSummary>;
-    console.log(`getPlaylist - ok!`);
     return result.items;
   }
 
