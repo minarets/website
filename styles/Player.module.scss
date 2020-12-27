@@ -9,7 +9,6 @@ $player-button-disabled-color: #535353;
   position: fixed;
   left: 0px;
   bottom: 0px;
-  height: 90px;
   min-width: 620px;
   width: 100%;
   z-index: $zindex-fixed;
@@ -73,7 +72,7 @@ $player-button-disabled-color: #535353;
       border: 1px solid $player-button-color;
       border-radius: 32px;
 
-      @media(-webkit-min-device-pixel-ratio: 2) {
+      @media(min-device-pixel-ratio: 2) {
         transition-duration: 50ms;
       }
 
@@ -83,7 +82,7 @@ $player-button-disabled-color: #535353;
         transform: scale(1.06);
         border-color: $player-button-hover-color;
 
-        @media(-webkit-min-device-pixel-ratio: 2) {
+        @media(min-device-pixel-ratio: 2) {
           transition-duration: 66ms;
         }
       }
@@ -104,6 +103,7 @@ $player-button-disabled-color: #535353;
 }
 
 .nowPlayingBar {
+  height: 90px;
   align-items: center;
   display: flex;
   flex-direction: row;
@@ -182,8 +182,6 @@ $player-button-disabled-color: #535353;
   text-align: left;
 
   a {
-    display: block;
-
     &:active,
     &:focus,
     &:hover {

@@ -42,12 +42,16 @@ export default function Player(): React.ReactElement {
                     </Link>
                   </div>
                   <div className={styles.trackDetails}>
-                    <Link href={getConcertUrl(player.currentTrack.concert)}>
-                      <a>{getConcertName(player.currentTrack.concert)}</a>
-                    </Link>
-                    <Link href={`/artists/${player.currentTrack.concert.artist.id}/${slugify(player.currentTrack.concert.artist.name)}`}>
-                      <a>{player.currentTrack.concert.artist.name}</a>
-                    </Link>
+                    <div>
+                      <Link href={getConcertUrl(player.currentTrack.concert)}>
+                        <a>{getConcertName(player.currentTrack.concert)}</a>
+                      </Link>
+                    </div>
+                    <div>
+                      <Link href={`/artists/${player.currentTrack.concert.artist.id}/${slugify(player.currentTrack.concert.artist.name)}`}>
+                        <a>{player.currentTrack.concert.artist.name}</a>
+                      </Link>
+                    </div>
                   </div>
                 </div>
               )}
@@ -134,25 +138,25 @@ export default function Player(): React.ReactElement {
             <div className={styles.nowPlayingBarRight}>
               <div className={styles.extraControls}>
                 <div className="position-relative">
-                  <Link href="/queue">
-                    <a>
-                      <svg role="img" height="16" width="16" viewBox="0 0 16 16">
+                  <Link href="/queue" passHref>
+                    <button title="Queue" type="button">
+                      <svg role="img" height="32" width="32" viewBox="0 0 31 31">
                         <path d="M3.996 4.059l8.595 4.995-8.595 4.995v-9.99M3.996 28.036v-1.998h27.972v1.998h-27.972M3.996 20.044v-1.998h27.972v1.998h-27.972M17.982 10.054h13.986v1.998h-13.986v-1.998z" />
                       </svg>
-                    </a>
+                    </button>
                   </Link>
                 </div>
                 <div className={styles.volumeBar}>
                   {player.isMuted && (
                     <button title="Unmute" type="button" onClick={(): void => playerDispatch({ type: 'Unmute' })}>
-                      <svg role="img" height="16" width="16" viewBox="0 0 16 16">
+                      <svg role="img" height="32" width="32" viewBox="0 0 31 31">
                         <path d="M0 10.054h5.598l10.387-5.994v23.976l-10.387-5.994h-5.598v-11.988M13.986 7.516l-7.849 4.535h-4.139v7.992h4.139l7.849 4.535v-17.062M31.207 11.75l-4.281 4.297 4.281 4.281-1.411 1.411-4.281-4.281-4.297 4.281-1.411-1.411 4.297-4.281-4.297-4.297 1.411-1.411 4.297 4.297 4.281-4.297 1.411 1.411z" />
                       </svg>
                     </button>
                   )}
                   {!player.isMuted && (
                     <button title="Mute" type="button" onClick={(): void => playerDispatch({ type: 'Mute' })}>
-                      <svg role="img" height="16" width="16" viewBox="0 0 16 16">
+                      <svg role="img" height="32" width="32" viewBox="0 0 31 31">
                         {player.volume < 33 && (
                           <path d="M21.376 10.418q1.094 1.094 1.713 2.553t0.618 3.076q0 1.078-0.285 2.109t-0.801 1.911-1.245 1.61l-1.316-1.538q1.649-1.728 1.649-4.091t-1.649-4.091l1.316-1.538M0 10.054h5.598l10.387-5.994v23.976l-10.387-5.994h-5.598v-11.988M13.986 7.516l-7.849 4.535h-4.139v7.992h4.139l7.849 4.535v-17.062z" />
                         )}
@@ -166,7 +170,7 @@ export default function Player(): React.ReactElement {
                     </button>
                   )}
 
-                  <input type="range" className="form-range" min="0" max="100" value={player.volume} onChange={handleSetVolume} />
+                  <input type="range" className="form-range" min="0" max="100" value={player.isMuted ? 0 : player.volume} onChange={handleSetVolume} />
                 </div>
               </div>
             </div>
