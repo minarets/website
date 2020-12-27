@@ -20,7 +20,7 @@ export interface IPlayerState {
 
 interface IBasicPlayerAction {
   type:
-    | 'TogglePlayPause'
+    | 'UpdatePlayPause'
     | 'TrackEnd'
     | 'TrackStart'
     | 'TrackProgress'
@@ -41,22 +41,29 @@ interface ISetVolumeAction {
   volume: number;
 }
 
-interface IQueueTrackAction {
-  type: 'QueueTrack';
-  track: PlayQueueItem;
+interface IQueueTracksAction {
+  type: 'QueueTracks';
+  tracks: PlayQueueItem[];
 }
 
-type PlayerAction = IBasicPlayerAction | ISetVolumeAction | IQueueTrackAction;
+type PlayerAction = IBasicPlayerAction | ISetVolumeAction | IQueueTracksAction;
 
 function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState {
   switch (action.type) {
     case 'TrackEnd':
+      console.log('Track end...');
       return state;
     case 'TrackStart': {
+      console.log('Track start...');
       let historyItems = state.historyItems;
       const lastPlayedTrack = state.currentTrack;
       if (lastPlayedTrack) {
-        historyItems = [...state.historyItems, lastPlayedTrack];
+        historyItems = [lastPlayedTrack, ...state.historyItems];
+      }
+
+      if (state.player.currentTrack) {
+        console.log('Tracking play...');
+        fetch(`/api/minarets/playTrack/${state.player.currentTrack.metadata.id}`).catch((err) => console.error(err));
       }
 
       const tracks = (state.player.tracks as PlayerTrack[]).splice(state.player.state.currentTrackIndex);
@@ -90,31 +97,42 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
     case 'PreviousTrack':
       // TODO: ...
       return state;
-    case 'QueueTrack': {
+    case 'QueueTracks': {
+      console.log(`Queuing ${action.tracks.length} tracks`);
       const updatedState = { ...state };
-      if (action.track.url) {
-        updatedState.queueItems.push(action.track);
-        state.player.addTrack({
-          trackUrl: action.track.url,
-          metadata: action.track,
-        });
+      for (const track of action.tracks) {
+        if (track.url) {
+          updatedState.queueItems.push(track);
+          // TODO: Can remove the .replace() function after deploying
+          state.player.addTrack({
+            trackUrl: track.url.replace('meetattheshow.com', 'minarets.io'),
+            metadata: track,
+          });
+        }
       }
 
       return updatedState;
     }
     case 'ClearQueue': {
+      console.log('Clearing queue...');
+
       // Retain play history with player queue, but remove all non-played songs
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,no-param-reassign
       state.player.tracks.length = Math.min(state.player.state.currentTrackIndex + 1, state.player.tracks.length);
+
+      console.log(`Leaving ${state.player.tracks.length} items in "previous" queue`);
 
       return {
         ...state,
         queueItems: [],
       };
     }
-    case 'TogglePlayPause': {
+    case 'UpdatePlayPause': {
+      console.log('Updating play/pause visibility');
+
       let isPaused = true;
       if (state.player.currentTrack) {
+        console.log('Basing on current track status from player...');
         isPaused = state.player.currentTrack.isPaused;
       }
 
@@ -181,7 +199,34 @@ export async function togglePlayPause(state: IPlayerState, dispatch: React.Dispa
     await state.player.togglePlayPause();
   } finally {
     dispatch({
-      type: 'TogglePlayPause',
+      type: 'UpdatePlayPause',
+    });
+  }
+}
+
+export async function playTracks(state: IPlayerState, dispatch: React.Dispatch<PlayerAction>, tracks: PlayQueueItem[]): Promise<void> {
+  try {
+    console.log('Pausing...');
+    state.player.pause();
+
+    dispatch({
+      type: 'UpdatePlayPause',
+    });
+
+    dispatch({
+      type: 'ClearQueue',
+    });
+
+    dispatch({
+      type: 'QueueTracks',
+      tracks,
+    });
+
+    console.log('Playing...');
+    await state.player.play();
+  } finally {
+    dispatch({
+      type: 'UpdatePlayPause',
     });
   }
 }
@@ -203,6 +248,7 @@ export const PlayerProvider = ({ children }: IPlayerContextProviderProps): React
     isMuted: false,
     volume: 60,
     player: new GaplessPlayer<PlayQueueItem>({
+      fetchMode: 'no-cors',
       onProgress: (): void => {
         dispatch({
           type: 'TrackProgress',

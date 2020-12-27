@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
 
-import { Minarets } from '../../../api/minarets';
+import { Minarets } from '../../../api';
 import type { User } from '../../../api/minarets/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
@@ -21,6 +21,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const playlists = await api.playlists.listMyPlaylists();
 
         body = JSON.stringify(playlists);
+        break;
+      }
+      case 'playTrack': {
+        const [, id] = query.minarets;
+        if (id) {
+          const response = await api.tracks.play(id);
+          body = JSON.stringify(response);
+        } else {
+          body = JSON.stringify({
+            ok: true,
+          });
+        }
+
         break;
       }
       default:

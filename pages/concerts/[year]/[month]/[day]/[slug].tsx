@@ -1,19 +1,22 @@
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import { useSession } from 'next-auth/client';
 import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
+import { v4 as uuid } from 'uuid';
 
 import { extractTokenDetailsFromConcertNote, getConcertDescription, getConcertKeywords, getConcertTitle, getConcertUrl } from '../../../../../api/concertService';
 import { Minarets } from '../../../../../api/minarets';
 import type { Concert, ConcertSummary } from '../../../../../api/minarets/types';
 import { pick } from '../../../../../api/objectService';
 import { slugify } from '../../../../../api/stringService';
-import type { LimitedConcert, LimitedTour } from '../../../../../api/types';
+import type { LimitedConcert, LimitedTour, PlayQueueItem } from '../../../../../api/types';
 import ConcertLinkRow from '../../../../../components/ConcertLinkRow';
 import Layout from '../../../../../components/Layout';
 import TourBreadcrumbRow from '../../../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../../../components/TrackLinkRow';
+import { playTracks, usePlayerDispatch, usePlayerState } from '../../../../../contexts/PlayerContext';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
@@ -113,6 +116,39 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
   const title = getConcertTitle(concert);
   const description = getConcertDescription(concert);
   const keywords = getConcertKeywords(concert);
+
+  const [session] = useSession();
+  const playerState = usePlayerState();
+  const playerDispatch = usePlayerDispatch();
+
+  const playCb = React.useCallback(() => {
+    const tracks = concert.tracks.map((track) => {
+      return {
+        ...track,
+        concert,
+        detailsByToken,
+        queueId: uuid(),
+      } as PlayQueueItem;
+    });
+
+    void playTracks(playerState, playerDispatch, tracks);
+  }, [playerState, playerDispatch, concert, detailsByToken]);
+  const queueCb = React.useCallback(() => {
+    const tracks = concert.tracks.map((track) => {
+      return {
+        ...track,
+        concert,
+        detailsByToken,
+        queueId: uuid(),
+      } as PlayQueueItem;
+    });
+
+    playerDispatch({
+      type: 'QueueTracks',
+      tracks,
+    });
+  }, [playerDispatch, concert, detailsByToken]);
+
   return (
     <Layout title={title} description={description} keywords={keywords}>
       <div className="content">
@@ -155,10 +191,25 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
           </h1>
         </header>
 
-        <div>
-          <button type="button">Play</button>
-          <button type="button">Add to Queue</button>
-        </div>
+        {!session && (
+          <div>
+            <Link href="/api/auth/signin">
+              <a className="btn btn-success rounded-pill" rel="nofollow">
+                Play
+              </a>
+            </Link>
+          </div>
+        )}
+        {session && (
+          <div>
+            <button className="btn btn-success rounded-pill" type="button" onClick={(): void => playCb()}>
+              Play
+            </button>
+            <button className="btn btn-success rounded-pill" type="button" onClick={(): void => queueCb()}>
+              Add to Queue
+            </button>
+          </div>
+        )}
 
         <div className="card">
           <div className="card-header">

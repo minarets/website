@@ -1,5 +1,6 @@
 import type { User as NextAuthUser } from 'next-auth';
 import { useSession } from 'next-auth/client';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
@@ -8,8 +9,9 @@ import type { ReactElement } from 'react';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import styles from '../styles/Layout.module.scss';
 
-import Player from './Player';
 import SideBarMenu from './SideBarMenu';
+
+const Player = dynamic(() => import('./Player'), { ssr: false });
 
 interface LayoutParams {
   title: string;

@@ -1,3 +1,10 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+
+$player-button-color: #b3b3b3;
+$player-button-hover-color: $white;
+$player-button-disabled-color: #535353;
+
 .playerBar {
   position: fixed;
   left: 0px;
@@ -5,7 +12,195 @@
   height: 90px;
   min-width: 620px;
   width: 100%;
-  // TODO: Reference ~bootstrap/scss/variables.$zindex-fixed
-  z-index: 1030;
+  z-index: $zindex-fixed;
   background: #1e1e1e;
+  color: $player-button-color;
+
+  a {
+    position: relative;
+    text-decoration: none;
+    color: $player-button-color;
+    fill: $player-button-color;
+
+    &:link,
+    &:visited {
+      color: $player-button-color;
+      fill: $player-button-color;
+    }
+
+    &:active,
+    &:focus,
+    &:hover {
+      color: $player-button-hover-color;
+      fill: $player-button-hover-color;
+    }
+  }
+
+  button {
+    color: $player-button-color;
+    fill: $player-button-color;
+    position: relative;
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    outline: none;
+
+    &:focus,
+    &:hover {
+      color: $player-button-hover-color;
+      fill: $player-button-hover-color;
+    }
+
+    &:active {
+      color: $player-button-color;
+      fill: $player-button-color;
+    }
+
+    &:focus:not(:focus-visible):not(:hover) {
+      color: $player-button-color;
+      fill: $player-button-color;
+      border-color: $player-button-color;
+    }
+
+    &.playPause {
+      transition: none 33ms cubic-bezier(0.3, 0, 0.7, 1);
+      transition-property: all;
+      border: 1px solid $player-button-color;
+      border-radius: 32px;
+
+      @media(-webkit-min-device-pixel-ratio: 2) {
+        transition-duration: 50ms;
+      }
+
+      &:focus,
+      &:hover{
+        transition: none 33ms cubic-bezier(0.3, 0, 0, 1);
+        transform: scale(1.06);
+        border-color: $player-button-hover-color;
+
+        @media(-webkit-min-device-pixel-ratio: 2) {
+          transition-duration: 66ms;
+        }
+      }
+
+      &:active {
+        transition: none;
+        transform: scale(0.99);
+        border-color: $player-button-color;
+      }
+    }
+
+    &[disabled] {
+      color: $player-button-disabled-color;
+      fill: $player-button-disabled-color;
+      border-color: $player-button-disabled-color;
+    }
+  }
+}
+
+.nowPlayingBar {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 16px;
+  user-select: none;
+}
+
+.nowPlayingBarLeft,
+.nowPlayingBarRight {
+  width: 30%;
+  min-width: 180px;
+}
+
+.nowPlayingBarRight {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.nowPlayingBarCenter {
+  width: 40%;
+  min-width: 772px;
+}
+
+.playerControls {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  direction: ltr;
+}
+
+.playerControlsButtons {
+  width: 160px; // 32 * 5 NOTE: When shuffle & repeat are added, make this 32 * 7
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  flex-flow: row nowrap;
+}
+
+.playbackBar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center
+}
+
+.trackName {
+  font-size: $font-size-lg;
+  line-height: $line-height-lg;
+  text-align: left;
+  color: $white;
+
+  a {
+    &:link,
+    &:visited {
+      color: $player-button-hover-color;
+      fill: $player-button-hover-color;
+    }
+
+    &:active,
+    &:focus,
+    &:hover {
+      color: $player-button-hover-color;
+      fill: $player-button-hover-color;
+      text-decoration: underline;
+    }
+  }
+}
+
+.trackDetails {
+  font-size: $font-size-sm;
+  line-height: $line-height-sm;
+  text-align: left;
+
+  a {
+    display: block;
+
+    &:active,
+    &:focus,
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.extraControls {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.volumeBar {
+  align-items: center;
+  display: flex;
+  flex: 0 1 125px;
 }
