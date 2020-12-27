@@ -8,6 +8,8 @@
   a {
     color: $dark;
     fill: $dark;
+    text-decoration: none;
+    outline: none;
 
     &:link,
     &:visited {
@@ -18,18 +20,59 @@
     &:active,
     &:focus,
     &:hover {
-      color: $secondary;
-      fill: $secondary;
+      color: tint-color($dark, 40%);
+      fill: tint-color($dark, 40%);
     }
   }
 }
 
-.randomButton {
-  line-height: normal;
+.hoverGrow {
+  transition: none 33ms cubic-bezier(0.3, 0, 0.7, 1);
+  transition-property: all;
+
+  @media(min-device-pixel-ratio: 2) {
+    transition-duration: 50ms;
+  }
+
+  &:focus,
+  &:hover {
+    transition: none 33ms cubic-bezier(0.3, 0, 0, 1);
+    transform: scale(1.06);
+
+    @media(min-device-pixel-ratio: 2) {
+      transition-duration: 66ms;
+    }
+  }
+
+  &:active {
+    transition: none;
+    transform: scale(0.99);
+  }
+}
+
+.donateButton {
+  color: $pink !important;
+  fill: $pink !important;
+
+  &:link,
+  &:visited {
+    color: $dark;
+    fill: $dark;
+  }
+
+  &:focus,
+  &:hover {
+    color: tint-color($pink, 40%) !important;
+    fill: tint-color($pink, 40%) !important;
+  }
+
+  &:active {
+    border-color: $pink !important;
+  }
 }
 
 .userImage {
-  height: 2.2em;
+  height: 2rem;
 }
 
 .playerVisible {
@@ -37,5 +80,5 @@
 }
 
 .logo {
-  height: 1.5em;
+  height: 2rem;
 }
