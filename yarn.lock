@@ -323,6 +323,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-slider@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/react-slider/-/react-slider-1.1.0.tgz#d3fb7e04af905d139b292a73cdec8b4c869595f4"
+  integrity sha512-ew3gf0bU5jGoGKG1efBVjKzoAWx9G+S6wv7Hx5fum0WIPyNrnGi42IsSVZbt7el7vzD5fNiELFmddffdMUhejQ==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*", "@types/react@^17.0.0":
   version "17.0.0"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.0.tgz#5af3eb7fad2807092f0046a1302b7823e27919b8"
@@ -4987,6 +4994,11 @@ react-refresh@0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.8.3.tgz#721d4657672d400c5e3c75d063c4a85fb2d5d68f"
   integrity sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==
+
+react-slider@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/react-slider/-/react-slider-1.1.2.tgz#d059f801615ef2cb3f6e226c232b2a4cbee0e615"
+  integrity sha512-rPz4K7IhMg4Jj1vvEywv8/ePhAQ9mfh4BKQl8DxB7AN6v1UD7fp0og6BnoH8MfBH1AwtvxKRELbSGl443EuczQ==
 
 react@17.0.1:
   version "17.0.1"

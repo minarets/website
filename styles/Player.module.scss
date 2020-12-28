@@ -153,6 +153,12 @@ $player-button-disabled-color: #535353;
   align-items: center
 }
 
+.playbackTime {
+  min-width: 3rem;
+  text-align: center;
+  font-size: $font-size-base * .75;
+}
+
 .trackName {
   font-size: $font-size-lg;
   line-height: $line-height-lg;

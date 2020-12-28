@@ -1,6 +1,7 @@
 import { useSession } from 'next-auth/client';
 import Link from 'next/link';
 import * as React from 'react';
+import ReactSlider from 'react-slider';
 
 import { getConcertName, getConcertUrl } from '../api/concertService';
 import { slugify } from '../api/stringService';
@@ -15,16 +16,46 @@ export default function Player(): React.ReactElement {
     void togglePlayPause(player, playerDispatch);
   }, [player, playerDispatch]);
 
-  function handleTrackSeek(event: React.ChangeEvent<HTMLInputElement>): void {
+  function handleTrackSeek(value: number | number[] | null | undefined): void {
+    if (value == null) {
+      return;
+    }
+
+    let valueAsNumber: number;
+    if (Array.isArray(value)) {
+      if (value.length) {
+        valueAsNumber = value[0];
+      } else {
+        return;
+      }
+    } else {
+      valueAsNumber = value;
+    }
+
     if (player.player.currentTrack) {
-      player.player.currentTrack.seek(Number(event.target.value || '0'));
+      player.player.currentTrack.seek(valueAsNumber);
     }
   }
 
-  function handleSetVolume(event: React.ChangeEvent<HTMLInputElement>): void {
+  function handleSetVolume(value: number | number[] | null | undefined): void {
+    if (value == null) {
+      return;
+    }
+
+    let valueAsNumber: number;
+    if (Array.isArray(value)) {
+      if (value.length) {
+        valueAsNumber = value[0];
+      } else {
+        return;
+      }
+    } else {
+      valueAsNumber = value;
+    }
+
     playerDispatch({
       type: 'SetVolume',
-      volume: Number(event.target.value || '0'),
+      volume: valueAsNumber,
     });
   }
 
@@ -121,17 +152,15 @@ export default function Player(): React.ReactElement {
                   )}*/}
                 </div>
                 <div className={styles.playbackBar}>
-                  <div className="player-progress-time" />
-                  <input
-                    type="range"
-                    className="form-range"
-                    min="0"
+                  <div className={styles.playbackTime}>{player.currentTrack ? player.currentTime.toString() : '0:00'}</div>
+                  <ReactSlider
+                    ariaLabel="Player progress"
+                    className="react-slider"
                     max={player.player.currentTrack && Number.isFinite(player.player.currentTrack.duration) ? player.player.currentTrack.duration : 100}
-                    disabled={!player.player.currentTrack}
                     value={player.player.currentTrack && Number.isFinite(player.player.currentTrack.currentTime) ? player.player.currentTrack.currentTime : 0}
-                    onChange={handleTrackSeek}
+                    onAfterChange={handleTrackSeek}
                   />
-                  <div className="player-total-time" />
+                  <div className={styles.playbackTime}>{player.currentTrack ? player.currentTrack.duration : '0:00'}</div>
                 </div>
               </div>
             </div>
@@ -170,7 +199,7 @@ export default function Player(): React.ReactElement {
                     </button>
                   )}
 
-                  <input type="range" className="form-range" min="0" max="100" value={player.isMuted ? 0 : player.volume} onChange={handleSetVolume} />
+                  <ReactSlider ariaLabel="Volume" className="react-slider" value={player.isMuted ? 0 : player.volume} onAfterChange={handleSetVolume} />
                 </div>
               </div>
             </div>

@@ -1,5 +1,6 @@
 @import "~bootstrap/scss/bootstrap";
 @import "./type";
+@import "./react-slider";
 
 @each $breakpoint in map-keys($grid-breakpoints) {
   @include media-breakpoint-up($breakpoint) {
