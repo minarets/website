@@ -52,7 +52,7 @@ function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, 
           </div>
         )}
       </div>
-      <div className="col-3 col-sm-2 col-lg-1 text-right d-none">
+      <div className="col-3 col-sm-2 col-lg-1 text-end d-none">
         <span>...</span>
         <div className="track-menu">
           <ul className="navbar-nav mr-auto mb-2 mb-lg-0">
@@ -78,7 +78,7 @@ function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, 
           </ul>
         </div>
       </div>
-      <div className="d-none d-sm-block col-sm-2 col-lg-1 text-right">
+      <div className="d-none d-sm-block col-sm-2 col-lg-1 text-end">
         <span className={hasTrackNotes ? 'align-top' : 'align-middle'}>{track.duration}</span>
       </div>
     </div>

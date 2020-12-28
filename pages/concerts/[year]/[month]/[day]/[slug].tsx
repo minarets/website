@@ -176,7 +176,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
                 </small>
               )}
               {nextConcert && (
-                <small className="col text-right">
+                <small className="col text-end">
                   <Link href={getConcertUrl(nextConcert)}>
                     <a>
                       {moment.utc(nextConcert.date).format('yyyy-MM-DD')} &#8212; {nextConcert.name} &#8594;
