@@ -15,8 +15,66 @@ export default function Player(): React.ReactElement {
   const togglePlayPauseCb = React.useCallback(() => {
     void togglePlayPause(player, playerDispatch);
   }, [player, playerDispatch]);
+  const [seekTime, setSeekTime] = React.useState<number | null>(null);
+
+  function getTimeDisplay(duration: number): string {
+    let result = '';
+    let remainingTime = duration;
+    if (duration >= 3600) {
+      remainingTime %= 3600;
+      result += `${Math.floor(duration / 3600)}:`;
+    }
+
+    const minutes = Math.floor(remainingTime / 60);
+    remainingTime %= 60;
+    if (result && minutes < 10) {
+      result += '0';
+    }
+
+    result += `${minutes}:`;
+
+    if (remainingTime < 10) {
+      result += '0';
+    }
+
+    result += remainingTime;
+
+    return result;
+  }
+
+  function getPlaybackTime(): string {
+    if (seekTime != null) {
+      return getTimeDisplay(seekTime);
+    }
+
+    if (player.currentTrack) {
+      return getTimeDisplay(player.currentTime);
+    }
+
+    return '0:00';
+  }
 
   function handleTrackSeek(value: number | number[] | null | undefined): void {
+    if (value == null) {
+      return;
+    }
+
+    let valueAsNumber: number;
+    if (Array.isArray(value)) {
+      if (value.length) {
+        valueAsNumber = value[0];
+      } else {
+        return;
+      }
+    } else {
+      valueAsNumber = value;
+    }
+
+    setSeekTime(valueAsNumber);
+  }
+
+  function handleTrackProgressChange(value: number | number[] | null | undefined): void {
+    setSeekTime(null);
     if (value == null) {
       return;
     }
@@ -159,13 +217,14 @@ export default function Player(): React.ReactElement {
                   )}*/}
                 </div>
                 <div className={styles.playbackBar}>
-                  <div className={styles.playbackTime}>{player.currentTrack ? player.currentTime.toString() : '0:00'}</div>
+                  <div className={styles.playbackTime}>{getPlaybackTime()}</div>
                   <ReactSlider
                     ariaLabel="Player progress"
                     className="react-slider"
                     max={player.player.currentTrack && Number.isFinite(player.player.currentTrack.duration) ? player.player.currentTrack.duration : 100}
                     value={player.player.currentTrack && Number.isFinite(player.player.currentTrack.currentTime) ? player.player.currentTrack.currentTime : 0}
-                    onAfterChange={handleTrackSeek}
+                    onChange={handleTrackSeek}
+                    onAfterChange={handleTrackProgressChange}
                   />
                   <div className={styles.playbackTime}>{player.currentTrack ? player.currentTrack.duration : '0:00'}</div>
                 </div>
