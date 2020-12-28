@@ -30,9 +30,20 @@ interface IUpdateUserParams extends User {
   emailVerified: Date;
 }
 
-const redisClient = new Redis(process.env.REDIS_URL);
+interface IWithRedisClient {
+  redisClient: Redis.Redis;
+}
+
+declare const global: IWithRedisClient;
 
 export default (): Adapter<User, Profile, Session, VerificationRequest> => {
+  if (!global.redisClient) {
+    console.log('Instantiating new redis client');
+    global.redisClient = new Redis(process.env.REDIS_URL);
+  }
+
+  const redisClient = global.redisClient;
+
   function getAdapter({ baseUrl }: AppOptions): Promise<AdapterInstance<User, Profile, Session, VerificationRequest>> {
     const oneHourAsMilliseconds = 60 * 60 * 1000;
     const oneDayAsMilliseconds = 24 * oneHourAsMilliseconds;
