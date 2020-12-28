@@ -10,5 +10,4 @@ export interface Concert extends BasicConcertWithNotes {
   dmbalmanacUrl: string;
   downloadUrl: string;
   youtubeId: string;
-  posterUrl: string;
 }

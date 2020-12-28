@@ -13,4 +13,5 @@ export interface BasicConcert extends ConcertSummary {
   playCount: number;
   qualityRatingCount: number;
   qualityRating: number;
+  posterUrl: string;
 }
