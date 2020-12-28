@@ -65,6 +65,13 @@ export default function Player(): React.ReactElement {
         <div className={styles.playerBar} dir="ltr" role="complementary">
           <div className={styles.nowPlayingBar}>
             <div className={styles.nowPlayingBarLeft}>
+              {player.currentTrack && player.currentTrack.concert.posterUrl && (
+                <Link href={getConcertUrl(player.currentTrack.concert)}>
+                  <a className={styles.nowPlayingArt}>
+                    <img src={`https://meetattheshow.com${player.currentTrack.concert.posterUrl}`} alt={getConcertName(player.currentTrack.concert)} />
+                  </a>
+                </Link>
+              )}
               {player.currentTrack && (
                 <div className="text-truncate">
                   <div className={styles.trackName}>
