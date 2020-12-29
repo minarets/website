@@ -2,6 +2,7 @@ import { useSession } from 'next-auth/client';
 import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 import ReactSlider from 'react-slider';
 
 import { getConcertName, getConcertUrl } from '../api/concertService';
@@ -17,6 +18,15 @@ export default function Player(): React.ReactElement {
     void togglePlayPause(player, playerDispatch);
   }, [player, playerDispatch]);
   const [seekTime, setSeekTime] = React.useState<number | null>(null);
+
+  useHotkeys(
+    'space',
+    () => {
+      togglePlayPause(player, playerDispatch).catch((ex) => console.error(ex));
+    },
+    {},
+    [player, playerDispatch],
+  );
 
   function getTimeDisplay(seconds: number): string {
     let remainingTime = seconds;
