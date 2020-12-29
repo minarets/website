@@ -61,7 +61,7 @@ export default function Layout(): React.ReactElement {
           {!!playlists.length && (
             <ul className="nav flex-column">
               {playlists.map((playlist) => (
-                <li className="nav-item pl-2" key={playlist.id}>
+                <li className="nav-item ps-2" key={playlist.id}>
                   <Link href={`/playlists/${playlist.id}/${slugify(playlist.name)}`}>
                     <a className="nav-link">{playlist.name}</a>
                   </Link>

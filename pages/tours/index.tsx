@@ -70,7 +70,7 @@ export default function Page({ tours }: IProps): ReactElement {
               </h5>
 
               {tour.children.length && (
-                <ul className="list-unstyled pl-4">
+                <ul className="list-unstyled ps-4">
                   {tour.children.reverse().map((childTour) => (
                     <li key={childTour.id}>
                       <a href={`/tours/${childTour.slug}`} title={childTour.name}>

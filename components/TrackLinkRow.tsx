@@ -47,7 +47,7 @@ function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, 
         <div>{trackName}</div>
         {hasTrackNotes && (
           <div>
-            {firstTimePlayedText && <small className="pr-4">&#9733; {firstTimePlayedText}</small>}
+            {firstTimePlayedText && <small className="pe-4">&#9733; {firstTimePlayedText}</small>}
             {joinedTrackNotes && <small>{joinedTrackNotes}</small>}
           </div>
         )}
@@ -55,7 +55,7 @@ function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, 
       <div className="col-3 col-sm-2 col-lg-1 text-end d-none">
         <span>...</span>
         <div className="track-menu">
-          <ul className="navbar-nav mr-auto mb-2 mb-lg-0">
+          <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">Add to Queue</li>
             <li className="nav-item">Add to Playlist</li>
             <li className="nav-item">Remove from Queue</li>
