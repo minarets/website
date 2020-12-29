@@ -18,12 +18,16 @@ export default function Player(): React.ReactElement {
   }, [player, playerDispatch]);
   const [seekTime, setSeekTime] = React.useState<number | null>(null);
 
-  function getTimeDisplay(duration: number): string {
+  function getTimeDisplay(seconds: number): string {
+    let remainingTime = seconds;
+    if (!Number.isFinite(seconds)) {
+      remainingTime = 0;
+    }
+
     let result = '';
-    let remainingTime = duration;
-    if (duration >= 3600) {
+    if (seconds >= 3600) {
       remainingTime %= 3600;
-      result += `${Math.floor(duration / 3600)}:`;
+      result += `${Math.floor(seconds / 3600)}:`;
     }
 
     const minutes = Math.floor(remainingTime / 60);
@@ -38,7 +42,7 @@ export default function Player(): React.ReactElement {
       result += '0';
     }
 
-    result += remainingTime;
+    result += Math.floor(remainingTime);
 
     return result;
   }
