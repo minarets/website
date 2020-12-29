@@ -276,11 +276,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
             <div className="card-header">
               <h2 className="card-title">Notes</h2>
             </div>
-            <div className="card-body">
-              {noteLines.map((noteLine) => (
-                <div key={noteLine}>{noteLine}</div>
-              ))}
-            </div>
+            <div className="card-body white-space-pre-line">{noteLines.join('\n')}</div>
           </div>
         )}
 
@@ -289,11 +285,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
             <div className="card-header">
               <h2 className="card-title">Recording Information</h2>
             </div>
-            <div className="card-body">
-              {concert.recordingInformation.split('\n').map((line) => (
-                <div key={line}>{line}</div>
-              ))}
-            </div>
+            <div className="card-body white-space-pre-line">{concert.recordingInformation}</div>
           </div>
         )}
 
