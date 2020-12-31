@@ -5,19 +5,19 @@ import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
-import { v4 as uuid } from 'uuid';
 
 import { extractTokenDetailsFromConcertNote, getConcertDescription, getConcertKeywords, getConcertTitle, getConcertUrl } from '../../../../../api/concertService';
 import { Minarets } from '../../../../../api/minarets';
 import type { Concert, ConcertSummary } from '../../../../../api/minarets/types';
 import { pick } from '../../../../../api/objectService';
 import { slugify } from '../../../../../api/stringService';
-import type { LimitedConcert, LimitedTour, PlayQueueItem } from '../../../../../api/types';
+import { getPlaybackTrack } from '../../../../../api/trackService';
+import type { LimitedConcert, LimitedTour } from '../../../../../api/types';
 import ConcertLinkRow from '../../../../../components/ConcertLinkRow';
 import Layout from '../../../../../components/Layout';
 import TourBreadcrumbRow from '../../../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../../../components/TrackLinkRow';
-import { playTracks, usePlayerDispatch, usePlayerState } from '../../../../../contexts/PlayerContext';
+import { usePlayerState } from '../../../../../contexts/PlayerContext';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
@@ -120,35 +120,29 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
 
   const [session] = useSession();
   const playerState = usePlayerState();
-  const playerDispatch = usePlayerDispatch();
 
   const playCb = React.useCallback(() => {
-    const tracks = concert.tracks.map((track) => {
-      return {
-        ...track,
-        concert,
-        detailsByToken,
-        queueId: uuid(),
-      } as PlayQueueItem;
-    });
-
-    void playTracks(playerState, playerDispatch, tracks);
-  }, [playerState, playerDispatch, concert, detailsByToken]);
+    playerState.player
+      .playTracks(
+        concert.tracks.map((track) =>
+          getPlaybackTrack({
+            ...track,
+            concert,
+          }),
+        ),
+      )
+      .catch((ex) => console.error(ex));
+  }, [playerState, concert]);
   const queueCb = React.useCallback(() => {
-    const tracks = concert.tracks.map((track) => {
-      return {
-        ...track,
-        concert,
-        detailsByToken,
-        queueId: uuid(),
-      } as PlayQueueItem;
-    });
-
-    playerDispatch({
-      type: 'QueueTracks',
-      tracks,
-    });
-  }, [playerDispatch, concert, detailsByToken]);
+    playerState.player.queuePriorityTracks(
+      concert.tracks.map((track) =>
+        getPlaybackTrack({
+          ...track,
+          concert,
+        }),
+      ),
+    );
+  }, [playerState, concert]);
 
   return (
     <>

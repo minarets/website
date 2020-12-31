@@ -34,7 +34,6 @@
   "dependencies": {
     "bootstrap": "^5.0.0-beta1",
     "cross-fetch": "3.0.6",
-    "gapless.js": "^2.2.3",
     "ioredis": "4.19.4",
     "moment": "2.29.1",
     "next": "10.0.4",

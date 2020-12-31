@@ -4,4 +4,4 @@ export * from './LimitedConcertWithArtistId';
 export * from './LimitedConcertWithTokenDetails';
 export * from './LimitedTour';
 export * from './LimitedTourWithLimitedConcerts';
-export * from './PlayQueueItem';
+export * from './PlaybackTrack';

@@ -26,8 +26,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       case 'playTrack': {
         const [, id] = query.minarets;
         if (id) {
-          const response = await api.tracks.play(id);
-          body = JSON.stringify(response);
+          try {
+            const response = await api.tracks.play(id);
+            body = JSON.stringify(response);
+          } catch (ex) {
+            console.error(ex);
+            body = JSON.stringify({
+              ok: true,
+            });
+          }
         } else {
           body = JSON.stringify({
             ok: true,

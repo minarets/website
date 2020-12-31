@@ -2763,11 +2763,6 @@ futoin-hkdf@^1.3.2:
   resolved "https://registry.yarnpkg.com/futoin-hkdf/-/futoin-hkdf-1.3.2.tgz#cd9a09153e3db7d166b9717f872991a4950430cd"
   integrity sha512-3EVi3ETTyJg5PSXlxLCaUVVn0pSbDf62L3Gwxne7Uq+d8adOSNWQAad4gg7WToHkcgnCJb3Wlb1P8r4Evj4GPw==
 
-gapless.js@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/gapless.js/-/gapless.js-2.2.3.tgz#a6c72ecb6e02fff08fae4f4effda92ee7dd4c594"
-  integrity sha512-9YkVGJxpFIO8MaNXEQr1OywFEQSKWg73+HwiPg3TgolMHaN00MHT59S158Cs+ym9+WWOQmMKiw/rV9eZGECfoA==
-
 gauge@~2.7.3:
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/gauge/-/gauge-2.7.4.tgz#2c03405c7538c39d7eb37b317022e325fb018bf7"

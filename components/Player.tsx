@@ -1,72 +1,34 @@
 import { useSession } from 'next-auth/client';
-import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import ReactSlider from 'react-slider';
 
-import { getConcertName, getConcertUrl } from '../api/concertService';
-import { slugify } from '../api/stringService';
-import { usePlayerState, usePlayerDispatch, togglePlayPause } from '../contexts/PlayerContext';
+import { getTimeDisplay } from '../api/Player';
+import { usePlayerState, usePlayerDispatch } from '../contexts/PlayerContext';
 import styles from '../styles/Player.module.scss';
 
 export default function Player(): React.ReactElement {
   const [session] = useSession();
-  const player = usePlayerState();
+  const playerState = usePlayerState();
   const playerDispatch = usePlayerDispatch();
-  const togglePlayPauseCb = React.useCallback(() => {
-    void togglePlayPause(player, playerDispatch);
-  }, [player, playerDispatch]);
   const [seekTime, setSeekTime] = React.useState<number | null>(null);
 
   useHotkeys(
     'space',
     () => {
-      togglePlayPause(player, playerDispatch).catch((ex) => console.error(ex));
+      playerState.player.togglePlay().catch((ex) => console.error(ex));
     },
     {},
-    [player, playerDispatch],
+    [playerState],
   );
-
-  function getTimeDisplay(seconds: number): string {
-    let remainingTime = seconds;
-    if (!Number.isFinite(seconds)) {
-      remainingTime = 0;
-    }
-
-    let result = '';
-    if (seconds >= 3600) {
-      remainingTime %= 3600;
-      result += `${Math.floor(seconds / 3600)}:`;
-    }
-
-    const minutes = Math.floor(remainingTime / 60);
-    remainingTime %= 60;
-    if (result && minutes < 10) {
-      result += '0';
-    }
-
-    result += `${minutes}:`;
-
-    if (remainingTime < 10) {
-      result += '0';
-    }
-
-    result += Math.floor(remainingTime);
-
-    return result;
-  }
 
   function getPlaybackTime(): string {
     if (seekTime != null) {
       return getTimeDisplay(seekTime);
     }
 
-    if (player.currentTrack) {
-      return getTimeDisplay(player.currentTime);
-    }
-
-    return '0:00';
+    return getTimeDisplay(playerState.currentTime);
   }
 
   function handleTrackSeek(value: number | number[] | null | undefined): void {
@@ -97,7 +59,7 @@ export default function Player(): React.ReactElement {
     let valueAsNumber: number;
     if (Array.isArray(value)) {
       if (value.length) {
-        valueAsNumber = value[0];
+        [valueAsNumber] = value;
       } else {
         return;
       }
@@ -105,9 +67,7 @@ export default function Player(): React.ReactElement {
       valueAsNumber = value;
     }
 
-    if (player.player.currentTrack) {
-      player.player.currentTrack.seek(valueAsNumber);
-    }
+    playerState.player.seek(valueAsNumber);
   }
 
   function handleSetVolume(value: number | number[] | null | undefined): void {
@@ -118,7 +78,7 @@ export default function Player(): React.ReactElement {
     let valueAsNumber: number;
     if (Array.isArray(value)) {
       if (value.length) {
-        valueAsNumber = value[0];
+        [valueAsNumber] = value;
       } else {
         return;
       }
@@ -136,48 +96,48 @@ export default function Player(): React.ReactElement {
     <>
       {!!session && (
         <>
-          <Head>
-            {player.currentTrack && (
+          {/*<Head>
+            {playerState.currentTrack && (
               <>
-                <link rel="preload" href={player.currentTrack.url} as="audio" key={`preload-audio-${player.currentTrack.uniqueId}`} />
-                {player.currentTrack.concert.posterUrl && (
-                  <link rel="preload" href={`https://meetattheshow.com${player.currentTrack.concert.posterUrl}`} as="image" key={`preload-art-${player.currentTrack.concert.id}`} />
+                <link rel="preload" href={playerState.currentTrack.url} as="audio" key={`preload-audio-${playerState.currentTrack.id}`} />
+                {playerState.currentTrack.album.imageUrl && (
+                  <link rel="preload" href={playerState.currentTrack.album.imageUrl} as="image" key={`preload-art-${playerState.currentTrack.album.imageUrl}`} />
                 )}
               </>
             )}
-            {player.queueItems.slice(0, 2).map((queueItem) => (
+            {[...playerState.priorityTracks, ...playerState.nextTracks.slice(0, 2)].map((track) => (
               <>
-                <link rel="preload" href={queueItem.url} as="audio" key={`preload-audio-${queueItem.uniqueId}`} />
-                {queueItem.concert.posterUrl && <link rel="preload" href={`https://meetattheshow.com${queueItem.concert.posterUrl}`} as="image" key={`preload-art-${queueItem.concert.id}`} />}
+                <link rel="preload" href={track.url} as="audio" key={`preload-audio-${track.id}`} />
+                {track.album.imageUrl && <link rel="preload" href={track.album.imageUrl} as="image" key={`preload-art-${track.album.id}`} />}
               </>
             ))}
-          </Head>
+          </Head>*/}
           <div className={styles.playerBar} dir="ltr" role="complementary">
             <div className={styles.nowPlayingBar}>
               <div className={styles.nowPlayingBarLeft}>
-                {player.currentTrack && player.currentTrack.concert.posterUrl && (
-                  <Link href={getConcertUrl(player.currentTrack.concert)}>
+                {playerState.currentTrack && playerState.currentTrack.album.imageUrl && (
+                  <Link href={playerState.currentTrack.album.url}>
                     <a className={styles.nowPlayingArt}>
-                      <img src={`https://meetattheshow.com${player.currentTrack.concert.posterUrl}`} alt={getConcertName(player.currentTrack.concert)} />
+                      <img src={playerState.currentTrack.album.imageUrl} alt={playerState.currentTrack.album.name} />
                     </a>
                   </Link>
                 )}
-                {player.currentTrack && (
+                {playerState.currentTrack && (
                   <div className="text-truncate">
                     <div className={styles.trackName}>
-                      <Link href={getConcertUrl(player.currentTrack.concert)}>
-                        <a>{player.currentTrack.name}</a>
+                      <Link href={playerState.currentTrack.album.url}>
+                        <a>{playerState.currentTrack.name}</a>
                       </Link>
                     </div>
                     <div className={styles.trackDetails}>
                       <div>
-                        <Link href={getConcertUrl(player.currentTrack.concert)}>
-                          <a>{getConcertName(player.currentTrack.concert)}</a>
+                        <Link href={playerState.currentTrack.album.url}>
+                          <a>{playerState.currentTrack.album.name}</a>
                         </Link>
                       </div>
                       <div>
-                        <Link href={`/artists/${player.currentTrack.concert.artist.id}/${slugify(player.currentTrack.concert.artist.name)}`}>
-                          <a>{player.currentTrack.concert.artist.name}</a>
+                        <Link href={playerState.currentTrack.artist.url}>
+                          <a>{playerState.currentTrack.artist.name}</a>
                         </Link>
                       </div>
                     </div>
@@ -201,27 +161,27 @@ export default function Player(): React.ReactElement {
                         </svg>
                       </button>
                     )}*/}
-                    <button title="Previous" type="button" onClick={(): void => playerDispatch({ type: 'PreviousTrack' })}>
+                    <button title="Previous" type="button" onClick={(): Promise<void> => playerState.player.previousTrack()}>
                       <svg role="img" height="16" width="16" viewBox="0 0 16 16">
                         <path d="M13 2.5L5 7.119V3H3v10h2V8.881l8 4.619z" />
                       </svg>
                     </button>
-                    {player.isPaused && (
-                      <button title="Play" type="button" className={styles.playPause} disabled={!player.player.currentTrack} onClick={(): void => togglePlayPauseCb()}>
+                    {playerState.isPaused && (
+                      <button title="Play" type="button" className={styles.playPause} disabled={!playerState.currentTrack} onClick={(): Promise<void> => playerState.player.play()}>
                         <svg role="img" height="16" width="16" viewBox="0 0 16 16">
                           <path d="M4.018 14L14.41 8 4.018 2z" />
                         </svg>
                       </button>
                     )}
-                    {!player.isPaused && (
-                      <button title="Pause" type="button" className={styles.playPause} onClick={(): void => togglePlayPauseCb()}>
+                    {!playerState.isPaused && (
+                      <button title="Pause" type="button" className={styles.playPause} onClick={(): void => playerState.player.pause()}>
                         <svg role="img" height="16" width="16" viewBox="0 0 16 16">
                           <path fill="none" d="M0 0h16v16H0z" />
                           <path d="M3 2h3v12H3zM10 2h3v12h-3z" />
                         </svg>
                       </button>
                     )}
-                    <button title="Next" type="button" onClick={(): void => playerDispatch({ type: 'NextTrack' })}>
+                    <button title="Next" type="button" onClick={(): Promise<void> => playerState.player.nextTrack()}>
                       <svg role="img" height="16" width="16" viewBox="0 0 16 16">
                         <path d="M11 3v4.119L3 2.5v11l8-4.619V13h2V3z" />
                       </svg>
@@ -253,12 +213,12 @@ export default function Player(): React.ReactElement {
                     <ReactSlider
                       ariaLabel="Player progress"
                       className="react-slider"
-                      max={player.player.currentTrack && Number.isFinite(player.player.currentTrack.duration) ? player.player.currentTrack.duration : 100}
-                      value={player.player.currentTrack && Number.isFinite(player.player.currentTrack.currentTime) ? player.player.currentTrack.currentTime : 0}
+                      max={playerState.currentTrack && Number.isFinite(playerState.duration) ? playerState.duration : 100}
+                      value={playerState.currentTrack && Number.isFinite(playerState.currentTime) ? playerState.currentTime : 0}
                       onChange={handleTrackSeek}
                       onAfterChange={handleTrackProgressChange}
                     />
-                    <div className={styles.playbackTime}>{player.currentTrack ? player.currentTrack.duration : '0:00'}</div>
+                    <div className={styles.playbackTime}>{getTimeDisplay(playerState.currentTrack ? playerState.duration : 0)}</div>
                   </div>
                 </div>
               </div>
@@ -274,30 +234,30 @@ export default function Player(): React.ReactElement {
                     </Link>
                   </div>
                   <div className={styles.volumeBar}>
-                    {player.isMuted && (
+                    {playerState.isMuted && (
                       <button title="Unmute" type="button" onClick={(): void => playerDispatch({ type: 'Unmute' })}>
                         <svg role="img" height="32" width="32" viewBox="0 0 31 31">
                           <path d="M0 10.054h5.598l10.387-5.994v23.976l-10.387-5.994h-5.598v-11.988M13.986 7.516l-7.849 4.535h-4.139v7.992h4.139l7.849 4.535v-17.062M31.207 11.75l-4.281 4.297 4.281 4.281-1.411 1.411-4.281-4.281-4.297 4.281-1.411-1.411 4.297-4.281-4.297-4.297 1.411-1.411 4.297 4.297 4.281-4.297 1.411 1.411z" />
                         </svg>
                       </button>
                     )}
-                    {!player.isMuted && (
+                    {!playerState.isMuted && (
                       <button title="Mute" type="button" onClick={(): void => playerDispatch({ type: 'Mute' })}>
                         <svg role="img" height="32" width="32" viewBox="0 0 31 31">
-                          {player.volume < 33 && (
+                          {playerState.volume < 33 && (
                             <path d="M21.376 10.418q1.094 1.094 1.713 2.553t0.618 3.076q0 1.078-0.285 2.109t-0.801 1.911-1.245 1.61l-1.316-1.538q1.649-1.728 1.649-4.091t-1.649-4.091l1.316-1.538M0 10.054h5.598l10.387-5.994v23.976l-10.387-5.994h-5.598v-11.988M13.986 7.516l-7.849 4.535h-4.139v7.992h4.139l7.849 4.535v-17.062z" />
                           )}
-                          {player.volume >= 33 && player.volume < 66 && (
+                          {playerState.volume >= 33 && playerState.volume < 66 && (
                             <path d="M0 10.054h5.598l10.387-5.994v23.976l-10.387-5.994h-5.598v-11.988M13.986 7.516l-7.849 4.535h-4.139v7.992h4.139l7.849 4.535v-17.062M22.906 19.956q0 0 0.4-0.924t0.4-2.985-0.801-3.909-2.244-3.243l1.316-1.522q1.744 1.665 2.735 3.909t0.991 4.765-0.991 4.765-2.735 3.909l-1.316-1.522q1.443-1.395 2.244-3.243z" />
                           )}
-                          {player.volume >= 66 && (
+                          {playerState.volume >= 66 && (
                             <path d="M25.863 2.823q2.743 2.521 4.289 5.946t1.546 7.279-1.546 7.279-4.289 5.946l-1.3-1.522q2.41-2.236 3.774-5.265t1.364-6.438-1.364-6.438-3.774-5.265l1.3-1.522M21.328 8.135q1.047 0.999 1.8 2.236t1.166 2.696 0.412 2.981q0 2.299-0.896 4.345t-2.482 3.568l-1.3-1.522q1.253-1.253 1.966-2.902t0.714-3.489-0.706-3.489-1.974-2.902l1.3-1.522M0 10.054h5.598l10.387-5.994v23.976l-10.387-5.994h-5.598v-11.988M13.986 7.516l-7.849 4.535h-4.139v7.992h4.139l7.849 4.535v-17.062z" />
                           )}
                         </svg>
                       </button>
                     )}
 
-                    <ReactSlider ariaLabel="Volume" className="react-slider" value={player.isMuted ? 0 : player.volume} onAfterChange={handleSetVolume} />
+                    <ReactSlider ariaLabel="Volume" className="react-slider" value={playerState.isMuted ? 0 : playerState.volume} onAfterChange={handleSetVolume} />
                   </div>
                 </div>
               </div>

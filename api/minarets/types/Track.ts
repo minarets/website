@@ -7,5 +7,5 @@ export interface Track {
   duration: string;
   order: number;
   playCount: number;
-  url?: string;
+  url: string;
 }
