@@ -74,7 +74,17 @@ export abstract class ApiBase {
       return response;
     }
 
-    const error: ErrorWithResponse = new Error(response.statusText);
+    let message = response.statusText;
+    try {
+      const responseBody = (await response.json()) as Record<string, unknown>;
+      if (responseBody) {
+        message += ` \n${JSON.stringify(responseBody, null, 1)}`;
+      }
+    } catch (ex) {
+      // ignore
+    }
+
+    const error: ErrorWithResponse = new Error(message);
     error.response = response;
     throw error;
   }
@@ -90,7 +100,17 @@ export abstract class ApiBase {
       return response;
     }
 
-    const error: ErrorWithResponse = new Error(response.statusText);
+    let message = response.statusText;
+    try {
+      const responseBody = (await response.json()) as Record<string, unknown>;
+      if (responseBody) {
+        message += ` \n${JSON.stringify(responseBody, null, 1)}`;
+      }
+    } catch (ex) {
+      // ignore
+    }
+
+    const error: ErrorWithResponse = new Error(message);
     error.response = response;
     throw error;
   }
