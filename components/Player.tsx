@@ -16,7 +16,8 @@ export default function Player(): React.ReactElement {
 
   useHotkeys(
     'space',
-    () => {
+    (e) => {
+      e.preventDefault();
       playerState.player.togglePlay().catch((ex) => console.error(ex));
     },
     {},
