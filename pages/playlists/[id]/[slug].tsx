@@ -5,7 +5,7 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import { Minarets } from '../../../api';
-import { extractTokenDetailsFromConcertNote, getConcertUrl } from '../../../api/concertService';
+import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../api/concertService';
 import type { BasicArtist, ErrorWithResponse, Playlist } from '../../../api/minarets/types';
 import { pick } from '../../../api/objectService';
 import { slugify } from '../../../api/stringService';
@@ -96,8 +96,9 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
   const concertsByTourId: Record<string, LimitedConcert[]> = {};
   for (const concert of concertsResults.items) {
     const { detailsByToken: tokenDetails } = extractTokenDetailsFromConcertNote(concert);
+    const concertSummary = pick(concert, 'id', 'date', 'name');
     concertsById[concert.id] = {
-      ...pick(concert, 'id', 'date', 'name'),
+      ...concertSummary,
       tokenDetails,
       artistId: concert.artist.id,
     };
@@ -107,7 +108,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     }
 
     concertsByTourId[concert.tour.id] = concertsByTourId[concert.tour.id] || [];
-    concertsByTourId[concert.tour.id].push(pick(concert, 'id', 'date', 'name'));
+    concertsByTourId[concert.tour.id].push(concertSummary);
   }
 
   const relatedConcertsByTour: LimitedTourWithLimitedConcerts[] = [];
@@ -207,6 +208,7 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
                   track={track}
                   trackNumber={index + 1}
                   concertUrl={concertUrl}
+                  concertName={getConcertName(concert)}
                   artistUrl={artistUrl}
                   key={track.uniqueId || track.id}
                 />

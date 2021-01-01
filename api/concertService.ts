@@ -10,7 +10,7 @@ interface IExtractTokenDetailsFromConcertNoteResult {
   detailsByToken: Record<string, string>;
 }
 
-export function getConcertName(concert: BasicConcert): string {
+export function getConcertName(concert: Pick<BasicConcert, 'date' | 'name'>): string {
   const concertDate = moment.utc(concert.date);
 
   return `${concertDate.format('yyyy-MM-DD')} - ${concert.name}`;

@@ -6,13 +6,14 @@ import type { Track } from '../api/minarets/types';
 
 interface IProps {
   concertUrl?: string;
+  concertName?: string;
   artistUrl?: string;
   concertAdditionalDetailsByToken: Record<string, string>;
   track: Track;
   trackNumber?: number;
 }
 
-function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, track, trackNumber }: IProps): ReactElement {
+function TrackLinkRow({ artistUrl, concertUrl, concertName, concertAdditionalDetailsByToken, track, trackNumber }: IProps): ReactElement {
   let trackName = track.name;
   let firstTimePlayedText: string | undefined;
   const trackNotes: string[] = [];
@@ -52,6 +53,13 @@ function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, 
           </div>
         )}
       </div>
+      {concertUrl && concertName && (
+        <div className="d-none d-md-flex col-lg-5 col-xl-3 text-truncate">
+          <Link href={concertUrl}>
+            <a className="nav-link">{concertName}</a>
+          </Link>
+        </div>
+      )}
       <div className="col-3 col-sm-2 col-lg-1 text-end d-none">
         <span>...</span>
         <div className="track-menu">
@@ -87,6 +95,7 @@ function TrackLinkRow({ artistUrl, concertUrl, concertAdditionalDetailsByToken, 
 
 TrackLinkRow.defaultProps = {
   concertUrl: '',
+  concertName: '',
   artistUrl: '',
   trackNumber: undefined,
 };

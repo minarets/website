@@ -3,7 +3,7 @@ import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { extractTokenDetailsFromConcertNote, getConcertUrl } from '../../../api/concertService';
+import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../api/concertService';
 import { Minarets } from '../../../api/minarets';
 import type { BasicArtist, Compilation, CompilationSummary } from '../../../api/minarets/types';
 import { pick } from '../../../api/objectService';
@@ -177,6 +177,7 @@ export default function Page({ compilation, concertsById, relatedConcertsByTour,
                   track={track}
                   trackNumber={index + 1}
                   concertUrl={concertUrl}
+                  concertName={getConcertName(concert)}
                   artistUrl={artistUrl}
                   key={track.uniqueId || track.id}
                 />
