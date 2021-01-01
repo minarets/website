@@ -1,10 +1,12 @@
 import { useSession } from 'next-auth/client';
+import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import ReactSlider from 'react-slider';
 
 import { getTimeDisplay } from '../api/Player';
+import type { PlaybackTrack } from '../api/types';
 import { usePlayerState, usePlayerDispatch } from '../contexts/PlayerContext';
 import styles from '../styles/Player.module.scss';
 
@@ -93,26 +95,31 @@ export default function Player(): React.ReactElement {
     });
   }
 
+  function uniqueTracksById(tracks: readonly (PlaybackTrack | undefined)[]): PlaybackTrack[] {
+    const result: PlaybackTrack[] = [];
+    const isUnique: Record<string, boolean> = {};
+    for (const track of tracks) {
+      if (track && !isUnique[track.id]) {
+        isUnique[track.id] = true;
+        result.push(track);
+      }
+    }
+
+    return result;
+  }
+
   return (
     <>
       {!!session && (
         <>
-          {/*<Head>
-            {playerState.currentTrack && (
-              <>
-                <link rel="preload" href={playerState.currentTrack.url} as="audio" key={`preload-audio-${playerState.currentTrack.id}`} />
-                {playerState.currentTrack.album.imageUrl && (
-                  <link rel="preload" href={playerState.currentTrack.album.imageUrl} as="image" key={`preload-art-${playerState.currentTrack.album.imageUrl}`} />
-                )}
-              </>
-            )}
-            {[...playerState.priorityTracks, ...playerState.nextTracks.slice(0, 2)].map((track) => (
+          <Head>
+            {uniqueTracksById([playerState.currentTrack, ...playerState.priorityTracks, ...playerState.nextTracks.slice(0, 2)]).map((track) => (
               <>
                 <link rel="preload" href={track.url} as="audio" key={`preload-audio-${track.id}`} />
                 {track.album.imageUrl && <link rel="preload" href={track.album.imageUrl} as="image" key={`preload-art-${track.album.id}`} />}
               </>
             ))}
-          </Head>*/}
+          </Head>
           <div className={styles.playerBar} dir="ltr" role="complementary">
             <div className={styles.nowPlayingBar}>
               <div className={styles.nowPlayingBarLeft}>

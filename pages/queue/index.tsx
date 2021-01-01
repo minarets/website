@@ -2,14 +2,12 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { getConcertUrl } from '../../api/concertService';
-import { slugify } from '../../api/stringService';
 import Layout from '../../components/Layout';
-import TrackLinkRow from '../../components/TrackLinkRow';
+import QueueTrackLinkRow from '../../components/QueueTrackLinkRow';
 import { usePlayerState } from '../../contexts/PlayerContext';
 
 export default function Page(): ReactElement {
-  const { currentTrack, queueItems } = usePlayerState();
+  const playerState = usePlayerState();
 
   return (
     <Layout title="Play Queue">
@@ -27,42 +25,44 @@ export default function Page(): ReactElement {
           </li>
         </ul>
 
-        {!!currentTrack && (
+        {!!playerState.currentTrack && (
           <div className="card">
             <div className="card-header">
               <h2 className="card-title">Now Playing</h2>
             </div>
             <div className="card-body">
-              <TrackLinkRow
-                concertAdditionalDetailsByToken={currentTrack.detailsByToken} //
-                track={currentTrack}
-                concertUrl={getConcertUrl(currentTrack.concert)}
-                artistUrl={`/artists/${currentTrack.concert.artist.id}/${slugify(currentTrack.concert.artist.name)}`}
-              />
+              <QueueTrackLinkRow track={playerState.currentTrack} />
             </div>
           </div>
         )}
 
-        {!!queueItems.length && (
+        {!!playerState.priorityTracks.length && (
           <div className="card">
             <div className="card-header">
-              <h2 className="card-title">Next up</h2>
+              <h2 className="card-title">Next In Queue</h2>
             </div>
             <div className="card-body">
-              {queueItems.map((track) => (
-                <TrackLinkRow
-                  concertAdditionalDetailsByToken={track.detailsByToken} //
-                  track={track}
-                  concertUrl={getConcertUrl(track.concert)}
-                  artistUrl={`/artists/${track.concert.artist.id}/${slugify(track.concert.artist.name)}`}
-                  key={track.queueId}
-                />
+              {playerState.priorityTracks.map((track) => (
+                <QueueTrackLinkRow track={track} key={track.uniqueId} />
               ))}
             </div>
           </div>
         )}
 
-        {!currentTrack && !queueItems.length && (
+        {!!playerState.nextTracks.length && (
+          <div className="card">
+            <div className="card-header">
+              <h2 className="card-title">Next Up</h2>
+            </div>
+            <div className="card-body">
+              {playerState.nextTracks.map((track) => (
+                <QueueTrackLinkRow track={track} key={track.uniqueId} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {!playerState.currentTrack && !playerState.priorityTracks.length && !playerState.nextTracks.length && (
           <div className="card">
             <div className="card-body">Doesn&apos;t look like you have any songs queued up.</div>
           </div>

@@ -12,6 +12,7 @@ export function getPlaybackTrack(track: TrackWithExtendedInformation): PlaybackT
     uniqueId: uuid(),
     url: track.url,
     name: track.name,
+    duration: track.duration,
     artist: {
       name: track.concert.artist.name,
       url: `/artists/${track.concert.artist.id}/${slugify(track.concert.artist.name)}`,

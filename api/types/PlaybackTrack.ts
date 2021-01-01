@@ -14,6 +14,7 @@ export interface PlaybackTrack {
   id: string;
   uniqueId: string;
   name: string;
+  duration: string;
   url: string;
   album: PlaybackTrackAlbum;
   artist: PlaybackTrackArtist;

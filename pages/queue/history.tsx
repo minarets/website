@@ -2,14 +2,12 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { getConcertUrl } from '../../api/concertService';
-import { slugify } from '../../api/stringService';
 import Layout from '../../components/Layout';
-import TrackLinkRow from '../../components/TrackLinkRow';
+import QueueTrackLinkRow from '../../components/QueueTrackLinkRow';
 import { usePlayerState } from '../../contexts/PlayerContext';
 
 export default function Page(): ReactElement {
-  const { historyItems } = usePlayerState();
+  const { historyTracks } = usePlayerState();
 
   return (
     <Layout title="Play Queue">
@@ -27,26 +25,20 @@ export default function Page(): ReactElement {
           </li>
         </ul>
 
-        {!!historyItems.length && (
+        {!!historyTracks.length && (
           <div className="card">
             <div className="card-header">
-              <h2 className="card-title">Next up</h2>
+              <h2 className="card-title">Played Songs</h2>
             </div>
             <div className="card-body">
-              {historyItems.map((track) => (
-                <TrackLinkRow
-                  concertAdditionalDetailsByToken={track.detailsByToken} //
-                  track={track}
-                  concertUrl={getConcertUrl(track.concert)}
-                  artistUrl={`/artists/${track.concert.artist.id}/${slugify(track.concert.artist.name)}`}
-                  key={track.queueId}
-                />
+              {historyTracks.map((track) => (
+                <QueueTrackLinkRow track={track} key={track.uniqueId} />
               ))}
             </div>
           </div>
         )}
 
-        {!historyItems.length && (
+        {!historyTracks.length && (
           <div className="card">
             <div className="card-body">Doesn&apos;t look like you have played any songs.</div>
           </div>
