@@ -19,7 +19,7 @@ export default function Page(): ReactElement {
             </Link>
           </li>
           <li className="nav-item">
-            <Link href="/history">
+            <Link href="/queue/history">
               <a className="nav-link active">History</a>
             </Link>
           </li>
