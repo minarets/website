@@ -1,11 +1,12 @@
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
+import { Minarets } from '../../../api';
 import { extractTokenDetailsFromConcertNote, getConcertUrl } from '../../../api/concertService';
-import { Minarets } from '../../../api/minarets';
-import type { BasicArtist, Playlist, PlaylistSummary } from '../../../api/minarets/types';
+import type { BasicArtist, ErrorWithResponse, Playlist } from '../../../api/minarets/types';
 import { pick } from '../../../api/objectService';
 import { slugify } from '../../../api/stringService';
 import type { LimitedArtist, LimitedConcert, LimitedConcertWithTokenDetails, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../api/types';
@@ -15,14 +16,18 @@ import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../components/TrackLinkRow';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
+  // NOTE: Only pre-rendering the top 20 most popular playlists. Others will be lazy loaded
   const api = new Minarets();
-  const playlists = await api.playlists.listAllPlaylists();
-  const paths = playlists.items.map((playlist: PlaylistSummary) => `/playlists/${playlist.id}/${slugify(playlist.name)}`);
+  const playlists = await api.playlists.listPlaylists({
+    itemsPerPage: 20,
+    page: 1,
+    sortDesc: 'Popular',
+  });
+  const paths = playlists.items.map((playlist: Playlist) => `/playlists/${playlist.id}/${slugify(playlist.name)}`);
 
   return {
     paths,
-    // Means other routes should 404
-    fallback: false,
+    fallback: true,
   };
 }
 
@@ -46,12 +51,28 @@ interface IProps {
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
   const api = new Minarets();
+  let playlist: Playlist;
+  try {
+    playlist = await api.playlists.getPlaylist(params.id);
+    if (!playlist) {
+      return {
+        notFound: true,
+      };
+    }
+  } catch (ex) {
+    if ((ex as ErrorWithResponse).response?.status === 404) {
+      return {
+        notFound: true,
+      };
+    }
+
+    throw ex;
+  }
+
   const [
-    playlist, //
-    concertsResults,
+    concertsResults, //
     tourResults,
   ] = await Promise.all([
-    api.playlists.getPlaylist(params.id),
     api.concerts.listConcertsByPlaylist({
       playlistId: params.id,
       sortAsc: 'ConcertDate',
@@ -115,6 +136,15 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
 }
 
 export default function Page({ playlist, concertsById, relatedConcertsByTour, toursById, artistsById }: IProps): ReactElement {
+  const router = useRouter();
+  if (router.isFallback) {
+    return (
+      <Layout title="Loading playlist...">
+        <div className="content">Loading...</div>
+      </Layout>
+    );
+  }
+
   const createdOn = moment.utc(playlist.createdOn);
 
   return (
