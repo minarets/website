@@ -18,6 +18,11 @@ function QueueTrackLinkRow({ track, trackNumber }: IProps): ReactElement {
     <div className="row">
       <div className="d-none d-sm-flex col-sm-2 col-lg-1">{!!trackNumber && <span className="align-middle">{trackNumber}</span>}</div>
       <div className="col text-truncate">{track.name}</div>
+      <div className="col text-truncate">
+        <Link href={track.album.url}>
+          <a>{track.album.name}</a>
+        </Link>
+      </div>
       <div className="d-none d-sm-block col-sm-2 col-lg-1 text-end">
         <span className="align-middle">{track.duration}</span>
       </div>
