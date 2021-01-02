@@ -61,16 +61,16 @@ export default function Page({ tours }: IProps): ReactElement {
             <div className="card-body" key={tour.id}>
               <h5>
                 <Link href={`/tours/${tour.slug}`}>
-                  <a>
-                    {tour.name} ({tour.concertCount})
-                  </a>
+                  <a>{tour.name}</a>
                 </Link>{' '}
                 <Link href={`/tours/${tour.slug}/random`}>
-                  <a title={`Random concert for ${tour.name}`}>Random Concert</a>
+                  <a title={`Random concert for ${tour.name}`}>
+                    <img src="/random.svg" alt={`Random concert for ${tour.name}`} className={styles.logo} />
+                  </a>
                 </Link>
               </h5>
 
-              {tour.children.length && (
+              {!!tour.children.length && (
                 <ul className="list-unstyled ps-4">
                   {tour.children.reverse().map((childTour) => (
                     <li key={childTour.id}>
