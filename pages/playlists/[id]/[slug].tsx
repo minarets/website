@@ -1,5 +1,6 @@
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import type { ReactElement } from 'react';
@@ -154,7 +155,9 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
         <nav className="d-none d-lg-block" aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
-              <a href="/playlists">Playlists</a>
+              <Link href="/playlists">
+                <a>Playlists</a>
+              </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
               {playlist.name}

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
@@ -23,9 +24,9 @@ function TourBreadcrumb({ tour, toursById, skipParent }: IProps): ReactElement {
           <TourBreadcrumb tour={parentTour} toursById={toursById} /> &raquo;{' '}
         </span>
       )}
-      <a href={`/tours/${slugify(tour.name)}`} title={tour.name}>
-        {tour.name}
-      </a>
+      <Link href={`/tours/${slugify(tour.name)}`}>
+        <a>{tour.name}</a>
+      </Link>
     </span>
   );
 }

@@ -1,4 +1,5 @@
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
@@ -91,11 +92,15 @@ export default function Page({ tour, concertsByTour, toursById }: IProps): React
         <nav aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
-              <a href="/tours">Tours</a>
+              <Link href="/tours">
+                <a>Tours</a>
+              </Link>
             </li>
             {parentTour && (
               <li className="breadcrumb-item">
-                <a href={`/tours/${parentTour.slug}`}>{parentTour.name}</a>
+                <Link href={`/tours/${parentTour.slug}`}>
+                  <a>{parentTour.name}</a>
+                </Link>
               </li>
             )}
             <li className="breadcrumb-item active" aria-current="page">

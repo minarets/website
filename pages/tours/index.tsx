@@ -1,8 +1,9 @@
 import type { GetStaticPropsResult } from 'next';
+import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Minarets } from '../../api/minarets';
+import { Minarets } from '../../api';
 import type { TourWithChildren } from '../../api/minarets/types';
 import Layout from '../../components/Layout';
 import styles from '../../styles/Tours.module.css';
@@ -61,27 +62,30 @@ export default function Page({ tours }: IProps): ReactElement {
           {tours.map((tour) => (
             <div className="card-body" key={tour.id}>
               <h5>
-                <a href={`/tours/${tour.slug}`} title={tour.name}>
-                  {tour.name} ({tour.concertCount})
-                </a>{' '}
-                <a href={`/tours/${tour.slug}/random`} title={`Random concert for ${tour.name}`}>
-                  Random Concert
-                </a>
+                <Link href={`/tours/${tour.slug}`}>
+                  <a>
+                    {tour.name} ({tour.concertCount})
+                  </a>
+                </Link>{' '}
+                <Link href={`/tours/${tour.slug}/random`}>
+                  <a title={`Random concert for ${tour.name}`}>Random Concert</a>
+                </Link>
               </h5>
 
               {tour.children.length && (
                 <ul className="list-unstyled ps-4">
                   {tour.children.reverse().map((childTour) => (
                     <li key={childTour.id}>
-                      <a href={`/tours/${childTour.slug}`} title={childTour.name}>
-                        {childTour.name}
-                        {' ('}
-                        {childTour.concertCount}{' '}
-                        <a href={`/tours/${childTour.slug}/random`} title={`Random concert for ${childTour.name}`}>
+                      <Link href={`/tours/${childTour.slug}`}>
+                        <a>{childTour.name}</a>
+                      </Link>
+                      {` (${childTour.concertCount} `}
+                      <Link href={`/tours/${childTour.slug}/random`}>
+                        <a title={`Random concert for ${childTour.name}`}>
                           <img src="/random.svg" alt={`Random concert for ${childTour.name}`} className={styles.logo} />
                         </a>
-                        )
-                      </a>
+                      </Link>
+                      )
                     </li>
                   ))}
                 </ul>

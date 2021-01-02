@@ -156,7 +156,9 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
           <nav className="d-none d-lg-block" aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <a href="/concerts">Concerts</a>
+                <Link href="/concerts">
+                  <a>Concerts</a>
+                </Link>
               </li>
               <li className="breadcrumb-item active" aria-current="page">
                 {title}

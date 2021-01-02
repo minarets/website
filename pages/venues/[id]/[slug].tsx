@@ -1,4 +1,5 @@
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
@@ -109,7 +110,9 @@ export default function Page({ venue, latestConcertsByTour, popularConcerts, new
         <nav className="d-none d-lg-block" aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
-              <a href="/venues">Venues</a>
+              <Link href="/venues">
+                <a>Venues</a>
+              </Link>
             </li>
             <li className="breadcrumb-item active" aria-current="page">
               {venue.name}
