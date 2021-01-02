@@ -1,4 +1,4 @@
-interface PlaybackTrackAlbum {
+export interface PlaybackTrackAlbum {
   id: string;
   name: string;
   url: string;

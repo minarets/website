@@ -6,7 +6,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import ReactSlider from 'react-slider';
 
 import { getTimeDisplay } from '../api/Player';
-import type { PlaybackTrack } from '../api/types';
+import type { PlaybackTrack, PlaybackTrackAlbum } from '../api/types';
 import { usePlayerState, usePlayerDispatch } from '../contexts/PlayerContext';
 import styles from '../styles/Player.module.scss';
 
@@ -108,16 +108,29 @@ export default function Player(): React.ReactElement {
     return result;
   }
 
+  function uniqueAlbumsWithImageUrlFromTracks(tracks: readonly (PlaybackTrack | undefined)[]): PlaybackTrackAlbum[] {
+    const result: PlaybackTrackAlbum[] = [];
+    const isUnique: Record<string, boolean> = {};
+    for (const track of tracks) {
+      if (track && track.album.imageUrl && !isUnique[track.album.id]) {
+        isUnique[track.album.id] = true;
+        result.push(track.album);
+      }
+    }
+
+    return result;
+  }
+
   return (
     <>
       {!!session && (
         <>
           <Head>
             {uniqueTracksById([playerState.currentTrack, ...playerState.priorityTracks, ...playerState.nextTracks.slice(0, 2)]).map((track) => (
-              <>
-                <link rel="preload" href={track.url} as="audio" key={`preload-audio-${track.id}`} />
-                {track.album.imageUrl && <link rel="preload" href={track.album.imageUrl} as="image" key={`preload-art-${track.album.id}`} />}
-              </>
+              <link rel="preload" href={track.url} as="audio" key={`preload-audio-${track.id}`} />
+            ))}
+            {uniqueAlbumsWithImageUrlFromTracks([playerState.currentTrack, ...playerState.priorityTracks, ...playerState.nextTracks.slice(0, 2)]).map((album) => (
+              <link rel="preload" href={album.imageUrl} as="image" key={`preload-art-${album.id}`} />
             ))}
           </Head>
           <div className={styles.playerBar} dir="ltr" role="complementary">

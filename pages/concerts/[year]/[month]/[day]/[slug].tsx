@@ -148,7 +148,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
     <>
       {concert.posterUrl && (
         <Head>
-          <link rel="preload" href={`https://api.minarets.io${concert.posterUrl}`} as="image" key={`preload-poster-${concert.id}`} />
+          <link rel="preload" href={`https://api.minarets.io${concert.posterUrl}`} as="image" key={`preload-art-${concert.id}`} />
         </Head>
       )}
       <Layout title={title} description={description} keywords={keywords}>
