@@ -106,7 +106,7 @@ export default function Page({ venue, latestConcertsByTour, popularConcerts, new
   return (
     <Layout title={venue.name}>
       <div className="content">
-        <nav aria-label="breadcrumb">
+        <nav className="d-none d-lg-block" aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
               <a href="/venues">Venues</a>

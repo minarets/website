@@ -153,7 +153,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
       )}
       <Layout title={title} description={description} keywords={keywords}>
         <div className="content">
-          <nav aria-label="breadcrumb">
+          <nav className="d-none d-lg-block" aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <a href="/concerts">Concerts</a>

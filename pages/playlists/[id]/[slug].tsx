@@ -151,7 +151,7 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
   return (
     <Layout title={playlist.name}>
       <div className="content">
-        <nav aria-label="breadcrumb">
+        <nav className="d-none d-lg-block" aria-label="breadcrumb">
           <ol className="breadcrumb">
             <li className="breadcrumb-item">
               <a href="/playlists">Playlists</a>
