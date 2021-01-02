@@ -31,6 +31,7 @@ interface IParams {
 
 interface IProps {
   tour: Tour;
+  concertCount: number;
   concertsByTour: LimitedTourWithLimitedConcerts[];
   toursById: Record<number, LimitedTour>;
 }
@@ -57,6 +58,13 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
   }, {});
   toursById[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
 
+  if (tour.parentId && !toursById[tour.parentId]) {
+    const parentTour = await api.tours.getTour(tour.parentId);
+    if (parentTour) {
+      toursById[parentTour.id] = parentTour;
+    }
+  }
+
   const concertsByTour: LimitedTourWithLimitedConcerts[] = [];
   for (const concert of concertResults.items) {
     if (!concertsByTour.length || concertsByTour[concertsByTour.length - 1].tour.id !== concert.tour.id) {
@@ -72,6 +80,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
   return {
     props: {
       tour,
+      concertCount: concertResults.items.length,
       concertsByTour,
       toursById,
     },
@@ -80,7 +89,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
   };
 }
 
-export default function Page({ tour, concertsByTour, toursById }: IProps): ReactElement {
+export default function Page({ tour, concertCount, concertsByTour, toursById }: IProps): ReactElement {
   let parentTour: LimitedTour | undefined;
   if (tour.parentId) {
     parentTour = toursById[tour.parentId];
@@ -116,7 +125,7 @@ export default function Page({ tour, concertsByTour, toursById }: IProps): React
         <div className="card mb-3">
           <h4 className="card-header">Tour Information</h4>
           <div className="card-body">
-            <strong>Concerts: </strong> {tour.concertCount}
+            <strong>Concerts: </strong> {concertCount}
           </div>
         </div>
 
