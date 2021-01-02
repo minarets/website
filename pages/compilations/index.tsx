@@ -49,41 +49,33 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 export default function Page({ allCompilations, popularCompilations, recentCompilations }: IProps): ReactElement {
   return (
     <Layout title="Compilations">
-      <section>
-        <div className="row">
-          <div className="col-md">
-            <div className="card">
-              <div className="card-header">
-                <h2 className="card-title">All Compilations</h2>
-              </div>
-              <div className="card-body">
-                {allCompilations.map((compilation) => (
-                  <CompilationLinkRow compilation={compilation} key={compilation.id} />
-                ))}
-              </div>
+      <section className="row">
+        <div className="col-md">
+          <div className="card mb-3 mb-md-0">
+            <h4 className="card-header">All Compilations</h4>
+            <div className="card-body">
+              {allCompilations.map((compilation) => (
+                <CompilationLinkRow compilation={compilation} key={compilation.id} />
+              ))}
             </div>
           </div>
-          <div className="col-md">
-            <div className="card">
-              <div className="card-header">
-                <h2 className="card-title">Popular Compilations</h2>
-              </div>
-              <div className="card-body">
-                {popularCompilations.map((compilation) => (
-                  <CompilationLinkRow compilation={compilation} key={compilation.id} />
-                ))}
-              </div>
+        </div>
+        <div className="col-md">
+          <div className="card mb-3">
+            <h4 className="card-header">Popular Compilations</h4>
+            <div className="card-body">
+              {popularCompilations.map((compilation) => (
+                <CompilationLinkRow compilation={compilation} key={compilation.id} />
+              ))}
             </div>
+          </div>
 
-            <div className="card">
-              <div className="card-header">
-                <h2 className="card-title">Recently Added/Updated Compilations</h2>
-              </div>
-              <div className="card-body">
-                {recentCompilations.map((compilation) => (
-                  <CompilationLinkRow compilation={compilation} key={compilation.id} />
-                ))}
-              </div>
+          <div className="card">
+            <h4 className="card-header">Recently Added/Updated Compilations</h4>
+            <div className="card-body">
+              {recentCompilations.map((compilation) => (
+                <CompilationLinkRow compilation={compilation} key={compilation.id} />
+              ))}
             </div>
           </div>
         </div>

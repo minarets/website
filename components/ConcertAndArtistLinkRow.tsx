@@ -6,6 +6,7 @@ import type { ReactElement } from 'react';
 import { getConcertUrl } from '../api/concertService';
 import { slugify } from '../api/stringService';
 import type { LimitedArtist, LimitedConcert } from '../api/types';
+import styles from '../styles/ConcertAndArtistLinkRow.module.scss';
 
 interface IProps {
   artist: LimitedArtist;
@@ -15,13 +16,13 @@ interface IProps {
 function ConcertAndArtistLinkRow({ artist, concert }: IProps): ReactElement {
   const concertDate = moment.utc(concert.date);
   return (
-    <div className="row">
-      <div className="col-3 col-sm-2 col-lg-1">
+    <div className={styles.row}>
+      <div className={styles.artist}>
         <Link href={`/artists/${artist.id}/${slugify(artist.name)}`}>
           <a title={artist.name}>{artist.abbr}</a>
         </Link>
       </div>
-      <div className="col">
+      <div className={styles.concert}>
         <Link href={getConcertUrl(concert)}>
           <a>
             {concertDate.format('yyyy-MM-DD')}: {concert.name}

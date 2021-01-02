@@ -169,10 +169,8 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
           <h1>{playlist.name}</h1>
         </header>
 
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Playlist Information</h2>
-          </div>
+        <div className="card mb-3">
+          <h4 className="card-header">Playlist Information</h4>
           <div className="card-body">
             <table className="table">
               <tbody>
@@ -195,10 +193,8 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
           </div>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Tracks</h2>
-          </div>
+        <div className="card mb-3">
+          <h4 className="card-header">Tracks</h4>
           <div className="card-body">
             {playlist.tracks.map((track, index) => {
               const concert = concertsById[track.concertId];
@@ -220,9 +216,7 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
           </div>
 
           <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">Related Concerts</h2>
-            </div>
+            <h4 className="card-header">Related Concerts</h4>
             <div className="card-body">
               {relatedConcertsByTour.map((tourWithConcerts: LimitedTourWithLimitedConcerts) => (
                 <div className="pb-4" key={`${tourWithConcerts.tour.id}_${tourWithConcerts.concerts[0].id}`}>

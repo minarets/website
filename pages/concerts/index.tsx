@@ -90,35 +90,33 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 export default function Page({ popularConcerts, newConcerts, latestConcerts, artistsById }: IProps): ReactElement {
   return (
     <Layout title="Concerts">
-      <section>
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Most Popular Concerts</h2>
+      <section className="row">
+        <div className="col-md">
+          <div className="card mb-3">
+            <h4 className="card-header">Most Popular Concerts</h4>
+            <div className="card-body">
+              {popularConcerts.map((concert) => (
+                <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
+              ))}
+            </div>
           </div>
-          <div className="card-body">
-            {popularConcerts.map((concert) => (
-              <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
-            ))}
-          </div>
-        </div>
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Recently Added Concerts</h2>
-          </div>
-          <div className="card-body">
-            {newConcerts.map((concert) => (
-              <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
-            ))}
+          <div className="card mb-3 mb-md-0">
+            <h4 className="card-header">Recently Added Concerts</h4>
+            <div className="card-body">
+              {newConcerts.map((concert) => (
+                <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
+              ))}
+            </div>
           </div>
         </div>
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Latest Concerts</h2>
-          </div>
-          <div className="card-body">
-            {latestConcerts.map((concert) => (
-              <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
-            ))}
+        <div className="col-md">
+          <div className="card">
+            <h4 className="card-header">Latest Concerts</h4>
+            <div className="card-body">
+              {latestConcerts.map((concert) => (
+                <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
+              ))}
+            </div>
           </div>
         </div>
       </section>

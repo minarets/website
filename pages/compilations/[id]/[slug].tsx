@@ -138,10 +138,8 @@ export default function Page({ compilation, concertsById, relatedConcertsByTour,
           <h1>{compilation.name}</h1>
         </header>
 
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Compilation Information</h2>
-          </div>
+        <div className="card mb-3">
+          <h4 className="card-header">Compilation Information</h4>
           <div className="card-body">
             <table className="table">
               <tbody>
@@ -164,10 +162,8 @@ export default function Page({ compilation, concertsById, relatedConcertsByTour,
           </div>
         </div>
 
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Tracks</h2>
-          </div>
+        <div className="card mb-3">
+          <h4 className="card-header">Tracks</h4>
           <div className="card-body">
             {compilation.tracks.map((track, index) => {
               const concert = concertsById[track.concertId];
@@ -187,22 +183,20 @@ export default function Page({ compilation, concertsById, relatedConcertsByTour,
               );
             })}
           </div>
+        </div>
 
-          <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">Related Concerts</h2>
-            </div>
-            <div className="card-body">
-              {relatedConcertsByTour.map((tourWithConcerts: LimitedTourWithLimitedConcerts) => (
-                <div className="pb-4" key={`${tourWithConcerts.tour.id}_${tourWithConcerts.concerts[0].id}`}>
-                  <TourBreadcrumbRow tour={tourWithConcerts.tour} toursById={toursById} key={tourWithConcerts.tour.id} />
+        <div className="card">
+          <h4 className="card-header">Related Concerts</h4>
+          <div className="card-body">
+            {relatedConcertsByTour.map((tourWithConcerts: LimitedTourWithLimitedConcerts) => (
+              <div className="pb-4" key={`${tourWithConcerts.tour.id}_${tourWithConcerts.concerts[0].id}`}>
+                <TourBreadcrumbRow tour={tourWithConcerts.tour} toursById={toursById} key={tourWithConcerts.tour.id} />
 
-                  {tourWithConcerts.concerts.map((concert) => (
-                    <ConcertLinkRow concert={concert} key={concert.id} />
-                  ))}
-                </div>
-              ))}
-            </div>
+                {tourWithConcerts.concerts.map((concert) => (
+                  <ConcertLinkRow concert={concert} key={concert.id} />
+                ))}
+              </div>
+            ))}
           </div>
         </div>
       </div>

@@ -26,10 +26,8 @@ export default function Page(): ReactElement {
         </ul>
 
         {!!historyTracks.length && (
-          <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">Played Songs</h2>
-            </div>
+          <div className="card mb-3">
+            <h4 className="card-header">Played Songs</h4>
             <div className="card-body">
               {historyTracks.map((track) => (
                 <QueueTrackLinkRow track={track} key={track.uniqueId} />

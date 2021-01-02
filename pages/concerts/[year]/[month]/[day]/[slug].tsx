@@ -173,7 +173,8 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
                   <small className="col">
                     <Link href={getConcertUrl(previousConcert)}>
                       <a>
-                        &#8592; {moment.utc(previousConcert.date).format('yyyy-MM-DD')} &#8212; {previousConcert.name}
+                        &#8592; {moment.utc(previousConcert.date).format('yyyy-MM-DD')}
+                        <span className="d-none d-lg-inline"> &#8212; {previousConcert.name}</span>
                       </a>
                     </Link>
                   </small>
@@ -182,7 +183,8 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
                   <small className="col text-end">
                     <Link href={getConcertUrl(nextConcert)}>
                       <a>
-                        {moment.utc(nextConcert.date).format('yyyy-MM-DD')} &#8212; {nextConcert.name} &#8594;
+                        {moment.utc(nextConcert.date).format('yyyy-MM-DD')}
+                        <span className="d-none d-lg-inline"> &#8212; {nextConcert.name}</span> &#8594;
                       </a>
                     </Link>
                   </small>
@@ -195,7 +197,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
           </header>
 
           {!session && (
-            <div>
+            <div className="mb-3">
               <Link href="/api/auth/signin">
                 <a className="btn btn-success rounded-pill" rel="nofollow">
                   Play
@@ -204,7 +206,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
             </div>
           )}
           {session && (
-            <div>
+            <div className="mb-3">
               <button className="btn btn-success rounded-pill" type="button" onClick={(): void => playCb()}>
                 Play
               </button>
@@ -214,10 +216,8 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
             </div>
           )}
 
-          <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">Concert Information</h2>
-            </div>
+          <div className="card mb-3">
+            <h4 className="card-header">Concert Information</h4>
             <div className="card-body">
               <table className="table">
                 <tbody>
@@ -252,10 +252,8 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
             </div>
           </div>
 
-          <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">Tracks</h2>
-            </div>
+          <div className="card mb-3">
+            <h4 className="card-header">Tracks</h4>
             <div className="card-body">
               {concert.tracks.map((track, index) => {
                 const concertUrl = getConcertUrl(concert);
@@ -275,36 +273,30 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
           </div>
 
           {!!noteLines.length && (
-            <div className="card">
-              <div className="card-header">
-                <h2 className="card-title">Notes</h2>
-              </div>
+            <div className="card mb-3">
+              <h4 className="card-header">Notes</h4>
               <div className="card-body white-space-pre-line">{noteLines.join('\n')}</div>
             </div>
           )}
 
           {!!concert.recordingInformation && (
-            <div className="card">
-              <div className="card-header">
-                <h2 className="card-title">Recording Information</h2>
-              </div>
+            <div className="card mb-3">
+              <h4 className="card-header">Recording Information</h4>
               <div className="card-body white-space-pre-line">{concert.recordingInformation}</div>
             </div>
           )}
 
           <div className="row">
             {!!concert.posterUrl && (
-              <div className="col-md-6 order-md-last">
+              <div className="col-md order-md-last">
                 <div className="card">
                   <img className="card-img-top" src={`https://api.minarets.io${concert.posterUrl}`} alt="Concert poster" />
                 </div>
               </div>
             )}
-            <div className="col-md-6">
-              <div className="card">
-                <div className="card-header">
-                  <h2 className="card-title">Related Concerts</h2>
-                </div>
+            <div className="col-md">
+              <div className="card mb-3">
+                <h4 className="card-header">Related Concerts</h4>
                 <div className="card-body">
                   {relatedConcerts.map((relatedConcert) => (
                     <ConcertLinkRow concert={relatedConcert} key={relatedConcert.id} />
@@ -313,10 +305,8 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
               </div>
 
               {!!concert.posterUrl && (
-                <div className="card">
-                  <div className="card-header">
-                    <h2 className="card-title">Venue Concerts</h2>
-                  </div>
+                <div className="card mb-3">
+                  <h4 className="card-header">Venue Concerts</h4>
                   <div className="card-body">
                     {venueConcerts.map((venueConcert) => (
                       <ConcertLinkRow concert={venueConcert} key={venueConcert.id} />
@@ -326,11 +316,9 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
               )}
             </div>
             {!concert.posterUrl && (
-              <div className="col-md-6">
-                <div className="card">
-                  <div className="card-header">
-                    <h2 className="card-title">Venue Concerts</h2>
-                  </div>
+              <div className="col-md">
+                <div className="card mb-3">
+                  <h4 className="card-header">Venue Concerts</h4>
                   <div className="card-body">
                     {venueConcerts.map((venueConcert) => (
                       <ConcertLinkRow concert={venueConcert} key={venueConcert.id} />

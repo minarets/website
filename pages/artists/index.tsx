@@ -45,9 +45,7 @@ export default function Page({ allArtists, popularArtists }: IProps): ReactEleme
         <div className="row">
           <div className="col-md">
             <div className="card">
-              <div className="card-header">
-                <h2 className="card-title">All Artists</h2>
-              </div>
+              <h4 className="card-header">All Artists</h4>
               <div className="card-body">
                 {allArtists.map((artist) => (
                   <ArtistWithConcertCountLinkRow artist={artist} key={artist.id} />
@@ -57,9 +55,7 @@ export default function Page({ allArtists, popularArtists }: IProps): ReactEleme
           </div>
           <div className="col-md">
             <div className="card">
-              <div className="card-header">
-                <h2 className="card-title">Popular Artists</h2>
-              </div>
+              <h4 className="card-header">Popular Artists</h4>
               <div className="card-body">
                 {popularArtists.map((artist) => (
                   <ArtistWithConcertCountLinkRow artist={artist} key={artist.id} />

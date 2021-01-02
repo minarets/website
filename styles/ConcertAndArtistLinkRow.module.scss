@@ -1,0 +1,23 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .artist {
+    min-width: 4rem;
+  }
+
+  @include media-breakpoint-down(md) {
+    .artist {
+      display: none;
+    }
+  }
+
+  .concert {
+    flex-grow: 1;
+  }
+}

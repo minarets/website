@@ -124,10 +124,8 @@ export default function Page({ venue, latestConcertsByTour, popularConcerts, new
           <h1>{venue.name}</h1>
         </header>
 
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Venue Information</h2>
-          </div>
+        <div className="card mb-3">
+          <h4 className="card-header">Venue Information</h4>
           <div className="card-body">
             <table className="table">
               <tbody>
@@ -148,10 +146,8 @@ export default function Page({ venue, latestConcertsByTour, popularConcerts, new
 
         <div className="row">
           <div className="col-md">
-            <div className="card">
-              <div className="card-header">
-                <h2 className="card-title">Latest Concerts</h2>
-              </div>
+            <div className="card mb-3 mb-md-0">
+              <h4 className="card-header">Latest Concerts</h4>
               <div className="card-body">
                 {latestConcertsByTour.map((latestConcerts: LimitedTourWithLimitedConcerts) => (
                   <div className="pb-4" key={`${latestConcerts.tour.id}_${latestConcerts.concerts[0].id}`}>
@@ -166,10 +162,8 @@ export default function Page({ venue, latestConcertsByTour, popularConcerts, new
             </div>
           </div>
           <div className="col-md">
-            <div className="card">
-              <div className="card-header">
-                <h2 className="card-title">Most Popular Concerts</h2>
-              </div>
+            <div className="card mb-3">
+              <h4 className="card-header">Most Popular Concerts</h4>
               <div className="card-body">
                 {popularConcerts.map((concert) => (
                   <ConcertLinkRow concert={concert} key={concert.id} />
@@ -178,9 +172,7 @@ export default function Page({ venue, latestConcertsByTour, popularConcerts, new
             </div>
 
             <div className="card">
-              <div className="card-header">
-                <h2 className="card-title">Recently Added Concerts</h2>
-              </div>
+              <h4 className="card-header">Recently Added Concerts</h4>
               <div className="card-body">
                 {newConcerts.map((concert) => (
                   <ConcertLinkRow concert={concert} key={concert.id} />

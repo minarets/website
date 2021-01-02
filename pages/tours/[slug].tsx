@@ -113,19 +113,15 @@ export default function Page({ tour, concertsByTour, toursById }: IProps): React
           <h1>{tour.name}</h1>
         </header>
 
-        <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Tour Information</h2>
-          </div>
+        <div className="card mb-3">
+          <h4 className="card-header">Tour Information</h4>
           <div className="card-body">
             <strong>Concerts: </strong> {tour.concertCount}
           </div>
         </div>
 
         <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">Concerts</h2>
-          </div>
+          <h4 className="card-header">Concerts</h4>
           <div className="card-body">
             {concertsByTour.map((latestConcerts: LimitedTourWithLimitedConcerts) => (
               <div className="pb-4" key={`${latestConcerts.tour.id}_${latestConcerts.concerts[0].id}`}>

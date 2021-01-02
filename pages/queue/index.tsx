@@ -26,10 +26,8 @@ export default function Page(): ReactElement {
         </ul>
 
         {!!playerState.currentTrack && (
-          <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">Now Playing</h2>
-            </div>
+          <div className="card mb-3">
+            <h4 className="card-header">Now Playing</h4>
             <div className="card-body">
               <QueueTrackLinkRow track={playerState.currentTrack} />
             </div>
@@ -37,10 +35,8 @@ export default function Page(): ReactElement {
         )}
 
         {!!playerState.priorityTracks.length && (
-          <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">Next In Queue</h2>
-            </div>
+          <div className="card mb-3">
+            <h4 className="card-header">Next In Queue</h4>
             <div className="card-body">
               {playerState.priorityTracks.map((track) => (
                 <QueueTrackLinkRow track={track} key={track.uniqueId} />
@@ -51,9 +47,7 @@ export default function Page(): ReactElement {
 
         {!!playerState.nextTracks.length && (
           <div className="card">
-            <div className="card-header">
-              <h2 className="card-title">Next Up</h2>
-            </div>
+            <h4 className="card-header">Next Up</h4>
             <div className="card-body">
               {playerState.nextTracks.map((track) => (
                 <QueueTrackLinkRow track={track} key={track.uniqueId} />

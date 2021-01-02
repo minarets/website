@@ -56,9 +56,7 @@ export default function Page({ tours }: IProps): ReactElement {
     <Layout title="Tours">
       <section>
         <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">All Tours</h2>
-          </div>
+          <h4 className="card-header">All Tours</h4>
           {tours.map((tour) => (
             <div className="card-body" key={tour.id}>
               <h5>

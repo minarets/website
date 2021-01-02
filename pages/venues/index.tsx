@@ -32,9 +32,7 @@ export default function Page({ venues }: IProps): ReactElement {
     <Layout title="Venues">
       <section>
         <div className="card">
-          <div className="card-header">
-            <h2 className="card-title">All Venues</h2>
-          </div>
+          <h4 className="card-header">All Venues</h4>
           <div className="card-body">
             {venues.map((venue) => (
               <VenueWithConcertCountLinkRow venue={venue} key={venue.id} />
