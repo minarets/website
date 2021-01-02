@@ -148,7 +148,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
     <>
       {concert.posterUrl && (
         <Head>
-          <link rel="preload" href={`https://meetattheshow.com${concert.posterUrl}`} as="image" key={`preload-art-${concert.id}`} />
+          <link rel="preload" href={`https://api.minarets.io${concert.posterUrl}`} as="image" key={`preload-poster-${concert.id}`} />
         </Head>
       )}
       <Layout title={title} description={description} keywords={keywords}>
@@ -294,7 +294,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
             {!!concert.posterUrl && (
               <div className="col-md-6 order-md-last">
                 <div className="card">
-                  <img className="card-img-top" src={`https://meetattheshow.com${concert.posterUrl}`} alt="Concert poster" />
+                  <img className="card-img-top" src={`https://api.minarets.io${concert.posterUrl}`} alt="Concert poster" />
                 </div>
               </div>
             )}

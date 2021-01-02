@@ -28,7 +28,7 @@ export class Minarets {
 
   protected venuesApi: Venues;
 
-  public constructor(apiToken = process?.env?.MINARETS_API_TOKEN, apiKey = process?.env?.MINARETS_API_KEY, apiUrl = process?.env?.MINARETS_API_URL || 'https://meetattheshow.com') {
+  public constructor(apiToken = process?.env?.MINARETS_API_TOKEN, apiKey = process?.env?.MINARETS_API_KEY, apiUrl = process?.env?.MINARETS_API_URL || 'https://api.minarets.io') {
     if (!apiToken) {
       throw new Error('Minarets apiToken is not defined');
     }

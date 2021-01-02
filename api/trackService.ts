@@ -20,7 +20,7 @@ export function getPlaybackTrack(track: TrackWithExtendedInformation): PlaybackT
     album: {
       id: track.concert.id,
       name: getConcertName(track.concert),
-      imageUrl: track.concert.posterUrl ? `https://meetattheshow.com${track.concert.posterUrl}` : '',
+      imageUrl: track.concert.posterUrl ? `https://api.minarets.io${track.concert.posterUrl}` : '',
       url: concertUrl,
     },
   };
