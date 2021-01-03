@@ -5,8 +5,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import type { ReactElement } from 'react';
-import { useState } from 'react';
 
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import styles from '../styles/Layout.module.scss';
@@ -19,16 +17,16 @@ interface LayoutParams {
   title: string;
   description?: string;
   keywords?: string;
-  children: ReactElement;
+  children: React.ReactElement;
 }
 
 interface IExtendedNextAuthUser extends NextAuthUser {
   token: string;
 }
 
-function Layout({ title, description, keywords, children }: LayoutParams): ReactElement {
+function Layout({ title, description, keywords, children }: LayoutParams): React.ReactElement {
   const [session, loading] = useSession();
-  const [randomClicked, setRandomClicked] = useState(false);
+  const [randomClicked, setRandomClicked] = React.useState(false);
   const router = useRouter();
   useDocumentTitle(title);
 
