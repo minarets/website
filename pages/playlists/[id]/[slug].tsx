@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import type { ReactElement } from 'react';
+import ContentLoader from 'react-content-loader';
 
 import { Minarets } from '../../../api';
 import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../api/concertService';
@@ -142,7 +143,34 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
   if (router.isFallback) {
     return (
       <Layout title="Loading playlist...">
-        <div className="content">Loading...</div>
+        <ContentLoader speed={2} width={700} height={350} viewBox="0 0 700 350" backgroundColor="#e9ecef" foregroundColor="#ced4da">
+          {/* Page title */}
+          <rect className="rounded" x="0" y="0" rx="4" ry="4" width="480" height="24" />
+
+          {/* Card border */}
+          <rect x="0" y="40" rx="3" ry="3" width="8" height="260" />
+          <rect x="0" y="294" rx="3" ry="3" width="670" height="8" />
+          <rect x="664" y="40" rx="3" ry="3" width="8" height="260" />
+          <rect x="0" y="40" rx="3" ry="3" width="668" height="8" />
+
+          {/* Card title */}
+          <rect x="16" y="64" rx="4" ry="4" width="140" height="11" />
+          <rect x="186" y="64" rx="4" ry="4" width="210" height="11" />
+          <rect x="0" y="88" rx="3" ry="3" width="670" height="4" />
+
+          {/* Card labels and values */}
+          <rect x="16" y="116" rx="4" ry="4" width="60" height="11" />
+          <rect x="130" y="116" rx="4" ry="4" width="265" height="11" />
+
+          <rect x="16" y="156" rx="4" ry="4" width="80" height="11" />
+          <rect x="130" y="156" rx="4" ry="4" width="50" height="11" />
+          <rect x="16" y="196" rx="4" ry="4" width="70" height="11" />
+          <rect x="130" y="196" rx="4" ry="4" width="180" height="11" />
+          <rect x="16" y="236" rx="4" ry="4" width="90" height="11" />
+          <rect x="130" y="236" rx="4" ry="4" width="520" height="11" />
+          <rect x="130" y="256" rx="4" ry="4" width="520" height="11" />
+          <rect x="130" y="276" rx="4" ry="4" width="520" height="11" />
+        </ContentLoader>
       </Layout>
     );
   }
