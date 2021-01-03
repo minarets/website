@@ -3,8 +3,10 @@ import { useSession } from 'next-auth/client';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import type { ReactElement } from 'react';
+import { useState } from 'react';
 
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import styles from '../styles/Layout.module.scss';
@@ -26,7 +28,21 @@ interface IExtendedNextAuthUser extends NextAuthUser {
 
 function Layout({ title, description, keywords, children }: LayoutParams): ReactElement {
   const [session, loading] = useSession();
+  const [randomClicked, setRandomClicked] = useState(false);
+  const router = useRouter();
   useDocumentTitle(title);
+
+  async function handleRandomConcertClick(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>): Promise<void> {
+    e.preventDefault();
+    setRandomClicked(true);
+    const response = await fetch('/api/minarets/getRandomConcert');
+    if (response.ok) {
+      const result = (await response.json()) as { url: string };
+
+      await router.push(result.url);
+      setRandomClicked(false);
+    }
+  }
 
   return (
     <>
@@ -48,15 +64,22 @@ function Layout({ title, description, keywords, children }: LayoutParams): React
             <div className="flex-grow-1 px-3">
               {/*<input className="form-control form-control-dark w-100" type="text" placeholder="Search for concerts by date, songs, venues..." aria-label="Search" />*/}
             </div>
-            <div className="pe-3 my-auto">
-              <Link href="/concerts/random">
-                <a title="Random concert" className={styles.hoverGrow}>
+            {session && !randomClicked && (
+              <div className="pe-3 my-auto">
+                <a href="/" title="Random concert" onClick={handleRandomConcertClick} className={styles.hoverGrow} rel="nofollow">
                   <svg role="img" height="25" width="25" viewBox="0 0 24 24">
                     <path d="M18 13v5h-5l1.607-1.608c-3.404-2.824-5.642-8.392-9.179-8.392-2.113 0-3.479 1.578-3.479 4s1.365 4 3.479 4c1.664 0 2.86-1.068 4.015-2.392l1.244 1.561c-1.499 1.531-3.05 2.831-5.259 2.831-3.197 0-5.428-2.455-5.428-6s2.231-6 5.428-6c4.839 0 7.34 6.449 10.591 8.981l1.981-1.981zm.57-7c-2.211 0-3.762 1.301-5.261 2.833l1.244 1.561c1.156-1.325 2.352-2.394 4.017-2.394 2.114 0 3.48 1.578 3.48 4 0 1.819-.771 3.162-2.051 3.718v2.099c2.412-.623 4-2.829 4-5.816.001-3.546-2.231-6.001-5.429-6.001z" />
                   </svg>
                 </a>
-              </Link>
-            </div>
+              </div>
+            )}
+            {session && randomClicked && (
+              <div className="pe-3 my-auto">
+                <div className="spinner-border spinner-border-sm" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            )}
             <div className="pe-3 my-auto">
               <Link href="https://github.com/sponsors/jgeurts">
                 <a title="Help support the site!" className={`${styles.donateButton} ${styles.hoverGrow}`}>

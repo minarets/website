@@ -60,11 +60,11 @@ export class Concerts extends ApiBase {
     return (await response.json()) as Concert;
   }
 
-  public async getRandomConcert(request: IGetRandomConcertRequest = {}): Promise<Concert> {
+  public async getRandomConcert(request: IGetRandomConcertRequest = {}): Promise<ConcertSummary> {
     const query = this.queryParams(request);
     const response = await this.get(`${this.apiUrl}/api/concerts/random`, { query });
 
-    return (await response.json()) as Concert;
+    return (await response.json()) as ConcertSummary;
   }
 
   public async searchConcerts(request: ISearchConcertsRequest): Promise<Concert> {

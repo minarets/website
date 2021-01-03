@@ -25,8 +25,8 @@ module.exports = {
       },
       {
         source: '/Artists/RandomConcert/:slug*',
-        destination: '/artists/:slug*/random',
-        permanent: true,
+        destination: '/',
+        permanent: false,
       },
       {
         source: '/Concerts/Detail/:slug*',
@@ -50,8 +50,8 @@ module.exports = {
       },
       {
         source: '/Tours/RandomConcert/:slug*',
-        destination: '/tours/:slug*/random',
-        permanent: true,
+        destination: '/',
+        permanent: false,
       },
       {
         source: '/Users/Detail/:slug*',
