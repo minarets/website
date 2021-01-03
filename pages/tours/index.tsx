@@ -6,7 +6,7 @@ import type { ReactElement } from 'react';
 import { Minarets } from '../../api';
 import type { TourWithChildren } from '../../api/minarets/types';
 import Layout from '../../components/Layout';
-import styles from '../../styles/Tours.module.css';
+import TourRandomConcertLink from '../../components/TourRandomConcertLink';
 
 interface IProps {
   tours: TourWithChildren[];
@@ -63,11 +63,7 @@ export default function Page({ tours }: IProps): ReactElement {
                 <Link href={`/tours/${tour.slug}`}>
                   <a>{tour.name}</a>
                 </Link>{' '}
-                <Link href={`/tours/${tour.slug}/random`}>
-                  <a title={`Random concert for ${tour.name}`}>
-                    <img src="/random.svg" alt={`Random concert for ${tour.name}`} className={styles.logo} />
-                  </a>
-                </Link>
+                <TourRandomConcertLink tour={tour} />
               </h5>
 
               {!!tour.children.length && (
@@ -77,13 +73,9 @@ export default function Page({ tours }: IProps): ReactElement {
                       <Link href={`/tours/${childTour.slug}`}>
                         <a>{childTour.name}</a>
                       </Link>
-                      {` (${childTour.concertCount} `}
-                      <Link href={`/tours/${childTour.slug}/random`}>
-                        <a title={`Random concert for ${childTour.name}`}>
-                          <img src="/random.svg" alt={`Random concert for ${childTour.name}`} className={styles.logo} />
-                        </a>
-                      </Link>
-                      )
+                      {childTour.concertCount === 1 && ` (${childTour.concertCount} concert) `}
+                      {childTour.concertCount !== 1 && ` (${childTour.concertCount} concerts) `}
+                      <TourRandomConcertLink tour={childTour} />
                     </li>
                   ))}
                 </ul>

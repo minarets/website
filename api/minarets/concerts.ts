@@ -11,8 +11,8 @@ export interface ISearchConcertsRequest {
 export interface IGetRandomConcertRequest {
   page?: number;
   itemsPerPage?: number;
-  artistId?: number;
-  tourId?: number;
+  artistId?: string | number;
+  tourId?: string | number;
 }
 
 export interface IListConcertsRequest {

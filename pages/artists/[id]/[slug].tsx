@@ -8,6 +8,7 @@ import type { Artist, ArtistSummary } from '../../../api/minarets/types';
 import { pick } from '../../../api/objectService';
 import { slugify } from '../../../api/stringService';
 import type { LimitedConcert, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../api/types';
+import ArtistRandomConcertLink from '../../../components/ArtistRandomConcertLink';
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
@@ -122,7 +123,9 @@ export default function Page({ artist, latestConcertsByTour, popularConcerts, ne
         <div className="card mb-3">
           <h4 className="card-header">Artist Information</h4>
           <div className="card-body">
-            <strong>Concerts: </strong> {artist.concertCount}
+            <strong>Concerts: </strong>
+            {` ${artist.concertCount} `}
+            <ArtistRandomConcertLink artist={artist} />
           </div>
         </div>
 

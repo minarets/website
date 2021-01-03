@@ -26,6 +26,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
         break;
       }
+      case 'getArtistRandomConcert': {
+        const [, id] = query.minarets;
+        const concert = await api.concerts.getRandomConcert({
+          artistId: id,
+        });
+
+        body = JSON.stringify({
+          url: getConcertUrl(concert),
+        });
+        break;
+      }
+      case 'getTourRandomConcert': {
+        const [, id] = query.minarets;
+        const concert = await api.concerts.getRandomConcert({
+          tourId: id,
+        });
+
+        body = JSON.stringify({
+          url: getConcertUrl(concert),
+        });
+        break;
+      }
       case 'getMyPlaylists': {
         const playlists = await api.playlists.listMyPlaylists();
 
