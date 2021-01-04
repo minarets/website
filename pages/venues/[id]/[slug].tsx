@@ -68,10 +68,6 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     api.tours.listTours(),
   ]);
 
-  if (!venue.formattedAddress) {
-    venue.formattedAddress = await api.venues.setVenueFormattedAddress(venue);
-  }
-
   const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {
     acc[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
 
