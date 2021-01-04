@@ -19,17 +19,18 @@ async function getPlaylists(): Promise<PlaylistSummary[]> {
 export default function Layout(): React.ReactElement {
   const [session] = useSession();
   const [playlists, setPlaylists] = React.useState<PlaylistSummary[]>([]);
-  const setPlaylistsCb = React.useCallback((items: PlaylistSummary[]) => {
-    setPlaylists(items);
-  }, []);
 
   React.useEffect(() => {
     if (session) {
       getPlaylists()
-        .then(setPlaylistsCb)
+        .then((playlistSummaries) => {
+          setPlaylists(playlistSummaries);
+
+          return playlistSummaries;
+        })
         .catch((err) => console.error(err));
     }
-  }, [session, setPlaylistsCb]);
+  }, [session, setPlaylists]);
 
   return (
     <div className="position-sticky pt-3">
