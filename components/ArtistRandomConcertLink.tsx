@@ -2,8 +2,8 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import type { BasicArtist } from '../api/minarets/types';
-import { slugify } from '../api/stringService';
+import type { BasicArtist } from '../minarets-api/minarets/types';
+import { slugify } from '../minarets-api/stringService';
 import styles from '../styles/RandomConcertLink.module.scss';
 
 interface IProps {

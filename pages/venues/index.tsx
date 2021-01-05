@@ -2,10 +2,10 @@ import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Minarets } from '../../api/minarets';
-import type { Venue } from '../../api/minarets/types';
 import Layout from '../../components/Layout';
 import VenueWithConcertCountLinkRow from '../../components/VenueWithConcertCountLinkRow';
+import { Minarets } from '../../minarets-api';
+import type { Venue } from '../../minarets-api/minarets/types';
 
 interface IProps {
   venues: Venue[];

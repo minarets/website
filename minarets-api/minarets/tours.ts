@@ -2,7 +2,7 @@ import { ApiBase } from './apiBase';
 import type { ListAllResponse, ListResponse, Tour, TourSummary, TourWithChildren } from './types';
 
 export class Tours extends ApiBase {
-  public async getTour(idOrSlug: string | number): Promise<TourWithChildren> {
+  public async getTour(idOrSlug: number | string): Promise<TourWithChildren> {
     if (!idOrSlug) {
       throw new Error('Unable to get tour by empty id.');
     }

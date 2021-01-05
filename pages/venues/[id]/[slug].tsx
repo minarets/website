@@ -3,15 +3,15 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Minarets } from '../../../api/minarets';
-import type { Venue, VenueSummary } from '../../../api/minarets/types';
-import { pick } from '../../../api/objectService';
-import { slugify } from '../../../api/stringService';
-import type { LimitedConcert, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../api/types';
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 import VenueAddress from '../../../components/VenueAddress';
+import { Minarets } from '../../../minarets-api';
+import type { Venue, VenueSummary } from '../../../minarets-api/minarets/types';
+import { pick } from '../../../minarets-api/objectService';
+import { slugify } from '../../../minarets-api/stringService';
+import type { LimitedConcert, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../minarets-api/types';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();

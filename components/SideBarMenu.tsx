@@ -2,8 +2,8 @@ import { useSession } from 'next-auth/client';
 import Link from 'next/link';
 import * as React from 'react';
 
-import type { ListAllResponse, PlaylistSummary } from '../api/minarets/types';
-import { slugify } from '../api/stringService';
+import type { ListAllResponse, PlaylistSummary } from '../minarets-api/minarets/types';
+import { slugify } from '../minarets-api/stringService';
 
 async function getPlaylists(): Promise<PlaylistSummary[]> {
   const response = await fetch('/api/minarets/getMyPlaylists');

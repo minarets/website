@@ -6,16 +6,16 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 import ContentLoader from 'react-content-loader';
 
-import { Minarets } from '../../../api';
-import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../api/concertService';
-import type { BasicArtist, ErrorWithResponse, Playlist } from '../../../api/minarets/types';
-import { pick } from '../../../api/objectService';
-import { slugify } from '../../../api/stringService';
-import type { LimitedArtist, LimitedConcert, LimitedConcertWithTokenDetails, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../api/types';
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../components/TrackLinkRow';
+import { Minarets } from '../../../minarets-api';
+import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../minarets-api/concertService';
+import type { BasicArtist, ErrorWithResponse, Playlist } from '../../../minarets-api/minarets/types';
+import { pick } from '../../../minarets-api/objectService';
+import { slugify } from '../../../minarets-api/stringService';
+import type { LimitedArtist, LimitedConcert, LimitedConcertWithTokenDetails, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../minarets-api/types';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   // NOTE: Only pre-rendering the top 20 most popular playlists. Others will be lazy loaded

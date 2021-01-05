@@ -4,16 +4,16 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../api/concertService';
-import { Minarets } from '../../../api/minarets';
-import type { BasicArtist, Compilation, CompilationSummary } from '../../../api/minarets/types';
-import { pick } from '../../../api/objectService';
-import { slugify } from '../../../api/stringService';
-import type { LimitedArtist, LimitedConcert, LimitedConcertWithTokenDetails, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../api/types';
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../components/TrackLinkRow';
+import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../minarets-api/concertService';
+import { Minarets } from '../../../minarets-api/minarets';
+import type { BasicArtist, Compilation, CompilationSummary } from '../../../minarets-api/minarets/types';
+import { pick } from '../../../minarets-api/objectService';
+import { slugify } from '../../../minarets-api/stringService';
+import type { LimitedArtist, LimitedConcert, LimitedConcertWithTokenDetails, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../minarets-api/types';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();

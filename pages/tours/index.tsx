@@ -3,10 +3,10 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Minarets } from '../../api';
-import type { TourWithChildren } from '../../api/minarets/types';
 import Layout from '../../components/Layout';
 import TourRandomConcertLink from '../../components/TourRandomConcertLink';
+import { Minarets } from '../../minarets-api';
+import type { TourWithChildren } from '../../minarets-api/minarets/types';
 
 interface IProps {
   tours: TourWithChildren[];

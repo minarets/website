@@ -2,8 +2,8 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { slugify } from '../api/stringService';
-import type { LimitedTour } from '../api/types';
+import { slugify } from '../minarets-api/stringService';
+import type { LimitedTour } from '../minarets-api/types';
 
 interface IProps {
   tour: LimitedTour;

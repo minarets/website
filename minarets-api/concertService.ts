@@ -1,8 +1,6 @@
 import moment from 'moment';
 
-import type { BasicConcert } from './minarets/types/BasicConcert';
-import type { BasicConcertWithNotes } from './minarets/types/BasicConcertWithNotes';
-import type { ConcertSummary } from './minarets/types/ConcertSummary';
+import type { BasicConcert, BasicConcertWithNotes, ConcertSummary } from './minarets/types';
 import { slugify } from './stringService';
 
 interface IExtractTokenDetailsFromConcertNoteResult {

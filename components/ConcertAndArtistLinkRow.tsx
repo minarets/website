@@ -3,9 +3,9 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { getConcertUrl } from '../api/concertService';
-import { slugify } from '../api/stringService';
-import type { LimitedArtist, LimitedConcert } from '../api/types';
+import { getConcertUrl } from '../minarets-api/concertService';
+import { slugify } from '../minarets-api/stringService';
+import type { LimitedArtist, LimitedConcert } from '../minarets-api/types';
 import styles from '../styles/ConcertAndArtistLinkRow.module.scss';
 
 interface IProps {

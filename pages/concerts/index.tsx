@@ -3,11 +3,11 @@ import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Minarets } from '../../api/minarets';
-import { pick } from '../../api/objectService';
-import type { LimitedArtist, LimitedConcertWithArtistId } from '../../api/types';
 import ConcertAndArtistLinkRow from '../../components/ConcertAndArtistLinkRow';
 import Layout from '../../components/Layout';
+import { Minarets } from '../../minarets-api/minarets';
+import { pick } from '../../minarets-api/objectService';
+import type { LimitedArtist, LimitedConcertWithArtistId } from '../../minarets-api/types';
 
 interface IProps {
   popularConcerts: LimitedConcertWithArtistId[];

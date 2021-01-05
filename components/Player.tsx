@@ -5,22 +5,22 @@ import * as React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import ReactSlider from 'react-slider';
 
-import { getTimeDisplay } from '../api/Player';
-import type { PlaybackTrack, PlaybackTrackAlbum } from '../api/types';
 import { usePlayerState, usePlayerDispatch } from '../contexts/PlayerContext';
+import { getTimeDisplay } from '../minarets-api/Player';
+import type { PlaybackTrack, PlaybackTrackAlbum } from '../minarets-api/types';
 import styles from '../styles/Player.module.scss';
 
 export default function Player(): React.ReactElement {
   const [session] = useSession();
   const playerState = usePlayerState();
   const playerDispatch = usePlayerDispatch();
-  const [seekTime, setSeekTime] = React.useState<number | null>(null);
+  const [seekTime, setSeekTime] = React.useState<null | number>(null);
 
   useHotkeys(
     'space',
     (e) => {
       e.preventDefault();
-      playerState.player.togglePlay().catch((ex) => console.error(ex));
+      playerState.player.togglePlay().catch((ex: Error) => console.error(ex));
     },
     {},
     [playerState],
@@ -34,7 +34,7 @@ export default function Player(): React.ReactElement {
     return getTimeDisplay(playerState.currentTime);
   }
 
-  function handleTrackSeek(value: number | number[] | null | undefined): void {
+  function handleTrackSeek(value: number[] | null | number | undefined): void {
     if (value == null) {
       return;
     }
@@ -53,7 +53,7 @@ export default function Player(): React.ReactElement {
     setSeekTime(valueAsNumber);
   }
 
-  function handleTrackProgressChange(value: number | number[] | null | undefined): void {
+  function handleTrackProgressChange(value: number[] | null | number | undefined): void {
     setSeekTime(null);
     if (value == null) {
       return;
@@ -73,7 +73,7 @@ export default function Player(): React.ReactElement {
     playerState.player.seek(valueAsNumber);
   }
 
-  function handleSetVolume(value: number | number[] | null | undefined): void {
+  function handleSetVolume(value: number[] | null | number | undefined): void {
     if (value == null) {
       return;
     }

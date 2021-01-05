@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
 
-import { Minarets } from '../../../api';
-import { getConcertUrl } from '../../../api/concertService';
-import type { User } from '../../../api/minarets/types';
+import { Minarets } from '../../../minarets-api';
+import { getConcertUrl } from '../../../minarets-api/concertService';
+import type { User } from '../../../minarets-api/minarets/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const session = await getSession({ req });

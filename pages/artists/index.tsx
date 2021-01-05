@@ -2,10 +2,10 @@ import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Minarets } from '../../api/minarets';
-import type { Artist } from '../../api/minarets/types';
 import ArtistWithConcertCountLinkRow from '../../components/ArtistWithConcertCountLinkRow';
 import Layout from '../../components/Layout';
+import { Minarets } from '../../minarets-api/minarets';
+import type { Artist } from '../../minarets-api/minarets/types';
 
 interface IProps {
   allArtists: Artist[];

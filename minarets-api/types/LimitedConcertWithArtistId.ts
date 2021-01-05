@@ -1,4 +1,4 @@
-import type { BasicArtist } from '../minarets/types/BasicArtist';
+import type { BasicArtist } from '../minarets/types';
 
 import type { LimitedConcert } from './LimitedConcert';
 

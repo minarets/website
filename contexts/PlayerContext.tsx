@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-import { Player, RepeatMode } from '../api/Player';
-import type { PlaybackTrack } from '../api/types';
+import { Player, RepeatMode } from '../minarets-api/Player';
+import type { PlaybackTrack } from '../minarets-api/types';
 
 export interface IPlayerState {
   player: Player<PlaybackTrack>;
@@ -46,11 +46,11 @@ interface IUpdatePlayerStateAction {
 }
 
 interface ITrackStartEndAction {
-  type: 'TrackStart' | 'TrackEnd';
+  type: 'TrackEnd' | 'TrackStart';
   track: PlaybackTrack;
 }
 
-type PlayerAction = IMuteAction | ISetVolumeAction | IUpdatePlayerStateAction | IProgressAction | ITrackStartEndAction;
+type PlayerAction = IMuteAction | IProgressAction | ISetVolumeAction | ITrackStartEndAction | IUpdatePlayerStateAction;
 
 function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState {
   switch (action.type) {

@@ -2,11 +2,11 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import type { Artist } from '../api/minarets/types';
-import { slugify } from '../api/stringService';
+import type { Artist } from '../minarets-api/minarets/types';
+import { slugify } from '../minarets-api/stringService';
 
 interface IProps {
-  artist: Pick<Artist, 'id' | 'name' | 'concertCount'>;
+  artist: Pick<Artist, 'concertCount' | 'id' | 'name'>;
 }
 
 function ArtistWithConcertCountLinkRow({ artist }: IProps): ReactElement {

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import type { PlaybackTrack } from '../api/types';
+import type { PlaybackTrack } from '../minarets-api/types';
 
 interface IProps {
   track: PlaybackTrack;

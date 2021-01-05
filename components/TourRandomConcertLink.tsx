@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import type { BasicTour } from '../api/minarets/types';
+import type { BasicTour } from '../minarets-api/minarets/types';
 import styles from '../styles/RandomConcertLink.module.scss';
 
 interface IProps {

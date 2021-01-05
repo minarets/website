@@ -2,8 +2,8 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import type { Playlist } from '../api/minarets/types';
-import { slugify } from '../api/stringService';
+import type { Playlist } from '../minarets-api/minarets/types';
+import { slugify } from '../minarets-api/stringService';
 
 interface IProps {
   playlist: Pick<Playlist, 'id' | 'name'>;

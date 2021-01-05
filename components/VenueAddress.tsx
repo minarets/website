@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import type { Venue } from '../api/minarets/types';
+import type { Venue } from '../minarets-api/minarets/types';
 
 interface IProps {
   venue: Venue;

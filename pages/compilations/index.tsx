@@ -2,10 +2,10 @@ import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Minarets } from '../../api/minarets';
-import type { Compilation } from '../../api/minarets/types';
 import CompilationLinkRow from '../../components/CompilationLinkRow';
 import Layout from '../../components/Layout';
+import { Minarets } from '../../minarets-api/minarets';
+import type { Compilation } from '../../minarets-api/minarets/types';
 
 interface IProps {
   allCompilations: Compilation[];

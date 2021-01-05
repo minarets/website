@@ -6,18 +6,18 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { extractTokenDetailsFromConcertNote, getConcertDescription, getConcertKeywords, getConcertTitle, getConcertUrl } from '../../../../../api/concertService';
-import { Minarets } from '../../../../../api/minarets';
-import type { Concert, ConcertSummary } from '../../../../../api/minarets/types';
-import { pick } from '../../../../../api/objectService';
-import { slugify } from '../../../../../api/stringService';
-import { getPlaybackTrack } from '../../../../../api/trackService';
-import type { LimitedConcert, LimitedTour } from '../../../../../api/types';
 import ConcertLinkRow from '../../../../../components/ConcertLinkRow';
 import Layout from '../../../../../components/Layout';
 import TourBreadcrumbRow from '../../../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../../../components/TrackLinkRow';
 import { usePlayerState } from '../../../../../contexts/PlayerContext';
+import { Minarets } from '../../../../../minarets-api';
+import { extractTokenDetailsFromConcertNote, getConcertDescription, getConcertKeywords, getConcertTitle, getConcertUrl } from '../../../../../minarets-api/concertService';
+import type { Concert, ConcertSummary } from '../../../../../minarets-api/minarets/types';
+import { pick } from '../../../../../minarets-api/objectService';
+import { slugify } from '../../../../../minarets-api/stringService';
+import { getPlaybackTrack } from '../../../../../minarets-api/trackService';
+import type { LimitedConcert, LimitedTour } from '../../../../../minarets-api/types';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();

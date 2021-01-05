@@ -4,8 +4,8 @@ import type { User as NextAuthUser, InitOptions } from 'next-auth';
 import type { SessionBase, GenericObject } from 'next-auth/_utils';
 import Providers from 'next-auth/providers';
 
-import MinaretsAdapter from '../../../api/auth';
-import type { User } from '../../../api/minarets/types';
+import MinaretsAdapter from '../../../minarets-api/auth';
+import type { User } from '../../../minarets-api/minarets/types';
 
 interface IExtendedNextAuthUser extends NextAuthUser {
   token: string;

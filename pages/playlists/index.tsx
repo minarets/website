@@ -2,10 +2,10 @@ import type { GetStaticPropsResult } from 'next';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { Minarets } from '../../api/minarets';
-import type { Playlist } from '../../api/minarets/types';
 import Layout from '../../components/Layout';
 import PlaylistLinkRow from '../../components/PlaylistLinkRow';
+import { Minarets } from '../../minarets-api';
+import type { Playlist } from '../../minarets-api/minarets/types';
 
 interface IProps {
   allPlaylists: Playlist[];

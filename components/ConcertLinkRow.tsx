@@ -3,8 +3,8 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { getConcertUrl } from '../api/concertService';
-import type { BasicConcert } from '../api/minarets/types';
+import { getConcertUrl } from '../minarets-api/concertService';
+import type { BasicConcert } from '../minarets-api/minarets/types';
 
 interface IProps {
   concert: Pick<BasicConcert, 'date' | 'name'>;

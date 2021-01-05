@@ -3,23 +3,23 @@ import type { User } from './types';
 
 export interface ICreateUserRequest {
   name?: string;
-  email: string | null;
-  image?: string | null;
+  email: null | string;
+  image?: null | string;
 }
 
 interface ISetEmailVerifiedRequest {
-  id: string | number;
+  id: number | string;
   emailVerified: Date;
 }
 
 interface ILinkUserWithProviderRequest {
-  id: string | number;
+  id: number | string;
   providerId: string;
   providerAccountId: string;
 }
 
 export class Users extends ApiBase {
-  public async getUser(id: string | number): Promise<User | null> {
+  public async getUser(id: number | string): Promise<User | null> {
     try {
       const response = await this.get(`${this.apiUrl}/api/users/${id}`);
 

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import type { LimitedTour } from '../api/types';
+import type { LimitedTour } from '../minarets-api/types';
 
 import TourBreadcrumb from './TourBreadcrumb';
 
