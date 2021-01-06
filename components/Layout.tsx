@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
-import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import styles from '../styles/Layout.module.scss';
 
 import SideBarMenu from './SideBarMenu';
@@ -14,9 +13,6 @@ import SideBarMenu from './SideBarMenu';
 const Player = dynamic(() => import('./Player'), { ssr: false });
 
 interface LayoutParams {
-  title: string;
-  description?: string;
-  keywords?: string;
   children: React.ReactElement;
 }
 
@@ -24,11 +20,10 @@ interface IExtendedNextAuthUser extends NextAuthUser {
   token: string;
 }
 
-function Layout({ title, description, keywords, children }: LayoutParams): React.ReactElement {
+function Layout({ children }: LayoutParams): React.ReactElement {
   const [session, loading] = useSession();
   const [randomClicked, setRandomClicked] = React.useState(false);
   const router = useRouter();
-  useDocumentTitle(title);
 
   async function handleRandomConcertClick(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>): Promise<void> {
     e.preventDefault();
@@ -45,9 +40,7 @@ function Layout({ title, description, keywords, children }: LayoutParams): React
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
-        {description && <meta name="description" content={description} />}
-        {keywords && <meta name="keywords" content={keywords} />}
+        <title>A community for Dave Matthews Band fans · Minarets</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <link rel="icon" href="/favicon.ico" />
@@ -135,10 +128,5 @@ function Layout({ title, description, keywords, children }: LayoutParams): React
     </>
   );
 }
-
-Layout.defaultProps = {
-  description: '',
-  keywords: '',
-};
 
 export default Layout;

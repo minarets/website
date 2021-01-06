@@ -7,10 +7,10 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import ConcertLinkRow from '../../../../../components/ConcertLinkRow';
-import Layout from '../../../../../components/Layout';
 import TourBreadcrumbRow from '../../../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../../../components/TrackLinkRow';
 import { usePlayerState } from '../../../../../contexts/PlayerContext';
+import { useDocumentTitle } from '../../../../../hooks/useDocumentTitle';
 import { Minarets } from '../../../../../minarets-api';
 import { extractTokenDetailsFromConcertNote, getConcertDescription, getConcertKeywords, getConcertTitle, getConcertUrl } from '../../../../../minarets-api/concertService';
 import type { Concert, ConcertSummary } from '../../../../../minarets-api/minarets/types';
@@ -115,6 +115,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
 
 export default function Page({ concert, noteLines, detailsByToken, previousConcert, nextConcert, relatedConcerts, venueConcerts, toursById }: IProps): ReactElement {
   const title = getConcertTitle(concert);
+  useDocumentTitle(title);
   const description = getConcertDescription(concert);
   const keywords = getConcertKeywords(concert);
 
@@ -146,190 +147,188 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
 
   return (
     <>
-      {concert.posterUrl && (
-        <Head>
-          <link rel="preload" href={`https://api.minarets.io${concert.posterUrl}`} as="image" key={`preload-art-${concert.id}`} />
-        </Head>
-      )}
-      <Layout title={title} description={description} keywords={keywords}>
-        <div className="content">
-          <nav className="d-none d-lg-block" aria-label="breadcrumb">
-            <ol className="breadcrumb">
-              <li className="breadcrumb-item">
-                <Link href="/concerts">
-                  <a>Concerts</a>
-                </Link>
-              </li>
-              <li className="breadcrumb-item active" aria-current="page">
-                {title}
-              </li>
-            </ol>
-          </nav>
+      <Head>
+        <title>{title} · Minarets</title>
+        <meta name="description" content={description} />
+        <meta name="keywords" content={keywords} />
+        {concert.posterUrl && <link rel="preload" href={`https://api.minarets.io${concert.posterUrl}`} as="image" key={`preload-art-${concert.id}`} />}
+      </Head>
 
-          <header>
-            {(previousConcert || nextConcert) && (
-              <div className="row">
-                {previousConcert && (
-                  <small className="col">
-                    <Link href={getConcertUrl(previousConcert)}>
-                      <a>
-                        &#8592; {moment.utc(previousConcert.date).format('yyyy-MM-DD')}
-                        <span className="d-none d-lg-inline"> &#8212; {previousConcert.name}</span>
-                      </a>
-                    </Link>
-                  </small>
-                )}
-                {nextConcert && (
-                  <small className="col text-end">
-                    <Link href={getConcertUrl(nextConcert)}>
-                      <a>
-                        {moment.utc(nextConcert.date).format('yyyy-MM-DD')}
-                        <span className="d-none d-lg-inline"> &#8212; {nextConcert.name}</span> &#8594;
-                      </a>
-                    </Link>
-                  </small>
-                )}
-              </div>
-            )}
-            <h1>
-              {moment.utc(concert.date).format('yyyy-MM-DD')} - {concert.name}
-            </h1>
-          </header>
+      <nav className="d-none d-lg-block" aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link href="/concerts">
+              <a>Concerts</a>
+            </Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {title}
+          </li>
+        </ol>
+      </nav>
 
-          {!session && (
-            <div className="mb-3">
-              <Link href="/api/auth/signin">
-                <a className="btn btn-success rounded-pill" rel="nofollow">
-                  Play
-                </a>
-              </Link>
-            </div>
-          )}
-          {session && (
-            <div className="mb-3">
-              <button className="btn btn-success rounded-pill" type="button" onClick={(): void => playCb()}>
-                Play
-              </button>
-              <button className="btn btn-success rounded-pill" type="button" onClick={(): void => queueCb()}>
-                Add to Queue
-              </button>
-            </div>
-          )}
-
-          <div className="card mb-3">
-            <h4 className="card-header">Concert Information</h4>
-            <div className="card-body">
-              <table className="table">
-                <tbody>
-                  <tr>
-                    <th>Artist:</th>
-                    <td>
-                      <Link href={`/artists/${concert.artist.id}/${slugify(concert.artist.name)}`}>
-                        <a title={concert.artist.name}>{concert.artist.name}</a>
-                      </Link>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Date:</th>
-                    <td>{moment.utc(concert.date).format('MMM D, YYYY')}</td>
-                  </tr>
-                  <tr>
-                    <th>Tour:</th>
-                    <td>
-                      <TourBreadcrumbRow tour={toursById[concert.tour.id]} toursById={toursById} />
-                    </td>
-                  </tr>
-                  <tr>
-                    <th>Venue:</th>
-                    <td>
-                      <Link href={`/venues/${concert.venue.id}/${slugify(concert.venue.name)}`}>
-                        <a title={concert.venue.name}>{concert.venue.name}</a>
-                      </Link>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div className="card mb-3">
-            <h4 className="card-header">Tracks</h4>
-            <div className="card-body">
-              {concert.tracks.map((track, index) => {
-                const concertUrl = getConcertUrl(concert);
-                const artistUrl = `/artists/${concert.artist.id}/${slugify(concert.artist.name)}`;
-                return (
-                  <TrackLinkRow
-                    concertAdditionalDetailsByToken={detailsByToken} //
-                    track={track}
-                    trackNumber={index + 1}
-                    concertUrl={concertUrl}
-                    artistUrl={artistUrl}
-                    key={track.uniqueId || track.id}
-                  />
-                );
-              })}
-            </div>
-          </div>
-
-          {!!noteLines.length && (
-            <div className="card mb-3">
-              <h4 className="card-header">Notes</h4>
-              <div className="card-body white-space-pre-line">{noteLines.join('\n')}</div>
-            </div>
-          )}
-
-          {!!concert.recordingInformation && (
-            <div className="card mb-3">
-              <h4 className="card-header">Recording Information</h4>
-              <div className="card-body white-space-pre-line">{concert.recordingInformation}</div>
-            </div>
-          )}
-
+      <header>
+        {(previousConcert || nextConcert) && (
           <div className="row">
-            {!!concert.posterUrl && (
-              <div className="col-md order-md-last">
-                <div className="card">
-                  <img className="card-img-top" src={`https://api.minarets.io${concert.posterUrl}`} alt="Concert poster" />
-                </div>
-              </div>
+            {previousConcert && (
+              <small className="col">
+                <Link href={getConcertUrl(previousConcert)}>
+                  <a>
+                    &#8592; {moment.utc(previousConcert.date).format('yyyy-MM-DD')}
+                    <span className="d-none d-lg-inline"> &#8212; {previousConcert.name}</span>
+                  </a>
+                </Link>
+              </small>
             )}
-            <div className="col-md">
-              <div className="card mb-3">
-                <h4 className="card-header">Related Concerts</h4>
-                <div className="card-body">
-                  {relatedConcerts.map((relatedConcert) => (
-                    <ConcertLinkRow concert={relatedConcert} key={relatedConcert.id} />
-                  ))}
-                </div>
-              </div>
-
-              {!!concert.posterUrl && (
-                <div className="card mb-3">
-                  <h4 className="card-header">Venue Concerts</h4>
-                  <div className="card-body">
-                    {venueConcerts.map((venueConcert) => (
-                      <ConcertLinkRow concert={venueConcert} key={venueConcert.id} />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-            {!concert.posterUrl && (
-              <div className="col-md">
-                <div className="card mb-3">
-                  <h4 className="card-header">Venue Concerts</h4>
-                  <div className="card-body">
-                    {venueConcerts.map((venueConcert) => (
-                      <ConcertLinkRow concert={venueConcert} key={venueConcert.id} />
-                    ))}
-                  </div>
-                </div>
-              </div>
+            {nextConcert && (
+              <small className="col text-end">
+                <Link href={getConcertUrl(nextConcert)}>
+                  <a>
+                    {moment.utc(nextConcert.date).format('yyyy-MM-DD')}
+                    <span className="d-none d-lg-inline"> &#8212; {nextConcert.name}</span> &#8594;
+                  </a>
+                </Link>
+              </small>
             )}
           </div>
+        )}
+        <h1>
+          {moment.utc(concert.date).format('yyyy-MM-DD')} - {concert.name}
+        </h1>
+      </header>
+
+      {!session && (
+        <div className="mb-3">
+          <Link href="/api/auth/signin">
+            <a className="btn btn-success rounded-pill" rel="nofollow">
+              Play
+            </a>
+          </Link>
         </div>
-      </Layout>
+      )}
+      {session && (
+        <section className="mb-3">
+          <button className="btn btn-success rounded-pill" type="button" onClick={(): void => playCb()}>
+            Play
+          </button>
+          <button className="btn btn-success rounded-pill" type="button" onClick={(): void => queueCb()}>
+            Add to Queue
+          </button>
+        </section>
+      )}
+
+      <section className="card mb-3">
+        <h4 className="card-header">Concert Information</h4>
+        <div className="card-body">
+          <table className="table">
+            <tbody>
+              <tr>
+                <th>Artist:</th>
+                <td>
+                  <Link href={`/artists/${concert.artist.id}/${slugify(concert.artist.name)}`}>
+                    <a title={concert.artist.name}>{concert.artist.name}</a>
+                  </Link>
+                </td>
+              </tr>
+              <tr>
+                <th>Date:</th>
+                <td>{moment.utc(concert.date).format('MMM D, YYYY')}</td>
+              </tr>
+              <tr>
+                <th>Tour:</th>
+                <td>
+                  <TourBreadcrumbRow tour={toursById[concert.tour.id]} toursById={toursById} />
+                </td>
+              </tr>
+              <tr>
+                <th>Venue:</th>
+                <td>
+                  <Link href={`/venues/${concert.venue.id}/${slugify(concert.venue.name)}`}>
+                    <a title={concert.venue.name}>{concert.venue.name}</a>
+                  </Link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="card mb-3">
+        <h4 className="card-header">Tracks</h4>
+        <div className="card-body">
+          {concert.tracks.map((track, index) => {
+            const concertUrl = getConcertUrl(concert);
+            const artistUrl = `/artists/${concert.artist.id}/${slugify(concert.artist.name)}`;
+            return (
+              <TrackLinkRow
+                concertAdditionalDetailsByToken={detailsByToken} //
+                track={track}
+                trackNumber={index + 1}
+                concertUrl={concertUrl}
+                artistUrl={artistUrl}
+                key={track.uniqueId || track.id}
+              />
+            );
+          })}
+        </div>
+      </section>
+
+      {!!noteLines.length && (
+        <section className="card mb-3">
+          <h4 className="card-header">Notes</h4>
+          <div className="card-body white-space-pre-line">{noteLines.join('\n')}</div>
+        </section>
+      )}
+
+      {!!concert.recordingInformation && (
+        <section className="card mb-3">
+          <h4 className="card-header">Recording Information</h4>
+          <div className="card-body white-space-pre-line">{concert.recordingInformation}</div>
+        </section>
+      )}
+
+      <div className="row">
+        {!!concert.posterUrl && (
+          <div className="col-md order-md-last">
+            <section className="card">
+              <img className="card-img-top" src={`https://api.minarets.io${concert.posterUrl}`} alt="Concert poster" />
+            </section>
+          </div>
+        )}
+        <div className="col-md">
+          <section className="card mb-3">
+            <h4 className="card-header">Related Concerts</h4>
+            <div className="card-body">
+              {relatedConcerts.map((relatedConcert) => (
+                <ConcertLinkRow concert={relatedConcert} key={relatedConcert.id} />
+              ))}
+            </div>
+          </section>
+
+          {!!concert.posterUrl && (
+            <section className="card mb-3">
+              <h4 className="card-header">Venue Concerts</h4>
+              <div className="card-body">
+                {venueConcerts.map((venueConcert) => (
+                  <ConcertLinkRow concert={venueConcert} key={venueConcert.id} />
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+        {!concert.posterUrl && (
+          <div className="col-md">
+            <section className="card mb-3">
+              <h4 className="card-header">Venue Concerts</h4>
+              <div className="card-body">
+                {venueConcerts.map((venueConcert) => (
+                  <ConcertLinkRow concert={venueConcert} key={venueConcert.id} />
+                ))}
+              </div>
+            </section>
+          </div>
+        )}
+      </div>
     </>
   );
 }

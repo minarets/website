@@ -1,9 +1,10 @@
 import type { GetStaticPropsResult } from 'next';
+import Head from 'next/head';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import Layout from '../../components/Layout';
 import VenueWithConcertCountLinkRow from '../../components/VenueWithConcertCountLinkRow';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { Minarets } from '../../minarets-api';
 import type { Venue } from '../../minarets-api/minarets/types';
 
@@ -28,18 +29,23 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 }
 
 export default function Page({ venues }: IProps): ReactElement {
+  const title = 'Venues';
+  useDocumentTitle(title);
+
   return (
-    <Layout title="Venues">
-      <section>
-        <div className="card">
-          <h4 className="card-header">All Venues</h4>
-          <div className="card-body">
-            {venues.map((venue) => (
-              <VenueWithConcertCountLinkRow venue={venue} key={venue.id} />
-            ))}
-          </div>
+    <>
+      <Head>
+        <title>{title} · Minarets</title>
+      </Head>
+
+      <section className="card">
+        <h4 className="card-header">All Venues</h4>
+        <div className="card-body">
+          {venues.map((venue) => (
+            <VenueWithConcertCountLinkRow venue={venue} key={venue.id} />
+          ))}
         </div>
       </section>
-    </Layout>
+    </>
   );
 }

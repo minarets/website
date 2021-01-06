@@ -1,5 +1,6 @@
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -7,9 +8,9 @@ import type { ReactElement } from 'react';
 import ContentLoader from 'react-content-loader';
 
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
-import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../components/TrackLinkRow';
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { Minarets } from '../../../minarets-api';
 import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../minarets-api/concertService';
 import type { BasicArtist, ErrorWithResponse, Playlist } from '../../../minarets-api/minarets/types';
@@ -140,9 +141,16 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
 
 export default function Page({ playlist, concertsById, relatedConcertsByTour, toursById, artistsById }: IProps): ReactElement {
   const router = useRouter();
+  const title = router.isFallback ? 'Loading playlist...' : playlist.name;
+  useDocumentTitle(title);
+
   if (router.isFallback) {
     return (
-      <Layout title="Loading playlist...">
+      <>
+        <Head>
+          <title>{title} · Minarets</title>
+        </Head>
+
         <ContentLoader speed={2} width={700} height={350} viewBox="0 0 700 350" backgroundColor="#e9ecef" foregroundColor="#ced4da">
           {/* Page title */}
           <rect className="rounded" x="0" y="0" rx="4" ry="4" width="480" height="24" />
@@ -171,94 +179,95 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
           <rect x="130" y="256" rx="4" ry="4" width="520" height="11" />
           <rect x="130" y="276" rx="4" ry="4" width="520" height="11" />
         </ContentLoader>
-      </Layout>
+      </>
     );
   }
 
   const createdOn = moment.utc(playlist.createdOn);
 
   return (
-    <Layout title={playlist.name}>
-      <div className="content">
-        <nav className="d-none d-lg-block" aria-label="breadcrumb">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
-              <Link href="/playlists">
-                <a>Playlists</a>
-              </Link>
-            </li>
-            <li className="breadcrumb-item active" aria-current="page">
-              {playlist.name}
-            </li>
-          </ol>
-        </nav>
+    <>
+      <Head>
+        <title>{title} · Minarets</title>
+      </Head>
 
-        <header>
-          <h1>{playlist.name}</h1>
-        </header>
+      <nav className="d-none d-lg-block" aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link href="/playlists">
+              <a>Playlists</a>
+            </Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {playlist.name}
+          </li>
+        </ol>
+      </nav>
 
-        <div className="card mb-3">
-          <h4 className="card-header">Playlist Information</h4>
-          <div className="card-body">
-            <table className="table">
-              <tbody>
-                <tr>
-                  <th>Name:</th>
-                  <td>{playlist.name}</td>
-                </tr>
-                <tr>
-                  <th>Description:</th>
-                  <td>{playlist.description}</td>
-                </tr>
-                <tr>
-                  <th>Created:</th>
-                  <td>
-                    {createdOn.format('MMM d, yyyy')} by {playlist.createdBy.name}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+      <header>
+        <h1>{playlist.name}</h1>
+      </header>
+
+      <section className="card mb-3">
+        <h4 className="card-header">Playlist Information</h4>
+        <div className="card-body">
+          <table className="table">
+            <tbody>
+              <tr>
+                <th>Name:</th>
+                <td>{playlist.name}</td>
+              </tr>
+              <tr>
+                <th>Description:</th>
+                <td>{playlist.description}</td>
+              </tr>
+              <tr>
+                <th>Created:</th>
+                <td>
+                  {createdOn.format('MMM d, yyyy')} by {playlist.createdBy.name}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </section>
 
-        <div className="card mb-3">
-          <h4 className="card-header">Tracks</h4>
-          <div className="card-body">
-            {playlist.tracks.map((track, index) => {
-              const concert = concertsById[track.concertId];
-              const concertUrl = getConcertUrl(concert);
-              const artist = artistsById[concert.artistId];
-              const artistUrl = `/artists/${artist.id}/${slugify(artist.name)}`;
-              return (
-                <TrackLinkRow
-                  concertAdditionalDetailsByToken={concert.tokenDetails} //
-                  track={track}
-                  trackNumber={index + 1}
-                  concertUrl={concertUrl}
-                  concertName={getConcertName(concert)}
-                  artistUrl={artistUrl}
-                  key={track.uniqueId || track.id}
-                />
-              );
-            })}
-          </div>
+      <section className="card mb-3">
+        <h4 className="card-header">Tracks</h4>
+        <div className="card-body">
+          {playlist.tracks.map((track, index) => {
+            const concert = concertsById[track.concertId];
+            const concertUrl = getConcertUrl(concert);
+            const artist = artistsById[concert.artistId];
+            const artistUrl = `/artists/${artist.id}/${slugify(artist.name)}`;
+            return (
+              <TrackLinkRow
+                concertAdditionalDetailsByToken={concert.tokenDetails} //
+                track={track}
+                trackNumber={index + 1}
+                concertUrl={concertUrl}
+                concertName={getConcertName(concert)}
+                artistUrl={artistUrl}
+                key={track.uniqueId || track.id}
+              />
+            );
+          })}
+        </div>
+      </section>
+      <section className="card">
+        <h4 className="card-header">Related Concerts</h4>
+        <div className="card-body">
+          {relatedConcertsByTour.map((tourWithConcerts: LimitedTourWithLimitedConcerts) => (
+            <div className="pb-4" key={`${tourWithConcerts.tour.id}_${tourWithConcerts.concerts[0].id}`}>
+              <TourBreadcrumbRow tour={tourWithConcerts.tour} toursById={toursById} key={tourWithConcerts.tour.id} />
 
-          <div className="card">
-            <h4 className="card-header">Related Concerts</h4>
-            <div className="card-body">
-              {relatedConcertsByTour.map((tourWithConcerts: LimitedTourWithLimitedConcerts) => (
-                <div className="pb-4" key={`${tourWithConcerts.tour.id}_${tourWithConcerts.concerts[0].id}`}>
-                  <TourBreadcrumbRow tour={tourWithConcerts.tour} toursById={toursById} key={tourWithConcerts.tour.id} />
-
-                  {tourWithConcerts.concerts.map((concert) => (
-                    <ConcertLinkRow concert={concert} key={concert.id} />
-                  ))}
-                </div>
+              {tourWithConcerts.concerts.map((concert) => (
+                <ConcertLinkRow concert={concert} key={concert.id} />
               ))}
             </div>
-          </div>
+          ))}
         </div>
-      </div>
-    </Layout>
+      </section>
+    </>
   );
 }

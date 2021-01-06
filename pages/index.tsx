@@ -1,10 +1,11 @@
 import moment from 'moment';
 import type { GetStaticPropsResult } from 'next';
+import Head from 'next/head';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import ConcertAndArtistLinkRow from '../components/ConcertAndArtistLinkRow';
-import Layout from '../components/Layout';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { Minarets } from '../minarets-api';
 import { pick } from '../minarets-api/objectService';
 import type { LimitedArtist, LimitedConcertWithArtistId } from '../minarets-api/types';
@@ -88,9 +89,16 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 }
 
 export default function Page({ popularConcerts, newConcerts, latestConcerts, artistsById }: IProps): ReactElement {
+  const title = 'A community for Dave Matthews Band fans';
+  useDocumentTitle(title);
+
   return (
-    <Layout title="A community for Dave Matthews Band fans">
-      <section className="row">
+    <>
+      <Head>
+        <title>{title} · Minarets</title>
+      </Head>
+
+      <div className="row">
         <div className="col-md">
           <div className="card mb-3">
             <h4 className="card-header">Most Popular Concerts</h4>
@@ -119,7 +127,7 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts, art
             </div>
           </div>
         </div>
-      </section>
-    </Layout>
+      </div>
+    </>
   );
 }

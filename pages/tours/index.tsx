@@ -1,10 +1,11 @@
 import type { GetStaticPropsResult } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import Layout from '../../components/Layout';
 import TourRandomConcertLink from '../../components/TourRandomConcertLink';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { Minarets } from '../../minarets-api';
 import type { TourWithChildren } from '../../minarets-api/minarets/types';
 
@@ -52,38 +53,43 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 }
 
 export default function Page({ tours }: IProps): ReactElement {
-  return (
-    <Layout title="Tours">
-      <section>
-        <div className="card">
-          <h4 className="card-header">All Tours</h4>
-          {tours.map((tour) => (
-            <div className="card-body" key={tour.id}>
-              <h5>
-                <Link href={`/tours/${tour.slug}`}>
-                  <a>{tour.name}</a>
-                </Link>{' '}
-                <TourRandomConcertLink tour={tour} />
-              </h5>
+  const title = 'Tours';
+  useDocumentTitle(title);
 
-              {!!tour.children.length && (
-                <ul className="list-unstyled ps-4">
-                  {tour.children.reverse().map((childTour) => (
-                    <li key={childTour.id}>
-                      <Link href={`/tours/${childTour.slug}`}>
-                        <a>{childTour.name}</a>
-                      </Link>
-                      {childTour.concertCount === 1 && ` (${childTour.concertCount} concert) `}
-                      {childTour.concertCount !== 1 && ` (${childTour.concertCount} concerts) `}
-                      <TourRandomConcertLink tour={childTour} />
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-    </Layout>
+  return (
+    <>
+      <Head>
+        <title>{title} · Minarets</title>
+      </Head>
+
+      <div className="card">
+        <h4 className="card-header">All Tours</h4>
+        {tours.map((tour) => (
+          <div className="card-body" key={tour.id}>
+            <h5>
+              <Link href={`/tours/${tour.slug}`}>
+                <a>{tour.name}</a>
+              </Link>{' '}
+              <TourRandomConcertLink tour={tour} />
+            </h5>
+
+            {!!tour.children.length && (
+              <ul className="list-unstyled ps-4">
+                {tour.children.reverse().map((childTour) => (
+                  <li key={childTour.id}>
+                    <Link href={`/tours/${childTour.slug}`}>
+                      <a>{childTour.name}</a>
+                    </Link>
+                    {childTour.concertCount === 1 && ` (${childTour.concertCount} concert) `}
+                    {childTour.concertCount !== 1 && ` (${childTour.concertCount} concerts) `}
+                    <TourRandomConcertLink tour={childTour} />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
