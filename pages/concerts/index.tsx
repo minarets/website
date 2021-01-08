@@ -1,11 +1,12 @@
 import moment from 'moment';
 import type { GetStaticPropsResult } from 'next';
+import Head from 'next/head';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import ConcertAndArtistLinkRow from '../../components/ConcertAndArtistLinkRow';
-import Layout from '../../components/Layout';
-import { Minarets } from '../../minarets-api/minarets';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { Minarets } from '../../minarets-api';
 import { pick } from '../../minarets-api/objectService';
 import type { LimitedArtist, LimitedConcertWithArtistId } from '../../minarets-api/types';
 
@@ -88,38 +89,45 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 }
 
 export default function Page({ popularConcerts, newConcerts, latestConcerts, artistsById }: IProps): ReactElement {
+  const title = 'Concerts';
+  useDocumentTitle(title);
+
   return (
-    <Layout title="Concerts">
-      <section className="row">
+    <>
+      <Head>
+        <title>{title} · Minarets</title>
+      </Head>
+
+      <div className="row">
         <div className="col-md">
-          <div className="card mb-3">
+          <section className="card mb-3">
             <h4 className="card-header">Most Popular Concerts</h4>
             <div className="card-body">
               {popularConcerts.map((concert) => (
                 <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
               ))}
             </div>
-          </div>
-          <div className="card mb-3 mb-md-0">
+          </section>
+          <section className="card mb-3 mb-md-0">
             <h4 className="card-header">Recently Added Concerts</h4>
             <div className="card-body">
               {newConcerts.map((concert) => (
                 <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
               ))}
             </div>
-          </div>
+          </section>
         </div>
         <div className="col-md">
-          <div className="card">
+          <section className="card">
             <h4 className="card-header">Latest Concerts</h4>
             <div className="card-body">
               {latestConcerts.map((concert) => (
                 <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
               ))}
             </div>
-          </div>
+          </section>
         </div>
-      </section>
-    </Layout>
+      </div>
+    </>
   );
 }

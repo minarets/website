@@ -1,9 +1,10 @@
 import type { GetStaticPropsResult } from 'next';
+import Head from 'next/head';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import Layout from '../../components/Layout';
 import PlaylistLinkRow from '../../components/PlaylistLinkRow';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { Minarets } from '../../minarets-api';
 import type { Playlist } from '../../minarets-api/minarets/types';
 
@@ -47,39 +48,46 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 }
 
 export default function Page({ allPlaylists, popularPlaylists, recentPlaylists }: IProps): ReactElement {
+  const title = 'Playlists';
+  useDocumentTitle(title);
+
   return (
-    <Layout title="Playlists">
-      <section className="row">
+    <>
+      <Head>
+        <title>{title} · Minarets</title>
+      </Head>
+
+      <div className="row">
         <div className="col-md">
-          <div className="card mb-3 mb-md-0">
+          <section className="card mb-3 mb-md-0">
             <h4 className="card-header">All Playlists</h4>
             <div className="card-body">
               {allPlaylists.map((playlist) => (
                 <PlaylistLinkRow playlist={playlist} key={playlist.id} />
               ))}
             </div>
-          </div>
+          </section>
         </div>
         <div className="col-md">
-          <div className="card mb-3">
+          <section className="card mb-3">
             <h4 className="card-header">Popular Playlists</h4>
             <div className="card-body">
               {popularPlaylists.map((playlist) => (
                 <PlaylistLinkRow playlist={playlist} key={playlist.id} />
               ))}
             </div>
-          </div>
+          </section>
 
-          <div className="card">
+          <section className="card">
             <h4 className="card-header">Recently Added/Updated Playlists</h4>
             <div className="card-body">
               {recentPlaylists.map((playlist) => (
                 <PlaylistLinkRow playlist={playlist} key={playlist.id} />
               ))}
             </div>
-          </div>
+          </section>
         </div>
-      </section>
-    </Layout>
+      </div>
+    </>
   );
 }

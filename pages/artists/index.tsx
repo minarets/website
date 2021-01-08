@@ -1,10 +1,11 @@
 import type { GetStaticPropsResult } from 'next';
+import Head from 'next/head';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import ArtistWithConcertCountLinkRow from '../../components/ArtistWithConcertCountLinkRow';
-import Layout from '../../components/Layout';
-import { Minarets } from '../../minarets-api/minarets';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { Minarets } from '../../minarets-api';
 import type { Artist } from '../../minarets-api/minarets/types';
 
 interface IProps {
@@ -39,32 +40,37 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 }
 
 export default function Page({ allArtists, popularArtists }: IProps): ReactElement {
+  const title = 'Artists';
+  useDocumentTitle(title);
+
   return (
-    <Layout title="Artists">
-      <section>
-        <div className="row">
-          <div className="col-md">
-            <div className="card">
-              <h4 className="card-header">All Artists</h4>
-              <div className="card-body">
-                {allArtists.map((artist) => (
-                  <ArtistWithConcertCountLinkRow artist={artist} key={artist.id} />
-                ))}
-              </div>
+    <>
+      <Head>
+        <title>{title} · Minarets</title>
+      </Head>
+
+      <div className="row">
+        <div className="col-md">
+          <section className="card">
+            <h4 className="card-header">All Artists</h4>
+            <div className="card-body">
+              {allArtists.map((artist) => (
+                <ArtistWithConcertCountLinkRow artist={artist} key={artist.id} />
+              ))}
             </div>
-          </div>
-          <div className="col-md">
-            <div className="card">
-              <h4 className="card-header">Popular Artists</h4>
-              <div className="card-body">
-                {popularArtists.map((artist) => (
-                  <ArtistWithConcertCountLinkRow artist={artist} key={artist.id} />
-                ))}
-              </div>
-            </div>
-          </div>
+          </section>
         </div>
-      </section>
-    </Layout>
+        <div className="col-md">
+          <section className="card">
+            <h4 className="card-header">Popular Artists</h4>
+            <div className="card-body">
+              {popularArtists.map((artist) => (
+                <ArtistWithConcertCountLinkRow artist={artist} key={artist.id} />
+              ))}
+            </div>
+          </section>
+        </div>
+      </div>
+    </>
   );
 }

@@ -1,15 +1,16 @@
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
-import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../components/TrackLinkRow';
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
+import { Minarets } from '../../../minarets-api';
 import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../minarets-api/concertService';
-import { Minarets } from '../../../minarets-api/minarets';
 import type { BasicArtist, Compilation, CompilationSummary } from '../../../minarets-api/minarets/types';
 import { pick } from '../../../minarets-api/objectService';
 import { slugify } from '../../../minarets-api/stringService';
@@ -117,89 +118,93 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
 
 export default function Page({ compilation, concertsById, relatedConcertsByTour, toursById, artistsById }: IProps): ReactElement {
   const createdOn = moment.utc(compilation.createdOn);
+  const title = compilation.name;
+  useDocumentTitle(title);
 
   return (
-    <Layout title={compilation.name}>
-      <div className="content">
-        <nav aria-label="breadcrumb">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
-              <Link href="/compilations">
-                <a>Compilations</a>
-              </Link>
-            </li>
-            <li className="breadcrumb-item active" aria-current="page">
-              {compilation.name}
-            </li>
-          </ol>
-        </nav>
+    <>
+      <Head>
+        <title>{title} · Minarets</title>
+      </Head>
 
-        <header>
-          <h1>{compilation.name}</h1>
-        </header>
+      <nav aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link href="/compilations">
+              <a>Compilations</a>
+            </Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {compilation.name}
+          </li>
+        </ol>
+      </nav>
 
-        <div className="card mb-3">
-          <h4 className="card-header">Compilation Information</h4>
-          <div className="card-body">
-            <table className="table">
-              <tbody>
-                <tr>
-                  <th>Name:</th>
-                  <td>{compilation.name}</td>
-                </tr>
-                <tr>
-                  <th>Description:</th>
-                  <td>{compilation.description}</td>
-                </tr>
-                <tr>
-                  <th>Created:</th>
-                  <td>
-                    {createdOn.format('MMM d, yyyy')} by {compilation.createdBy.name}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+      <header>
+        <h1>{compilation.name}</h1>
+      </header>
+
+      <section className="card mb-3">
+        <h4 className="card-header">Compilation Information</h4>
+        <div className="card-body">
+          <table className="table">
+            <tbody>
+              <tr>
+                <th>Name:</th>
+                <td>{compilation.name}</td>
+              </tr>
+              <tr>
+                <th>Description:</th>
+                <td>{compilation.description}</td>
+              </tr>
+              <tr>
+                <th>Created:</th>
+                <td>
+                  {createdOn.format('MMM d, yyyy')} by {compilation.createdBy.name}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+      </section>
 
-        <div className="card mb-3">
-          <h4 className="card-header">Tracks</h4>
-          <div className="card-body">
-            {compilation.tracks.map((track, index) => {
-              const concert = concertsById[track.concertId];
-              const concertUrl = getConcertUrl(concert);
-              const artist = artistsById[concert.artistId];
-              const artistUrl = `/artists/${artist.id}/${slugify(artist.name)}`;
-              return (
-                <TrackLinkRow
-                  concertAdditionalDetailsByToken={concert.tokenDetails} //
-                  track={track}
-                  trackNumber={index + 1}
-                  concertUrl={concertUrl}
-                  concertName={getConcertName(concert)}
-                  artistUrl={artistUrl}
-                  key={track.uniqueId || track.id}
-                />
-              );
-            })}
-          </div>
+      <section className="card mb-3">
+        <h4 className="card-header">Tracks</h4>
+        <div className="card-body">
+          {compilation.tracks.map((track, index) => {
+            const concert = concertsById[track.concertId];
+            const concertUrl = getConcertUrl(concert);
+            const artist = artistsById[concert.artistId];
+            const artistUrl = `/artists/${artist.id}/${slugify(artist.name)}`;
+            return (
+              <TrackLinkRow
+                concertAdditionalDetailsByToken={concert.tokenDetails} //
+                track={track}
+                trackNumber={index + 1}
+                concertUrl={concertUrl}
+                concertName={getConcertName(concert)}
+                artistUrl={artistUrl}
+                key={track.uniqueId || track.id}
+              />
+            );
+          })}
         </div>
+      </section>
 
-        <div className="card">
-          <h4 className="card-header">Related Concerts</h4>
-          <div className="card-body">
-            {relatedConcertsByTour.map((tourWithConcerts: LimitedTourWithLimitedConcerts) => (
-              <div className="pb-4" key={`${tourWithConcerts.tour.id}_${tourWithConcerts.concerts[0].id}`}>
-                <TourBreadcrumbRow tour={tourWithConcerts.tour} toursById={toursById} key={tourWithConcerts.tour.id} />
+      <section className="card">
+        <h4 className="card-header">Related Concerts</h4>
+        <div className="card-body">
+          {relatedConcertsByTour.map((tourWithConcerts: LimitedTourWithLimitedConcerts) => (
+            <div className="pb-4" key={`${tourWithConcerts.tour.id}_${tourWithConcerts.concerts[0].id}`}>
+              <TourBreadcrumbRow tour={tourWithConcerts.tour} toursById={toursById} key={tourWithConcerts.tour.id} />
 
-                {tourWithConcerts.concerts.map((concert) => (
-                  <ConcertLinkRow concert={concert} key={concert.id} />
-                ))}
-              </div>
-            ))}
-          </div>
+              {tourWithConcerts.concerts.map((concert) => (
+                <ConcertLinkRow concert={concert} key={concert.id} />
+              ))}
+            </div>
+          ))}
         </div>
-      </div>
-    </Layout>
+      </section>
+    </>
   );
 }

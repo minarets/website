@@ -1,17 +1,24 @@
+import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import Layout from '../../components/Layout';
 import QueueTrackLinkRow from '../../components/QueueTrackLinkRow';
 import { usePlayerState } from '../../contexts/PlayerContext';
+import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
 export default function Page(): ReactElement {
+  const title = 'Play History';
+  useDocumentTitle(title);
   const { historyTracks } = usePlayerState();
 
   return (
-    <Layout title="Play Queue">
-      <section>
+    <>
+      <Head>
+        <title>{title} · Minarets</title>
+      </Head>
+
+      <nav>
         <ul className="nav">
           <li className="nav-item">
             <Link href="/queue">
@@ -24,24 +31,24 @@ export default function Page(): ReactElement {
             </Link>
           </li>
         </ul>
+      </nav>
 
-        {!!historyTracks.length && (
-          <div className="card mb-3">
-            <h4 className="card-header">Played Songs</h4>
-            <div className="card-body">
-              {historyTracks.map((track) => (
-                <QueueTrackLinkRow track={track} key={track.uniqueId} />
-              ))}
-            </div>
+      {!!historyTracks.length && (
+        <section className="card mb-3">
+          <h4 className="card-header">Played Songs</h4>
+          <div className="card-body">
+            {historyTracks.map((track) => (
+              <QueueTrackLinkRow track={track} key={track.uniqueId} />
+            ))}
           </div>
-        )}
+        </section>
+      )}
 
-        {!historyTracks.length && (
-          <div className="card">
-            <div className="card-body">Doesn&apos;t look like you have played any songs.</div>
-          </div>
-        )}
-      </section>
-    </Layout>
+      {!historyTracks.length && (
+        <section className="card">
+          <div className="card-body">Doesn&apos;t look like you have played any songs.</div>
+        </section>
+      )}
+    </>
   );
 }

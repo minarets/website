@@ -1,12 +1,13 @@
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import ArtistRandomConcertLink from '../../../components/ArtistRandomConcertLink';
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
-import Layout from '../../../components/Layout';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
+import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { Minarets } from '../../../minarets-api';
 import type { Artist, ArtistSummary } from '../../../minarets-api/minarets/types';
 import { pick } from '../../../minarets-api/objectService';
@@ -100,72 +101,77 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
 }
 
 export default function Page({ artist, latestConcertsByTour, popularConcerts, newConcerts, toursById }: IProps): ReactElement {
+  const title = artist.name;
+  useDocumentTitle(title);
+
   return (
-    <Layout title={artist.name}>
-      <div className="content">
-        <nav className="d-none d-lg-block" aria-label="breadcrumb">
-          <ol className="breadcrumb">
-            <li className="breadcrumb-item">
-              <Link href="/artists">
-                <a>Artists</a>
-              </Link>
-            </li>
-            <li className="breadcrumb-item active" aria-current="page">
-              {artist.name}
-            </li>
-          </ol>
-        </nav>
+    <>
+      <Head>
+        <title>{title} · Minarets</title>
+      </Head>
 
-        <header>
-          <h1>{artist.name}</h1>
-        </header>
+      <nav className="d-none d-lg-block" aria-label="breadcrumb">
+        <ol className="breadcrumb">
+          <li className="breadcrumb-item">
+            <Link href="/artists">
+              <a>Artists</a>
+            </Link>
+          </li>
+          <li className="breadcrumb-item active" aria-current="page">
+            {artist.name}
+          </li>
+        </ol>
+      </nav>
 
-        <div className="card mb-3">
-          <h4 className="card-header">Artist Information</h4>
-          <div className="card-body">
-            <strong>Concerts: </strong>
-            {` ${artist.concertCount} `}
-            <ArtistRandomConcertLink artist={artist} />
-          </div>
+      <header>
+        <h1>{artist.name}</h1>
+      </header>
+
+      <section className="card mb-3">
+        <h4 className="card-header">Artist Information</h4>
+        <div className="card-body">
+          <strong>Concerts: </strong>
+          {` ${artist.concertCount} `}
+          <ArtistRandomConcertLink artist={artist} />
         </div>
+      </section>
 
-        <div className="row">
-          <div className="col-md">
-            <div className="card mb-3">
-              <h4 className="card-header">Most Popular Concerts</h4>
-              <div className="card-body">
-                {popularConcerts.map((concert) => (
-                  <ConcertLinkRow concert={concert} key={concert.id} />
-                ))}
-              </div>
+      <div className="row">
+        <div className="col-md">
+          <section className="card mb-3">
+            <h4 className="card-header">Most Popular Concerts</h4>
+            <div className="card-body">
+              {popularConcerts.map((concert) => (
+                <ConcertLinkRow concert={concert} key={concert.id} />
+              ))}
             </div>
-            <div className="card mb-3 mb-md-0">
-              <h4 className="card-header">Recently Added Concerts</h4>
-              <div className="card-body">
-                {newConcerts.map((concert) => (
-                  <ConcertLinkRow concert={concert} key={concert.id} />
-                ))}
-              </div>
+          </section>
+          <section className="card mb-3 mb-md-0">
+            <h4 className="card-header">Recently Added Concerts</h4>
+            <div className="card-body">
+              {newConcerts.map((concert) => (
+                <ConcertLinkRow concert={concert} key={concert.id} />
+              ))}
             </div>
-          </div>
-          <div className="col-md">
-            <div className="card">
-              <h4 className="card-header">Latest Concerts</h4>
-              <div className="card-body">
-                {latestConcertsByTour.map((latestConcerts: LimitedTourWithLimitedConcerts) => (
-                  <div className="pb-4" key={`${latestConcerts.tour.id}_${latestConcerts.concerts[0].id}`}>
-                    <TourBreadcrumbRow tour={latestConcerts.tour} toursById={toursById} key={latestConcerts.tour.id} />
+          </section>
+        </div>
+        <div className="col-md">
+          <section className="card">
+            <h4 className="card-header">Latest Concerts</h4>
+            <div className="card-body">
+              {latestConcertsByTour.map((latestConcerts: LimitedTourWithLimitedConcerts) => (
+                <div className="pb-4" key={`${latestConcerts.tour.id}_${latestConcerts.concerts[0].id}`}>
+                  <TourBreadcrumbRow tour={latestConcerts.tour} toursById={toursById} key={latestConcerts.tour.id} />
 
-                    {latestConcerts.concerts.map((concert) => (
-                      <ConcertLinkRow concert={concert} key={concert.id} />
-                    ))}
-                  </div>
-                ))}
-              </div>
+                  {latestConcerts.concerts.map((concert) => (
+                    <ConcertLinkRow concert={concert} key={concert.id} />
+                  ))}
+                </div>
+              ))}
             </div>
-          </div>
+          </section>
         </div>
       </div>
-    </Layout>
+    </>
   );
 }
