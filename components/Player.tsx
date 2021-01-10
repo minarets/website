@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import { useSession } from 'next-auth/client';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -20,7 +21,7 @@ export default function Player(): React.ReactElement {
     'space',
     (e) => {
       e.preventDefault();
-      playerState.player.togglePlay().catch((ex: Error) => console.error(ex));
+      playerState.player.togglePlay().catch((ex: Error) => Sentry.captureException(ex));
     },
     {},
     [playerState],

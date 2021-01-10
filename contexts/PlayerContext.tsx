@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import * as React from 'react';
 
 import { Player, RepeatMode } from '../minarets-api/Player';
@@ -67,7 +68,7 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
       };
     case 'TrackStart': {
       console.log('Track start...');
-      fetch(`/api/minarets/playTrack/${action.track.id}`).catch((err) => console.error(err));
+      fetch(`/api/minarets/playTrack/${action.track.id}`).catch((err) => Sentry.captureException(err));
 
       return state;
     }
@@ -168,7 +169,7 @@ export const PlayerProvider = ({ children }: IPlayerContextProviderProps): React
         });
       },
       onError(error): void {
-        console.error(error.message);
+        Sentry.captureException(error);
       },
     }),
   });

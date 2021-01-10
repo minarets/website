@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/node';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getSession } from 'next-auth/client';
 
@@ -61,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const response = await api.tracks.play(id);
             body = JSON.stringify(response);
           } catch (ex) {
-            console.error(ex);
+            Sentry.captureException(ex);
             body = JSON.stringify({
               ok: true,
             });

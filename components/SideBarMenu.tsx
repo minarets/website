@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import { useSession } from 'next-auth/client';
 import Link from 'next/link';
 import * as React from 'react';
@@ -28,7 +29,7 @@ export default function Layout(): React.ReactElement {
 
           return playlistSummaries;
         })
-        .catch((err) => console.error(err));
+        .catch((err) => Sentry.captureException(err));
     }
   }, [session, setPlaylists]);
 

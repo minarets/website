@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import { useSession } from 'next-auth/client';
@@ -132,7 +133,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
           }),
         ),
       )
-      .catch((ex) => console.error(ex));
+      .catch((ex) => Sentry.captureException(ex));
   }, [playerState, concert]);
   const queueCb = React.useCallback(() => {
     playerState.player.queuePriorityTracks(
