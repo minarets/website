@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import type { User as NextAuthUser } from 'next-auth';
 import { useSession } from 'next-auth/client';
 import dynamic from 'next/dynamic';
@@ -24,6 +25,17 @@ function Layout({ children }: LayoutParams): React.ReactElement {
   const [session, loading] = useSession();
   const [randomClicked, setRandomClicked] = React.useState(false);
   const router = useRouter();
+
+  React.useEffect(() => {
+    if (session) {
+      Sentry.setUser({
+        id: session.user.email || undefined,
+        email: session.user.email || undefined,
+      });
+    } else {
+      Sentry.setUser(null);
+    }
+  }, [session]);
 
   async function handleRandomConcertClick(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>): Promise<void> {
     e.preventDefault();
