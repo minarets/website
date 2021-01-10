@@ -35,6 +35,7 @@
     "@sentry/browser": "^5.29.2",
     "@sentry/integrations": "^5.29.2",
     "@sentry/node": "^5.29.2",
+    "@sentry/tracing": "^5.29.2",
     "@sentry/webpack-plugin": "^1.14.0",
     "bootstrap": "^5.0.0-beta1",
     "cross-fetch": "3.0.6",
