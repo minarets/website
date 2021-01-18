@@ -1,4 +1,5 @@
 import { Artists } from './artists';
+import { ChatMessages } from './chatMessages';
 import { Compilations } from './compilations';
 import { Concerts } from './concerts';
 import { Playlists } from './playlists';
@@ -13,6 +14,8 @@ export class Minarets {
   protected apiToken: string;
 
   protected artistsApi: Artists;
+
+  protected chatMessagesApi: ChatMessages;
 
   protected compilationsApi: Compilations;
 
@@ -40,6 +43,7 @@ export class Minarets {
     this.apiKey = apiKey;
     this.apiToken = apiToken;
     this.artistsApi = new Artists(apiKey, apiToken, apiUrl);
+    this.chatMessagesApi = new ChatMessages(apiKey, apiToken, apiUrl);
     this.compilationsApi = new Compilations(apiKey, apiToken, apiUrl);
     this.concertsApi = new Concerts(apiKey, apiToken, apiUrl);
     this.playlistsApi = new Playlists(apiKey, apiToken, apiUrl);
@@ -51,6 +55,10 @@ export class Minarets {
 
   public get artists(): Artists {
     return this.artistsApi;
+  }
+
+  public get chatMessages(): ChatMessages {
+    return this.chatMessagesApi;
   }
 
   public get compilations(): Compilations {
