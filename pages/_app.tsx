@@ -6,6 +6,7 @@ import * as React from 'react';
 
 import '../styles/globals.scss';
 import Layout from '../components/Layout';
+import { ChatProvider } from '../contexts/ChatContext';
 import { PlayerProvider } from '../contexts/PlayerContext';
 import { init } from '../minarets-api/sentryService';
 
@@ -15,10 +16,10 @@ interface IPageProps {
 
 interface IProps extends AppProps<IPageProps> {
   err?:
-    | null
     | (Error & {
         statusCode?: number;
-      });
+      })
+    | null;
 }
 
 if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
@@ -32,10 +33,12 @@ function App({ Component, pageProps, err }: IProps): ReactElement {
   return (
     <Provider session={session}>
       <PlayerProvider>
-        <Layout>
-          {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-          <Component {...pageProps} err={err} />
-        </Layout>
+        <ChatProvider>
+          <Layout>
+            {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+            <Component {...pageProps} err={err} />
+          </Layout>
+        </ChatProvider>
       </PlayerProvider>
     </Provider>
   );

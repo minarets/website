@@ -1,9 +1,11 @@
+import * as Sentry from '@sentry/browser';
 import * as React from 'react';
 
-import type { ChatMessage } from '../minarets-api/minarets/types';
+import type { BasicUser, ChatMessage } from '../minarets-api/minarets/types';
 
 export interface IChatState {
   messages: ChatMessage[];
+  onlineUsers: BasicUser[];
   isWidgetVisible: boolean;
 }
 
@@ -16,34 +18,78 @@ interface IUpdateMessages {
   messages: ChatMessage[];
 }
 
-type ChatAction = IChatWidgetAction | IUpdateMessages;
+interface IUpdateOnlineUsers {
+  type: 'UpdateOnlineUsers';
+  onlineUsers: BasicUser[];
+}
+
+type ChatAction = IChatWidgetAction | IUpdateMessages | IUpdateOnlineUsers;
 
 function chatReducer(state: IChatState, action: ChatAction): IChatState {
-  switch (action.type) {
-    case 'HideChatWidget':
-      return {
-        ...state,
-        isWidgetVisible: false,
-      };
-    case 'ShowChatWidget':
-      return {
-        ...state,
-        isWidgetVisible: true,
-      };
-    case 'UpdateMessages': {
-      const messages = [...action.messages, ...state.messages];
+  try {
+    switch (action.type) {
+      case 'HideChatWidget':
+        return {
+          ...state,
+          isWidgetVisible: false,
+        };
+      case 'ShowChatWidget':
+        return {
+          ...state,
+          isWidgetVisible: true,
+        };
+      case 'UpdateMessages': {
+        // Only show the most recent 200 unique messages. A completely arbitrary number...
+        const maxMessages = 200;
+        const messageIds: Record<string, boolean> = {};
+        const messages = [];
+        let messageCount = 0;
 
-      if (messages.length > 200) {
-        messages.length = 200;
+        for (const message of action.messages) {
+          const id = `${message.id}`;
+          if (!messageIds[id]) {
+            messageIds[id] = true;
+            messages.push(message);
+            messageCount += 1;
+
+            if (messageCount >= maxMessages) {
+              break;
+            }
+          }
+        }
+
+        if (messageCount < maxMessages) {
+          for (const message of state.messages) {
+            const id = `${message.id}`;
+            if (!messageIds[id]) {
+              messageIds[id] = true;
+              messages.push(message);
+              messageCount += 1;
+
+              if (messageCount >= maxMessages) {
+                break;
+              }
+            }
+          }
+        }
+
+        return {
+          ...state,
+          messages,
+        };
       }
-
-      return {
-        ...state,
-        messages,
-      };
+      case 'UpdateOnlineUsers': {
+        return {
+          ...state,
+          onlineUsers: action.onlineUsers,
+        };
+      }
+      default:
+        throw new Error(`Unhandled action: ${JSON.stringify(action)}`);
     }
-    default:
-      throw new Error(`Unhandled action: ${JSON.stringify(action)}`);
+  } catch (ex) {
+    Sentry.captureException(ex);
+    return state;
   }
 }
 
@@ -57,6 +103,7 @@ interface IChatContextProviderProps {
 export const ChatProvider = ({ children }: IChatContextProviderProps): React.ReactElement<IChatContextProviderProps> => {
   const [state, dispatch] = React.useReducer(chatReducer, {
     messages: [],
+    onlineUsers: [],
     isWidgetVisible: true,
   });
 

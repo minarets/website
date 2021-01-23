@@ -75,6 +75,47 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         break;
       }
+      case 'getChatMessages': {
+        const [, lastMessageId] = query.minarets;
+        try {
+          const response = await api.chatMessages.listLatest({
+            maxItems: 10,
+            includeOnlineUsers: true,
+            lastMessageId: lastMessageId ? Number(lastMessageId) : undefined,
+          });
+          body = JSON.stringify(response);
+        } catch (ex) {
+          Sentry.captureException(ex);
+          // TODO: Return false and back off future attempts?
+          body = JSON.stringify({
+            ok: true,
+            messages: [],
+          });
+        }
+
+        break;
+      }
+      case 'getPassiveChatMessages': {
+        // Same as above, just skips getting online users
+        const [, lastMessageId] = query.minarets;
+        try {
+          const response = await api.chatMessages.listLatest({
+            maxItems: 10,
+            includeOnlineUsers: false,
+            lastMessageId: lastMessageId ? Number(lastMessageId) : undefined,
+          });
+          body = JSON.stringify(response);
+        } catch (ex) {
+          Sentry.captureException(ex);
+          // TODO: Return false and back off future attempts?
+          body = JSON.stringify({
+            ok: true,
+            messages: [],
+          });
+        }
+
+        break;
+      }
       default:
         res.status(404);
         body = JSON.stringify({

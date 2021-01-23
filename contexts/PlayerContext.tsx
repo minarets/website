@@ -54,72 +54,77 @@ interface ITrackStartEndAction {
 type PlayerAction = IMuteAction | IProgressAction | ISetVolumeAction | ITrackStartEndAction | IUpdatePlayerStateAction;
 
 function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState {
-  switch (action.type) {
-    case 'UpdatePlayerState':
-      return {
-        ...state,
-        currentTrack: action.state.currentTrack,
-        currentTime: action.state.position,
-        duration: action.state.duration,
-        isPaused: action.state.isPaused,
-        repeatMode: action.state.repeatMode,
-        priorityTracks: action.state.priorityTracks,
-        nextTracks: action.state.nextTracks,
-      };
-    case 'TrackStart': {
-      console.log('Track start...');
-      fetch(`/api/minarets/playTrack/${action.track.id}`).catch((err) => Sentry.captureException(err));
-
-      return state;
-    }
-    case 'Progress': {
-      return {
-        ...state,
-        currentTime: action.currentTime,
-        duration: action.duration,
-      };
-    }
-    case 'TrackEnd':
-      console.log('Track ending...');
-      return {
-        ...state,
-        historyTracks: [action.track, ...state.historyTracks],
-      };
-    case 'Mute':
-    case 'Unmute': {
-      if (state.isMuted) {
-        state.player.setVolume(state.volume);
+  try {
+    switch (action.type) {
+      case 'UpdatePlayerState':
         return {
           ...state,
-          isMuted: false,
+          currentTrack: action.state.currentTrack,
+          currentTime: action.state.position,
+          duration: action.state.duration,
+          isPaused: action.state.isPaused,
+          repeatMode: action.state.repeatMode,
+          priorityTracks: action.state.priorityTracks,
+          nextTracks: action.state.nextTracks,
+        };
+      case 'TrackStart': {
+        console.log('Track start...');
+        fetch(`/api/minarets/playTrack/${action.track.id}`).catch((err) => Sentry.captureException(err));
+
+        return state;
+      }
+      case 'Progress': {
+        return {
+          ...state,
+          currentTime: action.currentTime,
+          duration: action.duration,
         };
       }
+      case 'TrackEnd':
+        console.log('Track ending...');
+        return {
+          ...state,
+          historyTracks: [action.track, ...state.historyTracks],
+        };
+      case 'Mute':
+      case 'Unmute': {
+        if (state.isMuted) {
+          state.player.setVolume(state.volume);
+          return {
+            ...state,
+            isMuted: false,
+          };
+        }
 
-      state.player.setVolume(0);
-      return {
-        ...state,
-        isMuted: true,
-      };
-    }
-    case 'SetVolume': {
-      if (action.volume <= 0) {
         state.player.setVolume(0);
-
         return {
           ...state,
           isMuted: true,
         };
       }
+      case 'SetVolume': {
+        if (action.volume <= 0) {
+          state.player.setVolume(0);
 
-      state.player.setVolume(action.volume);
-      return {
-        ...state,
-        isMuted: false,
-        volume: action.volume,
-      };
+          return {
+            ...state,
+            isMuted: true,
+          };
+        }
+
+        state.player.setVolume(action.volume);
+        return {
+          ...state,
+          isMuted: false,
+          volume: action.volume,
+        };
+      }
+      default:
+        throw new Error(`Unhandled action: ${JSON.stringify(action)}`);
     }
-    default:
-      throw new Error(`Unhandled action: ${JSON.stringify(action)}`);
+  } catch (ex) {
+    Sentry.captureException(ex);
+    return state;
   }
 }
 
@@ -149,13 +154,6 @@ export const PlayerProvider = ({ children }: IPlayerContextProviderProps): React
           state: playerState,
         });
       },
-      // onProgress(playerState): void {
-      //   dispatch({
-      //     type: 'Progress',
-      //     currentTime: playerState.position,
-      //     duration: playerState.duration,
-      //   })
-      // },
       onTrackStart(track: PlaybackTrack): void {
         dispatch({
           type: 'TrackStart',

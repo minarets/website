@@ -3,16 +3,23 @@ import * as React from 'react';
 
 import { useChatDispatch, useChatState } from '../contexts/ChatContext';
 import { useInterval } from '../hooks/useInterval';
+import type { IListLatestResponse } from '../minarets-api/minarets/chatMessages';
 import type { ChatMessage } from '../minarets-api/minarets/types';
 
-async function getChatMessages(lastMessageId?: number): Promise<ChatMessage[]> {
-  const response = await fetch(`/api/minarets/getChatMessages?lastMessageId=${lastMessageId || ''}`);
+import ChatMessageRow from './ChatMessageRow';
+
+async function getChatMessages(isPassive: boolean, lastMessageId?: number): Promise<IListLatestResponse> {
+  const url = isPassive ? '/api/minarets/getPassiveChatMessages' : '/api/minarets/getChatMessages';
+  const lastMessageUrl = lastMessageId ? `/${lastMessageId}` : '';
+  const response = await fetch(`${url}${lastMessageUrl}`);
   if (response.ok) {
-    return (await response.json()) as ChatMessage[];
+    return (await response.json()) as IListLatestResponse;
   }
 
   console.log(`getChatMessages - :(`);
-  return [];
+  return {
+    messages: [],
+  };
 }
 
 export default function ChatWidget(): React.ReactElement {
@@ -36,12 +43,19 @@ export default function ChatWidget(): React.ReactElement {
 
   useInterval(
     (): void => {
-      getChatMessages(chatState.messages[0]?.id)
-        .then((chatMessages: ChatMessage[]) => {
+      getChatMessages(!windowIsActive, chatState.messages[0]?.id)
+        .then((response: IListLatestResponse) => {
           chatDispatch({
             type: 'UpdateMessages',
-            messages: chatMessages,
+            messages: response.messages || [],
           });
+
+          if (response.onlineUsers) {
+            chatDispatch({
+              type: 'UpdateOnlineUsers',
+              onlineUsers: response.onlineUsers,
+            });
+          }
 
           return true;
         })
@@ -50,12 +64,10 @@ export default function ChatWidget(): React.ReactElement {
     windowIsActive ? 7000 : 30000,
   );
 
-  const;
-
   return (
     <div className="chat-widget">
       {chatState.messages.map((chatMessage: ChatMessage) => (
-        <ChatMessage message={chatMessage} key={chatMessage.id} />
+        <ChatMessageRow message={chatMessage} key={chatMessage.id} />
       ))}
     </div>
   );

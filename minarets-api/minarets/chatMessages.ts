@@ -1,30 +1,30 @@
 import { ApiBase } from './apiBase';
 import type { BasicUser, ChatMessage } from './types';
 
-interface IListLatestRequest {
+export interface IListLatestRequest {
   lastMessageId?: number;
   maxItems?: number;
-  includeActiveUsers?: boolean;
+  includeOnlineUsers?: boolean;
 }
 
-interface IListLatestResponse {
-  stickyMessage: string;
+export interface IListLatestResponse {
+  stickyMessage?: string;
   messages: ChatMessage[];
-  activeUsers?: BasicUser[];
+  onlineUsers?: BasicUser[];
 }
 
-interface IListOnlineUsersResponse {
+export interface IListOnlineUsersResponse {
   users: BasicUser[];
 }
 
-interface IHistoryRequest {
+export interface IHistoryRequest {
   lastMessageId?: number;
   maxItems?: number;
 }
 
-interface IHistoryResponse {
+export interface IHistoryResponse {
   messages: ChatMessage[];
-  activeUsers: BasicUser[];
+  onlineUsers: BasicUser[];
 }
 
 export class ChatMessages extends ApiBase {

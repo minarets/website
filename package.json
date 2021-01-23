@@ -39,6 +39,8 @@
     "@sentry/webpack-plugin": "^1.14.0",
     "bootstrap": "^5.0.0-beta1",
     "cross-fetch": "3.0.6",
+    "domutils": "^2.4.4",
+    "htmlparser2": "^6.0.0",
     "ioredis": "4.19.4",
     "moment": "2.29.1",
     "next": "^10.0.5",
