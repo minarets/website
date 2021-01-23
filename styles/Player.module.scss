@@ -132,7 +132,7 @@ $player-button-disabled-color: #535353;
 
 .nowPlayingBarCenter {
   width: 40%;
-  min-width: 772px;
+  min-width: 600px;
 }
 
 .nowPlayingArt {
@@ -178,7 +178,7 @@ $player-button-disabled-color: #535353;
 }
 
 .trackName {
-  font-size: $font-size-lg;
+  font-size: $font-size-base;
   line-height: $line-height-lg;
   text-align: left;
   color: $white;
@@ -201,7 +201,7 @@ $player-button-disabled-color: #535353;
 }
 
 .trackDetails {
-  font-size: $font-size-sm;
+  font-size: $font-size-base * .8;
   line-height: $line-height-sm;
   text-align: left;
 
