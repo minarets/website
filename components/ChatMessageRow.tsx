@@ -14,52 +14,132 @@ interface IProps {
   previousMessage?: ChatMessage;
 }
 
-function Smiley({ text }: { text: string }): ReactElement {
+function Smiley({ text, prefixWithSpace }: { text: string; prefixWithSpace: boolean }): ReactElement {
   switch (text) {
     case ':)':
     case ':-)':
-      return <img src="/images/smileys/smile.gif" alt=":)" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/smile.gif" alt=":)" />
+        </>
+      );
     case ':(':
     case ':-(':
-      return <img src="/images/smileys/sad.gif" alt=":(" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/sad.gif" alt=":(" />
+        </>
+      );
     case ':D':
     case ':-D':
-      return <img src="/images/smileys/biggrin.gif" alt=":D" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/biggrin.gif" alt=":D" />
+        </>
+      );
     case ';)':
     case ';-)':
-      return <img src="/images/smileys/wink.gif" alt=";)" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/wink.gif" alt=";)" />
+        </>
+      );
     case ':|':
     case ':-|':
-      return <img src="/images/smileys/eh.gif" alt=":|" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/eh.gif" alt=":|" />
+        </>
+      );
     case ':/':
     case ':-/':
-      return <img src="/images/smileys/hrm.gif" alt=":/" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/hrm.gif" alt=":/" />
+        </>
+      );
     case ':O':
     case ':-O':
-      return <img src="/images/smileys/oh.gif" alt=":O" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/oh.gif" alt=":O" />
+        </>
+      );
     case ':P':
     case ':-P':
-      return <img src="/images/smileys/tongue.gif" alt=":P" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/tongue.gif" alt=":P" />
+        </>
+      );
     case ':(|)':
     case '(monkey)':
-      return <img src="/images/smileys/monkey.gif" alt=":(|)" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/monkey.gif" alt="(monkey)" />
+        </>
+      );
     case ':@)':
     case '(pig)':
-      return <img src="/images/smileys/pig.gif" alt=":@)" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/pig.gif" alt=":@)" />
+        </>
+      );
     case '(cake)':
-      return <img src="/images/smileys/cake.png" alt="(cake)" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/cake.png" alt="(cake)" />
+        </>
+      );
     case '(chipotle)':
-      return <img src="/images/smileys/chipotle.png" alt="(chipotle)" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/chipotle.png" alt="(chipotle)" />
+        </>
+      );
     case '(firedancer)':
-      return <img src="/images/smileys/firedancer.png" alt="(firedancer)" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/firedancer.png" alt="(firedancer)" />
+        </>
+      );
     case '<3':
     case '&lt;3':
     case '(heart)':
-      return <img src="/images/smileys/heart.png" alt="(heart)" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/heart.png" alt="(heart)" />
+        </>
+      );
     case '(loko)':
-      return <img src="/images/smileys/loko.png" alt="(loko)" />;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          <img src="/images/smileys/loko.png" alt="(loko)" />
+        </>
+      );
     default:
-      return <>{text}</>;
+      return (
+        <>
+          {prefixWithSpace ? ' ' : ''}
+          {text}
+        </>
+      );
   }
 }
 
@@ -104,13 +184,25 @@ function TextOrImage({ node, expandTextLinks }: { node: Node; expandTextLinks: b
         <>
           {parts.map((part, index) => (
             // eslint-disable-next-line react/no-array-index-key
-            <TextOrLink text={part} prefixWithSpace={!!index} key={`${part}__${index}`} />
+            <TextOrLink text={part} prefixWithSpace={!!index} key={`${part}_${index}`} />
           ))}
         </>
       );
     }
 
-    return <Smiley text={node.data} />;
+    if (node.data.includes(':') || node.data.includes('(')) {
+      const parts: string[] = node.data.split(' ');
+      return (
+        <>
+          {parts.map((part, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <Smiley text={part} key={`${part}_${index}`} prefixWithSpace={!!index} />
+          ))}
+        </>
+      );
+    }
+
+    return <Smiley text={node.data} prefixWithSpace={false} />;
   }
 
   if (isTag(node) && node.name === 'img' && node.attribs.src) {
