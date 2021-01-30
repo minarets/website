@@ -1,4 +1,9 @@
 #!/bin/sh
-. "$(dirname $0)/_/husky.sh"
+# shellcheck disable=SC1090,SC1091
+. "$(dirname "$0")/_/husky.sh"
 
-/usr/local/opt/node@12/bin/node node_modules/.bin/lint-staged
+PATH=$PATH:/usr/local/bin
+
+echo 'NOTE: If node/npm/yarn is not found, you may need to run brew link for your specific node version'
+
+yarn lint:staged
