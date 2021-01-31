@@ -62,6 +62,7 @@ export default function ChatWidget(): React.ReactElement {
         .catch((err) => Sentry.captureException(err));
     },
     windowIsActive ? 7000 : 30000,
+    windowIsActive,
   );
 
   return (

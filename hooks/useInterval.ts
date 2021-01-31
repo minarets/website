@@ -2,13 +2,19 @@
 
 import { useEffect, useRef } from 'react';
 
-export function useInterval(callback: (...args: unknown[]) => void, ms: number): void {
+export function useInterval(callback: (...args: unknown[]) => void, ms: number, executeImmediately?: boolean): void {
   const savedCallback = useRef<(...args: unknown[]) => void>();
 
   // Remember the latest callback.
   useEffect(() => {
     savedCallback.current = callback;
   }, [callback]);
+
+  useEffect(() => {
+    if (executeImmediately && savedCallback.current) {
+      savedCallback.current();
+    }
+  }, [executeImmediately]);
 
   // Set up the interval.
   useEffect(() => {
