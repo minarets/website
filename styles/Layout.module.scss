@@ -24,6 +24,16 @@
       fill: tint-color($dark, 40%);
     }
   }
+
+  .logo {
+    color: $blue;
+
+    &:link,
+    &:visited {
+      color: $blue;
+      fill: $blue;
+    }
+  }
 }
 
 .hoverGrow {
@@ -79,6 +89,16 @@
   padding-bottom: 90px;
 }
 
-.logo {
+.randomConcert,
+.randomConcertLoading {
+  color: $green !important;
+  fill: $green !important;
+}
+
+.chatColumn {
+  background: #f1f1f1;
+}
+
+.footerLogo {
   height: 2rem;
 }
