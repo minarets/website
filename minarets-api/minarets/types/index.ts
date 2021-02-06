@@ -10,6 +10,7 @@ export * from './BasicTourWithChildren';
 export * from './BasicUser';
 export * from './BasicUserWithToken';
 export * from './BasicVenue';
+export * from './ChatMessage';
 export * from './Compilation';
 export * from './CompilationSummary';
 export * from './Concert';

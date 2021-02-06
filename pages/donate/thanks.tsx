@@ -15,7 +15,7 @@ export default function Page(): ReactElement {
       </Head>
 
       <div className="row">
-        <div className="col col-md-8 col-lg-6 col-xl-5">
+        <div className="col col-lg-6 col-xl-5">
           <section className="card mb-3">
             <h4 className="card-header">Thank you!</h4>
             <div className="card-body">

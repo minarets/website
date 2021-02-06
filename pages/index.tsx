@@ -99,7 +99,7 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts, art
       </Head>
 
       <div className="row">
-        <div className="col-md">
+        <div className="col-xl">
           <div className="card mb-3">
             <h4 className="card-header">Most Popular Concerts</h4>
             <div className="card-body">
@@ -108,7 +108,7 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts, art
               ))}
             </div>
           </div>
-          <div className="card mb-3 mb-md-0">
+          <div className="card mb-3 mb-lg-0">
             <h4 className="card-header">Recently Added Concerts</h4>
             <div className="card-body">
               {newConcerts.map((concert) => (
@@ -117,7 +117,7 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts, art
             </div>
           </div>
         </div>
-        <div className="col-md">
+        <div className="col-xl">
           <div className="card">
             <h4 className="card-header">Latest Concerts</h4>
             <div className="card-body">

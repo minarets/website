@@ -290,13 +290,13 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
 
       <div className="row">
         {!!concert.posterUrl && (
-          <div className="col-md order-md-last">
+          <div className="col-lg order-lg-last">
             <section className="card">
               <img className="card-img-top" src={`https://api.minarets.io${concert.posterUrl}`} alt="Concert poster" />
             </section>
           </div>
         )}
-        <div className="col-md">
+        <div className="col-lg">
           <section className="card mb-3">
             <h4 className="card-header">Related Concerts</h4>
             <div className="card-body">
@@ -306,7 +306,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
             </div>
           </section>
 
-          {!!concert.posterUrl && (
+          {!!concert.posterUrl && venueConcerts.length > 1 && (
             <section className="card mb-3">
               <h4 className="card-header">Venue Concerts</h4>
               <div className="card-body">
@@ -317,8 +317,8 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
             </section>
           )}
         </div>
-        {!concert.posterUrl && (
-          <div className="col-md">
+        {!concert.posterUrl && venueConcerts.length > 1 && (
+          <div className="col-lg">
             <section className="card mb-3">
               <h4 className="card-header">Venue Concerts</h4>
               <div className="card-body">

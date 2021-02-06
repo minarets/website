@@ -1,5 +1,6 @@
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
 
 .headerNavbar {
   display: flex;
@@ -22,6 +23,16 @@
     &:hover {
       color: tint-color($dark, 40%);
       fill: tint-color($dark, 40%);
+    }
+  }
+
+  .logo {
+    color: $blue;
+
+    &:link,
+    &:visited {
+      color: $blue;
+      fill: $blue;
     }
   }
 }
@@ -79,6 +90,53 @@
   padding-bottom: 90px;
 }
 
-.logo {
+.grid {
+  height: 100vh;
+  width: 100vw;
+  display: grid;
+  /* Only one column for base grid */
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr auto;
+}
+
+.gridBody {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr;
+  overflow: hidden;
+
+  @include media-breakpoint-down(lg) {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  @include media-breakpoint-down(md) {
+    grid-template-columns: auto;
+  }
+}
+
+.mainBody {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatColumn {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  overflow: hidden;
+}
+
+@include media-breakpoint-down(md) {
+  .chatColumn {
+    display: none;
+  }
+}
+
+.randomConcert,
+.randomConcertLoading {
+  color: $green !important;
+  fill: $green !important;
+}
+
+.footerLogo {
   height: 2rem;
 }

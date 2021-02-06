@@ -50,7 +50,7 @@ export default function Page({ allArtists, popularArtists }: IProps): ReactEleme
       </Head>
 
       <div className="row">
-        <div className="col-md">
+        <div className="col-lg">
           <section className="card">
             <h4 className="card-header">All Artists</h4>
             <div className="card-body">
@@ -60,7 +60,7 @@ export default function Page({ allArtists, popularArtists }: IProps): ReactEleme
             </div>
           </section>
         </div>
-        <div className="col-md">
+        <div className="col-lg">
           <section className="card">
             <h4 className="card-header">Popular Artists</h4>
             <div className="card-body">
