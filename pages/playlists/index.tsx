@@ -58,8 +58,8 @@ export default function Page({ allPlaylists, popularPlaylists, recentPlaylists }
       </Head>
 
       <div className="row">
-        <div className="col-md">
-          <section className="card mb-3 mb-md-0">
+        <div className="col-lg">
+          <section className="card mb-3 mb-lg-0">
             <h4 className="card-header">All Playlists</h4>
             <div className="card-body">
               {allPlaylists.map((playlist) => (
@@ -68,7 +68,7 @@ export default function Page({ allPlaylists, popularPlaylists, recentPlaylists }
             </div>
           </section>
         </div>
-        <div className="col-md">
+        <div className="col-lg">
           <section className="card mb-3">
             <h4 className="card-header">Popular Playlists</h4>
             <div className="card-body">

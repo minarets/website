@@ -58,8 +58,8 @@ export default function Page({ allCompilations, popularCompilations, recentCompi
       </Head>
 
       <div className="row">
-        <div className="col-md">
-          <section className="card mb-3 mb-md-0">
+        <div className="col-lg">
+          <section className="card mb-3 mb-lg-0">
             <h4 className="card-header">All Compilations</h4>
             <div className="card-body">
               {allCompilations.map((compilation) => (
@@ -68,7 +68,7 @@ export default function Page({ allCompilations, popularCompilations, recentCompi
             </div>
           </section>
         </div>
-        <div className="col-md">
+        <div className="col-lg">
           <section className="card mb-3">
             <h4 className="card-header">Popular Compilations</h4>
             <div className="card-body">

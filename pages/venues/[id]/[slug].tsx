@@ -148,8 +148,8 @@ export default function Page({ venue, latestConcertsByTour, popularConcerts, new
       </section>
 
       <div className="row">
-        <div className="col-md">
-          <section className="card mb-3 mb-md-0">
+        <div className="col-lg">
+          <section className="card mb-3 mb-lg-0">
             <h4 className="card-header">Latest Concerts</h4>
             <div className="card-body">
               {latestConcertsByTour.map((latestConcerts: LimitedTourWithLimitedConcerts) => (
@@ -164,7 +164,7 @@ export default function Page({ venue, latestConcertsByTour, popularConcerts, new
             </div>
           </section>
         </div>
-        <div className="col-md">
+        <div className="col-lg">
           <section className="card mb-3">
             <h4 className="card-header">Most Popular Concerts</h4>
             <div className="card-body">
