@@ -16,12 +16,14 @@
 
 html, body {
   height: 100% !important;
+  overflow: hidden;
 }
 
 #__next {
   height: 100% !important;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .bg-dark {

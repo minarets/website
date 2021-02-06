@@ -254,15 +254,25 @@ function ChatMessageRow({ message, previousMessage }: IProps): ReactElement {
     isContinuingPreviousMessage = message.createdBy.id === previousMessage.createdBy.id && new Date(message.createdOn).getTime() - new Date(previousMessage.createdOn).getTime() > 300000;
   }
 
+  const createdOnMoment = moment(message.createdOn);
+  const isSystemMessage = message.createdBy.id < 1;
+  const isToday = createdOnMoment.isSame(new Date(), 'day');
+  let dateFormat = 'MMM D';
+  if (!isSystemMessage && isToday) {
+    dateFormat += 'h:mma';
+  }
+
   return (
     <div className="pt-2">
       {!isContinuingPreviousMessage && (
-        <div className={styles.details}>
-          {message.createdBy.id > 0 && <div>{message.createdBy.name}</div>}
-          <div>{moment(message.createdOn).format('MMM d, h:mma')}</div>
+        <div className={styles.messageDetails}>
+          {!isSystemMessage && <div>{message.createdBy.name}</div>}
+          <div className={!isSystemMessage ? styles.messageDate : ''} title={createdOnMoment.format('MMMM D, h:mma')}>
+            {createdOnMoment.format(dateFormat)}
+          </div>
         </div>
       )}
-      <div>
+      <div className={styles.messageText}>
         <MessageText text={message.text} />
       </div>
     </div>

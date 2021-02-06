@@ -79,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const [, lastMessageId] = query.minarets;
         try {
           const response = await api.chatMessages.listLatest({
-            maxItems: 10,
+            maxItems: 20,
             includeOnlineUsers: true,
             lastMessageId: lastMessageId ? Number(lastMessageId) : undefined,
           });
@@ -100,7 +100,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const [, lastMessageId] = query.minarets;
         try {
           const response = await api.chatMessages.listLatest({
-            maxItems: 10,
+            maxItems: 20,
             includeOnlineUsers: false,
             lastMessageId: lastMessageId ? Number(lastMessageId) : undefined,
           });

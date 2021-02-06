@@ -1,10 +1,42 @@
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 
-.chatRow {
-
+.messageContainer {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
 }
 
-.details {
+.messageText {
+  padding-top: .2rem;
+  padding-bottom: .2rem;
+}
 
+.messageDetails {
+  color: $secondary;
+
+  display: flex;
+  flex-direction: row;
+}
+
+.messageDate {
+  margin-left: 1rem;
+}
+
+.chatInputArea {
+  border-top: 1px solid rgba(0,0,0,.05);
+  padding: 0.5rem;
+}
+
+.chatTextArea {
+  width: 100%;
+  min-height: 44px;
+  margin: 0;
+  padding: 0;
+  background: $white;
+  border: 0;
+  outline: none;
+  color: $black;
+  resize: none;
 }
