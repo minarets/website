@@ -23,7 +23,12 @@ interface IUpdateOnlineUsers {
   onlineUsers: BasicUser[];
 }
 
-type ChatAction = IChatWidgetAction | IUpdateMessages | IUpdateOnlineUsers;
+interface ISendMessage {
+  type: 'SendMessage';
+  message: ChatMessage;
+}
+
+export type ChatAction = IChatWidgetAction | ISendMessage | IUpdateMessages | IUpdateOnlineUsers;
 
 function chatReducer(state: IChatState, action: ChatAction): IChatState {
   try {
@@ -82,6 +87,12 @@ function chatReducer(state: IChatState, action: ChatAction): IChatState {
         return {
           ...state,
           onlineUsers: action.onlineUsers,
+        };
+      }
+      case 'SendMessage': {
+        return {
+          ...state,
+          messages: [action.message, ...state.messages],
         };
       }
       default:

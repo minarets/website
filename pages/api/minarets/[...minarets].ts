@@ -116,6 +116,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         break;
       }
+      case 'sendChatMessage': {
+        try {
+          const response = await api.chatMessages.send(req.body);
+          body = JSON.stringify(response);
+        } catch (ex) {
+          Sentry.captureException(ex);
+          body = JSON.stringify({
+            ok: false,
+          });
+        }
+
+        break;
+      }
       default:
         res.status(404);
         body = JSON.stringify({

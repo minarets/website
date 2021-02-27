@@ -27,6 +27,10 @@ export interface IHistoryResponse {
   onlineUsers: BasicUser[];
 }
 
+export interface ISendResponse {
+  message?: ChatMessage;
+}
+
 export class ChatMessages extends ApiBase {
   public async listLatest(request: IListLatestRequest = {}): Promise<IListLatestResponse> {
     const query = this.queryParams(request);
@@ -49,5 +53,15 @@ export class ChatMessages extends ApiBase {
     const response = await this.get(`${this.apiUrl}/api/chatmessages/history`, { query });
 
     return (await response.json()) as IHistoryResponse;
+  }
+
+  public async send(message: string): Promise<ISendResponse> {
+    const response = await this.post(`${this.apiUrl}/api/chatmessages/add`, {
+      body: JSON.stringify({
+        message,
+      }),
+    });
+
+    return (await response.json()) as ISendResponse;
   }
 }

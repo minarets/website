@@ -14,8 +14,6 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'prettier',
-    'prettier/react',
-    'prettier/@typescript-eslint',
     'plugin:prettier/recommended'
   ],
   env: {
@@ -55,6 +53,9 @@ module.exports = {
         usePrettierrc: true,
       },
     ],
+
+    'arrow-body-style': ['error', 'as-needed', { requireReturnForObjectLiteral: true }],
+    'no-confusing-arrow': ['error', { allowParens: false }],
 
     'import/prefer-default-export': 'off',
     'import/order': [

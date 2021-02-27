@@ -179,7 +179,7 @@ function TextOrImage({ node, expandTextLinks }: { node: Node; expandTextLinks: b
     }
 
     if (expandTextLinks && node.data.includes('http')) {
-      const parts: string[] = node.data.split(' ');
+      const parts: string[] = node.data.split(/\s/);
       return (
         <>
           {parts.map((part, index) => (
@@ -191,7 +191,7 @@ function TextOrImage({ node, expandTextLinks }: { node: Node; expandTextLinks: b
     }
 
     if (node.data.includes(':') || node.data.includes('(')) {
-      const parts: string[] = node.data.split(' ');
+      const parts: string[] = node.data.split(/\s/);
       return (
         <>
           {parts.map((part, index) => (
@@ -215,7 +215,8 @@ function TextOrImage({ node, expandTextLinks }: { node: Node; expandTextLinks: b
 }
 
 function MessageText({ text }: { text: string }): ReactElement {
-  const document = parseDocument(text, { decodeEntities: true });
+  // Do not show more than 2 blank lines in a row
+  const document = parseDocument(text.replace(/[\n\r][\n\r][\n\r]+/, '\n\n'), { decodeEntities: true });
 
   return (
     <>
@@ -259,7 +260,7 @@ function ChatMessageRow({ message, previousMessage }: IProps): ReactElement {
   const isToday = createdOnMoment.isSame(new Date(), 'day');
   let dateFormat = 'MMM D';
   if (!isSystemMessage && isToday) {
-    dateFormat += 'h:mma';
+    dateFormat = 'h:mma';
   }
 
   return (

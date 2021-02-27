@@ -1,9 +1,11 @@
 import * as Sentry from '@sentry/browser';
 import * as React from 'react';
+import type { KeyboardEvent } from 'react';
 
+import type { ChatAction } from '../contexts/ChatContext';
 import { useChatDispatch, useChatState } from '../contexts/ChatContext';
 import { useInterval } from '../hooks/useInterval';
-import type { IListLatestResponse } from '../minarets-api/minarets/chatMessages';
+import type { IListLatestResponse, ISendResponse } from '../minarets-api/minarets/chatMessages';
 import type { ChatMessage } from '../minarets-api/minarets/types';
 import styles from '../styles/Chat.module.scss';
 
@@ -23,15 +25,58 @@ async function getChatMessages(isPassive: boolean, lastMessageId?: number): Prom
   };
 }
 
+async function sendMessage(text: string, chatDispatch: React.Dispatch<ChatAction>): Promise<void> {
+  if (!text || !text.trim()) {
+    return;
+  }
+
+  const response = await fetch(`/api/minarets/sendChatMessage`, {
+    method: 'POST',
+    body: text,
+  });
+
+  if (response.ok) {
+    const sentMessage = (await response.json()) as ISendResponse;
+    if (sentMessage.message) {
+      chatDispatch({
+        type: 'SendMessage',
+        message: sentMessage.message,
+      });
+    }
+  } else {
+    throw new Error(response.statusText);
+  }
+}
+
 export default function ChatWidget(): React.ReactElement {
   const [windowIsActive, setWindowIsActive] = React.useState(true);
   const [isFirstLoad, setIsFirstLoad] = React.useState(true);
   const chatState = useChatState();
   const chatDispatch = useChatDispatch();
   const messageContainerRef = React.useRef<HTMLDivElement | null>(null);
+  const messageRef = React.useRef<HTMLTextAreaElement | null>(null);
 
   const onFocus = (): void => setWindowIsActive(true);
   const onBlur = (): void => setWindowIsActive(false);
+  const onSendMessage = (e: KeyboardEvent<HTMLTextAreaElement>): void => {
+    if ((e.key === 'Enter' || e.keyCode === 13) && !e.shiftKey && messageRef.current) {
+      messageRef.current.readOnly = true;
+      sendMessage(messageRef.current.value || '', chatDispatch)
+        .then(() => {
+          if (messageRef.current) {
+            messageRef.current.value = '';
+          }
+
+          return true;
+        })
+        .finally(() => {
+          if (messageRef.current) {
+            messageRef.current.readOnly = false;
+          }
+        })
+        .catch((ex) => Sentry.captureException(ex));
+    }
+  };
 
   React.useEffect(() => {
     window.addEventListener('blur', onBlur);
@@ -74,7 +119,7 @@ export default function ChatWidget(): React.ReactElement {
       const containerHeight = messageContainer.clientHeight;
       const scrollTop = messageContainer.scrollTop;
       const scrollOffset = messageContainer.scrollHeight - (scrollTop + containerHeight);
-      if (scrollOffset < 75 || isFirstLoad) {
+      if (scrollOffset < 150 || isFirstLoad) {
         if (messageContainer.scrollTo) {
           messageContainer.scrollTo(0, 9999999);
         } else {
@@ -97,9 +142,9 @@ export default function ChatWidget(): React.ReactElement {
           <ChatMessageRow message={chatMessage} key={chatMessage.id} />
         ))}
       </div>
-      {/*      <div className={styles.chatInputArea}>
-        <textarea className={styles.chatTextArea} placeholder="Click here to type a chat message." maxLength={4096}></textarea>
-      </div>*/}
+      <div className={styles.chatInputArea}>
+        <textarea ref={messageRef} className={styles.chatTextArea} placeholder="Click here to type a chat message." maxLength={4096} onKeyDown={onSendMessage} />
+      </div>
     </>
   );
 }
