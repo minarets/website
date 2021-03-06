@@ -68,7 +68,11 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
           nextTracks: action.state.nextTracks,
         };
       case 'TrackStart': {
-        console.log('Track start...');
+        Sentry.addBreadcrumb({
+          category: 'Player',
+          message: 'TrackStart',
+          level: Sentry.Severity.Info,
+        });
         fetch(`/api/minarets/playTrack/${action.track.id}`).catch((err) => Sentry.captureException(err));
 
         return state;
@@ -81,7 +85,11 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
         };
       }
       case 'TrackEnd':
-        console.log('Track ending...');
+        Sentry.addBreadcrumb({
+          category: 'Player',
+          message: 'TrackEnd',
+          level: Sentry.Severity.Info,
+        });
         return {
           ...state,
           historyTracks: [action.track, ...state.historyTracks],
@@ -89,12 +97,24 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
       case 'Mute':
       case 'Unmute': {
         if (state.isMuted) {
+          Sentry.addBreadcrumb({
+            category: 'Player',
+            message: 'Unmute',
+            level: Sentry.Severity.Info,
+          });
+
           state.player.setVolume(state.volume);
           return {
             ...state,
             isMuted: false,
           };
         }
+
+        Sentry.addBreadcrumb({
+          category: 'Player',
+          message: 'Mute',
+          level: Sentry.Severity.Info,
+        });
 
         state.player.setVolume(0);
         return {
@@ -104,6 +124,12 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
       }
       case 'SetVolume': {
         if (action.volume <= 0) {
+          Sentry.addBreadcrumb({
+            category: 'Player',
+            message: 'SetVolume - Mute',
+            level: Sentry.Severity.Info,
+          });
+
           state.player.setVolume(0);
 
           return {
@@ -111,6 +137,12 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
             isMuted: true,
           };
         }
+
+        Sentry.addBreadcrumb({
+          category: 'Player',
+          message: 'SetVolume',
+          level: Sentry.Severity.Info,
+        });
 
         state.player.setVolume(action.volume);
         return {

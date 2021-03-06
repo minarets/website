@@ -436,11 +436,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
           this.audio1 = new Audio();
           this.audio1.addEventListener('error', () => {
             if (this.onError) {
-              this.onError(
-                this.audio2?.error || {
-                  message: 'An unknown error occurred with the audio element',
-                },
-              );
+              this.onError(this.audio2?.error || new Error('An unknown error occurred with the audio element'));
             }
           });
         }
@@ -451,11 +447,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
           this.audio2 = new Audio();
           this.audio2.addEventListener('error', () => {
             if (this.onError) {
-              this.onError(
-                this.audio2?.error || {
-                  message: 'An unknown error occurred with the audio element',
-                },
-              );
+              this.onError(this.audio2?.error || new Error('An unknown error occurred with the audio element'));
             }
           });
         }
@@ -519,11 +511,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
           this.audio2 = new Audio();
           this.audio2.addEventListener('error', () => {
             if (this.onError) {
-              this.onError(
-                this.audio2?.error || {
-                  message: 'An unknown error occurred with the audio element',
-                },
-              );
+              this.onError(this.audio2?.error || new Error('An unknown error occurred with the audio element'));
             }
           });
         }
@@ -539,11 +527,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
           this.audio1 = new Audio();
           this.audio1.addEventListener('error', () => {
             if (this.onError) {
-              this.onError(
-                this.audio2?.error || {
-                  message: 'An unknown error occurred with the audio element',
-                },
-              );
+              this.onError(this.audio2?.error || new Error('An unknown error occurred with the audio element'));
             }
           });
         }
