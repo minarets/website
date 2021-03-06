@@ -51,6 +51,8 @@ async function sendMessage(text: string, chatDispatch: React.Dispatch<ChatAction
 export default function ChatWidget(): React.ReactElement {
   const [windowIsActive, setWindowIsActive] = React.useState(true);
   const [isFirstLoad, setIsFirstLoad] = React.useState(true);
+  const [chatRefreshErrorCount, setChatRefreshErrorCount] = React.useState(0);
+  const [hasNotifiedChatError, setHasNotifiedChatError] = React.useState(false);
   const chatState = useChatState();
   const chatDispatch = useChatDispatch();
   const messageContainerRef = React.useRef<HTMLDivElement | null>(null);
@@ -105,9 +107,17 @@ export default function ChatWidget(): React.ReactElement {
             });
           }
 
+          setChatRefreshErrorCount(0);
+          setHasNotifiedChatError(false);
           return true;
         })
-        .catch((err) => Sentry.captureException(err));
+        .catch((err) => {
+          setChatRefreshErrorCount(chatRefreshErrorCount + 1);
+          if (!hasNotifiedChatError && chatRefreshErrorCount > 2) {
+            setHasNotifiedChatError(true);
+            Sentry.captureException(err);
+          }
+        });
     },
     windowIsActive ? 7000 : 30000,
     windowIsActive,
