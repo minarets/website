@@ -2,7 +2,7 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
-import { slugify } from '../minarets-api/stringService';
+import { getTourUrl } from '../minarets-api/tourService';
 import type { LimitedTour } from '../minarets-api/types';
 
 interface IProps {
@@ -24,7 +24,7 @@ function TourBreadcrumb({ tour, toursById, skipParent }: IProps): ReactElement {
           <TourBreadcrumb tour={parentTour} toursById={toursById} /> &raquo;{' '}
         </span>
       )}
-      <Link href={`/tours/${slugify(tour.name)}`}>
+      <Link href={getTourUrl(tour)}>
         <a>{tour.name}</a>
       </Link>
     </span>

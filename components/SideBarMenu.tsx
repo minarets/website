@@ -5,7 +5,7 @@ import * as React from 'react';
 
 import { useChatState } from '../contexts/ChatContext';
 import type { ListAllResponse, PlaylistSummary } from '../minarets-api/minarets/types';
-import { slugify } from '../minarets-api/stringService';
+import { getPlaylistUrl } from '../minarets-api/playlistService';
 
 import ChatWidget from './ChatWidget';
 
@@ -69,7 +69,7 @@ export default function SideBarMenu(): React.ReactElement {
               <ul className="nav flex-column">
                 {playlists.map((playlist) => (
                   <li className="nav-item ps-2" key={playlist.id}>
-                    <Link href={`/playlists/${playlist.id}/${slugify(playlist.name)}`}>
+                    <Link href={getPlaylistUrl(playlist)}>
                       <a className="nav-link">{playlist.name}</a>
                     </Link>
                   </li>

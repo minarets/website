@@ -2,8 +2,8 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
+import { getArtistUrl } from '../minarets-api/artistService';
 import type { Artist } from '../minarets-api/minarets/types';
-import { slugify } from '../minarets-api/stringService';
 
 interface IProps {
   artist: Pick<Artist, 'concertCount' | 'id' | 'name'>;
@@ -13,7 +13,7 @@ function ArtistWithConcertCountLinkRow({ artist }: IProps): ReactElement {
   return (
     <div className="row">
       <div className="col">
-        <Link href={`/artists/${artist.id}/${slugify(artist.name)}`}>
+        <Link href={getArtistUrl(artist)}>
           <a title={artist.name}>
             {artist.name} ({artist.concertCount} concerts)
           </a>

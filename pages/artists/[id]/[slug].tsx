@@ -9,15 +9,15 @@ import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { Minarets } from '../../../minarets-api';
+import { getArtistUrl } from '../../../minarets-api/artistService';
 import type { Artist, ArtistSummary } from '../../../minarets-api/minarets/types';
 import { pick } from '../../../minarets-api/objectService';
-import { slugify } from '../../../minarets-api/stringService';
 import type { LimitedConcert, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../minarets-api/types';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
   const artists = await api.artists.listAllArtists();
-  const paths = artists.items.map((artist: ArtistSummary) => `/artists/${artist.id}/${slugify(artist.name)}`);
+  const paths = artists.items.map((artist: ArtistSummary) => getArtistUrl(artist));
 
   return {
     paths,

@@ -11,13 +11,13 @@ import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { Minarets } from '../../../minarets-api';
 import type { Venue, VenueSummary } from '../../../minarets-api/minarets/types';
 import { pick } from '../../../minarets-api/objectService';
-import { slugify } from '../../../minarets-api/stringService';
 import type { LimitedConcert, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../minarets-api/types';
+import { getVenueUrl } from '../../../minarets-api/venueService';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
   const venues = await api.venues.listAllVenues();
-  const paths = venues.items.map((venue: VenueSummary) => `/venues/${venue.id}/${slugify(venue.name)}`);
+  const paths = venues.items.map((venue: VenueSummary) => getVenueUrl(venue));
 
   return {
     paths,

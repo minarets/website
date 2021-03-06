@@ -3,7 +3,7 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import type { Venue } from '../minarets-api/minarets/types';
-import { slugify } from '../minarets-api/stringService';
+import { getVenueUrl } from '../minarets-api/venueService';
 
 interface IProps {
   venue: Venue;
@@ -13,7 +13,7 @@ function VenueWithConcertCountLinkRow({ venue }: IProps): ReactElement {
   return (
     <div className="row">
       <div className="col">
-        <Link href={`/venues/${venue.id}/${slugify(venue.name)}`}>
+        <Link href={getVenueUrl(venue)}>
           <a title={venue.name}>
             {venue.name} ({venue.concertCount} concerts)
           </a>

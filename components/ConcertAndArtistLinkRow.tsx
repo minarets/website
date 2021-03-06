@@ -3,8 +3,8 @@ import Link from 'next/link';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
+import { getArtistUrl } from '../minarets-api/artistService';
 import { getConcertUrl } from '../minarets-api/concertService';
-import { slugify } from '../minarets-api/stringService';
 import type { LimitedArtist, LimitedConcert } from '../minarets-api/types';
 import styles from '../styles/ConcertAndArtistLinkRow.module.scss';
 
@@ -18,7 +18,7 @@ function ConcertAndArtistLinkRow({ artist, concert }: IProps): ReactElement {
   return (
     <div className={styles.row}>
       <div className={styles.artist}>
-        <Link href={`/artists/${artist.id}/${slugify(artist.name)}`}>
+        <Link href={getArtistUrl(artist)}>
           <a title={artist.name}>{artist.abbr}</a>
         </Link>
       </div>

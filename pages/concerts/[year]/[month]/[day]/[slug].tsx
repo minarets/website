@@ -13,12 +13,13 @@ import TrackLinkRow from '../../../../../components/TrackLinkRow';
 import { usePlayerState } from '../../../../../contexts/PlayerContext';
 import { useDocumentTitle } from '../../../../../hooks/useDocumentTitle';
 import { Minarets } from '../../../../../minarets-api';
+import { getArtistUrl } from '../../../../../minarets-api/artistService';
 import { extractTokenDetailsFromConcertNote, getConcertDescription, getConcertKeywords, getConcertTitle, getConcertUrl } from '../../../../../minarets-api/concertService';
 import type { Concert, ConcertSummary } from '../../../../../minarets-api/minarets/types';
 import { pick } from '../../../../../minarets-api/objectService';
-import { slugify } from '../../../../../minarets-api/stringService';
 import { getPlaybackTrack } from '../../../../../minarets-api/trackService';
 import type { LimitedConcert, LimitedTour } from '../../../../../minarets-api/types';
+import { getVenueUrl } from '../../../../../minarets-api/venueService';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
@@ -146,6 +147,9 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
     );
   }, [playerState, concert]);
 
+  const concertUrl = getConcertUrl(concert);
+  const artistUrl = getArtistUrl(concert.artist);
+
   return (
     <>
       <Head>
@@ -226,7 +230,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
               <tr>
                 <th>Artist:</th>
                 <td>
-                  <Link href={`/artists/${concert.artist.id}/${slugify(concert.artist.name)}`}>
+                  <Link href={artistUrl}>
                     <a title={concert.artist.name}>{concert.artist.name}</a>
                   </Link>
                 </td>
@@ -244,7 +248,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
               <tr>
                 <th>Venue:</th>
                 <td>
-                  <Link href={`/venues/${concert.venue.id}/${slugify(concert.venue.name)}`}>
+                  <Link href={getVenueUrl(concert.venue)}>
                     <a title={concert.venue.name}>{concert.venue.name}</a>
                   </Link>
                 </td>
@@ -257,20 +261,16 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
       <section className="card mb-3">
         <h4 className="card-header">Tracks</h4>
         <div className="card-body">
-          {concert.tracks.map((track, index) => {
-            const concertUrl = getConcertUrl(concert);
-            const artistUrl = `/artists/${concert.artist.id}/${slugify(concert.artist.name)}`;
-            return (
-              <TrackLinkRow
-                concertAdditionalDetailsByToken={detailsByToken} //
-                track={track}
-                trackNumber={index + 1}
-                concertUrl={concertUrl}
-                artistUrl={artistUrl}
-                key={track.uniqueId || track.id}
-              />
-            );
-          })}
+          {concert.tracks.map((track, index) => (
+            <TrackLinkRow
+              concertAdditionalDetailsByToken={detailsByToken} //
+              track={track}
+              trackNumber={index + 1}
+              concertUrl={concertUrl}
+              artistUrl={artistUrl}
+              key={track.uniqueId || track.id}
+            />
+          ))}
         </div>
       </section>
 

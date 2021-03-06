@@ -12,10 +12,11 @@ import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../components/TrackLinkRow';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { Minarets } from '../../../minarets-api';
+import { getArtistUrl } from '../../../minarets-api/artistService';
 import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../minarets-api/concertService';
 import type { BasicArtist, ErrorWithResponse, Playlist } from '../../../minarets-api/minarets/types';
 import { pick } from '../../../minarets-api/objectService';
-import { slugify } from '../../../minarets-api/stringService';
+import { getPlaylistUrl } from '../../../minarets-api/playlistService';
 import type { LimitedArtist, LimitedConcert, LimitedConcertWithTokenDetails, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../minarets-api/types';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
@@ -26,7 +27,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
     page: 1,
     sortDesc: 'Popular',
   });
-  const paths = playlists.items.map((playlist: Playlist) => `/playlists/${playlist.id}/${slugify(playlist.name)}`);
+  const paths = playlists.items.map((playlist: Playlist) => getPlaylistUrl(playlist));
 
   return {
     paths,
@@ -90,9 +91,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     return acc;
   }, {});
 
-  concertsResults.items.sort((item1, item2) => {
-    return new Date(item1.date).getTime() - new Date(item2.date).getTime();
-  });
+  concertsResults.items.sort((item1, item2) => new Date(item1.date).getTime() - new Date(item2.date).getTime());
 
   const artistsById: Record<number, LimitedArtist> = {};
   const concertsById: Record<string, LimitedConcertWithTokenDetailsAndArtistId> = {};
@@ -239,7 +238,7 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
             const concert = concertsById[track.concertId];
             const concertUrl = getConcertUrl(concert);
             const artist = artistsById[concert.artistId];
-            const artistUrl = `/artists/${artist.id}/${slugify(artist.name)}`;
+            const artistUrl = getArtistUrl(artist);
             return (
               <TrackLinkRow
                 concertAdditionalDetailsByToken={concert.tokenDetails} //

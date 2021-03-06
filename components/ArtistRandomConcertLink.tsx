@@ -2,8 +2,8 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import type { ReactElement } from 'react';
 
+import { getArtistUrl } from '../minarets-api/artistService';
 import type { BasicArtist } from '../minarets-api/minarets/types';
-import { slugify } from '../minarets-api/stringService';
 import styles from '../styles/RandomConcertLink.module.scss';
 
 interface IProps {
@@ -35,7 +35,7 @@ function ArtistRandomConcertLink({ artist }: IProps): ReactElement {
   }
 
   return (
-    <a href={`/artists/${artist.id}/${slugify(artist.name)}`} onClick={handleRandomConcertClick} title={`Random concert for ${artist.name}`} rel="nofollow">
+    <a href={getArtistUrl(artist)} onClick={handleRandomConcertClick} title={`Random concert for ${artist.name}`} rel="nofollow">
       <img src="/random.svg" alt={`Random concert for ${artist.name}`} className={styles.logo} />
     </a>
   );
