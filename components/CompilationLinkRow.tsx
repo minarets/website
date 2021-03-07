@@ -3,10 +3,10 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import { getCompilationUrl } from '../minarets-api/compilationService';
-import type { Compilation } from '../minarets-api/minarets/types';
+import type { BasicCompilation } from '../minarets-api/minarets/types';
 
 interface IProps {
-  compilation: Pick<Compilation, 'id' | 'name'>;
+  compilation: BasicCompilation;
 }
 
 function CompilationLinkRow({ compilation }: IProps): ReactElement {

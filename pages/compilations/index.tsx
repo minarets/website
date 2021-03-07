@@ -6,12 +6,12 @@ import type { ReactElement } from 'react';
 import CompilationLinkRow from '../../components/CompilationLinkRow';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { Minarets } from '../../minarets-api';
-import type { Compilation } from '../../minarets-api/minarets/types';
+import type { BasicCompilation } from '../../minarets-api/minarets/types';
 
 interface IProps {
-  allCompilations: Compilation[];
-  popularCompilations: Compilation[];
-  recentCompilations: Compilation[];
+  allCompilations: BasicCompilation[];
+  popularCompilations: BasicCompilation[];
+  recentCompilations: BasicCompilation[];
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
