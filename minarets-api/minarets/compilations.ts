@@ -1,5 +1,5 @@
 import { ApiBase } from './apiBase';
-import type { Compilation, CompilationSummary, ListAllResponse, ListResponse } from './types';
+import type { BasicCompilation, Compilation, CompilationSummary, ListAllResponse, ListResponse } from './types';
 
 export interface IListCompilationsRequest {
   page?: number;
@@ -25,9 +25,16 @@ export class Compilations extends ApiBase {
     return (await response.json()) as ListAllResponse<CompilationSummary>;
   }
 
-  public async listCompilations(request: IListCompilationsRequest): Promise<ListResponse<Compilation>> {
+  public async listCompilations(request: IListCompilationsRequest): Promise<ListResponse<BasicCompilation>> {
     const query = this.queryParams(request);
     const response = await this.get(`${this.apiUrl}/api/compilations`, { query });
+
+    return (await response.json()) as ListResponse<BasicCompilation>;
+  }
+
+  public async listCompilationsFull(request: IListCompilationsRequest): Promise<ListResponse<Compilation>> {
+    const query = this.queryParams(request);
+    const response = await this.get(`${this.apiUrl}/api/compilations/list`, { query });
 
     return (await response.json()) as ListResponse<Compilation>;
   }

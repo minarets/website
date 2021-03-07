@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-import type { BasicConcert, BasicConcertWithNotes, ConcertSummary } from './minarets/types';
+import type { BasicConcert, BasicConcertWithNotes, Concert, ConcertSummary } from './minarets/types';
 import { slugify } from './stringService';
 
 interface IExtractTokenDetailsFromConcertNoteResult {
@@ -81,5 +81,22 @@ export function extractTokenDetailsFromConcertNote(concert: Pick<BasicConcertWit
   return {
     noteLines,
     detailsByToken,
+  };
+}
+
+export function toSearchRecord(concert: Concert): Record<string, unknown> {
+  const concertDate = moment.utc(concert.date);
+  return {
+    objectID: concert.id,
+    name: concert.name,
+    venue: concert.venue.name,
+    tour: concert.tour.name,
+    date: concertDate.format('yyyy-MM-DD'),
+    dateTimestamp: Number(concertDate.format('X')),
+    artist: concert.artist.name,
+    playCount: concert.playCount,
+    notes: concert.notes,
+    tracks: concert.tracks.filter((track) => !/^Intro/i.test(track.name)).map((track) => track.name),
+    url: getConcertUrl(concert),
   };
 }

@@ -37,6 +37,7 @@
     "@sentry/node": "6.2.1",
     "@sentry/tracing": "6.2.1",
     "@sentry/webpack-plugin": "1.14.1",
+    "algoliasearch": "^4.8.5",
     "bootstrap": "5.0.0-beta2",
     "cross-fetch": "3.0.6",
     "domutils": "2.4.4",
