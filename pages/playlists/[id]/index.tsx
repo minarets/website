@@ -48,10 +48,6 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     props: {
       url,
     },
-    redirect: {
-      destination: url,
-      permanent: false,
-    },
   };
 }
 
