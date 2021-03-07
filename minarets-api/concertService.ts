@@ -88,7 +88,7 @@ export function toSearchRecord(concert: Concert): Record<string, unknown> {
   const concertDate = moment.utc(concert.date);
   return {
     objectID: concert.id,
-    name: concert.name,
+    name: `${concertDate.format('yyyy-MM-DD')} - ${concert.name}`,
     venue: concert.venue.name,
     tour: concert.tour.name,
     date: concertDate.format('yyyy-MM-DD'),
