@@ -1,3 +1,4 @@
+import Debug from 'debug';
 import type { GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
@@ -13,6 +14,8 @@ interface IProps {
   popularCompilations: BasicCompilation[];
   recentCompilations: BasicCompilation[];
 }
+
+const debug = Debug('compilations');
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
   const api = new Minarets();
@@ -48,7 +51,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 }
 
 export default function Page({ allCompilations, popularCompilations, recentCompilations }: IProps): ReactElement {
-  console.log(`/compilations`);
+  debug(`/compilations`);
   const title = 'Compilations';
   useDocumentTitle(title);
 

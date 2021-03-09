@@ -1,3 +1,4 @@
+import Debug from 'debug';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
@@ -6,6 +7,8 @@ import type { ReactElement } from 'react';
 import { Minarets } from '../../../minarets-api';
 import { getCompilationUrl } from '../../../minarets-api/compilationService';
 import type { CompilationSummary } from '../../../minarets-api/minarets/types';
+
+const debug = Debug('compilations:id');
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
@@ -29,7 +32,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  console.log(`/compilations/${params.id}`);
+  debug(`/compilations/${params.id}`);
   const api = new Minarets();
 
   const compilation = await api.compilations.getCompilation(params.id);

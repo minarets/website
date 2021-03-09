@@ -1,3 +1,4 @@
+import Debug from 'debug';
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
@@ -18,6 +19,8 @@ import type { BasicArtist, ErrorWithResponse, Playlist } from '../../../minarets
 import { pick } from '../../../minarets-api/objectService';
 import { getPlaylistUrl } from '../../../minarets-api/playlistService';
 import type { LimitedArtist, LimitedConcert, LimitedConcertWithTokenDetails, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../minarets-api/types';
+
+const debug = Debug('playlists:id:slug');
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   // NOTE: Only pre-rendering the top 20 most popular playlists. Others will be lazy loaded
@@ -55,7 +58,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  console.log(`/playlists/${params.id}/${params.slug}`);
+  debug(`/playlists/${params.id}/${params.slug}`);
   const api = new Minarets();
   let playlist: Playlist;
   try {

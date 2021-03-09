@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import Debug from 'debug';
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import { useSession } from 'next-auth/client';
@@ -20,6 +21,8 @@ import { pick } from '../../../../../minarets-api/objectService';
 import { getPlaybackTrack } from '../../../../../minarets-api/trackService';
 import type { LimitedConcert, LimitedTour } from '../../../../../minarets-api/types';
 import { getVenueUrl } from '../../../../../minarets-api/venueService';
+
+const debug = Debug('concerts:year:month:day:slug');
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
@@ -54,7 +57,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  console.log(`/concerts/${params.year}/${params.month}/${params.day}/${params.slug}`);
+  debug(`/concerts/${params.year}/${params.month}/${params.day}/${params.slug}`);
   const api = new Minarets();
 
   const concert = await api.concerts.getConcertByUrlParts(params.year, params.month, params.day, params.slug);

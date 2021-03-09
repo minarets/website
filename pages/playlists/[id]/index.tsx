@@ -1,3 +1,4 @@
+import Debug from 'debug';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
@@ -6,6 +7,8 @@ import type { ReactElement } from 'react';
 import { Minarets } from '../../../minarets-api';
 import type { PlaylistSummary } from '../../../minarets-api/minarets/types';
 import { getPlaylistUrl } from '../../../minarets-api/playlistService';
+
+const debug = Debug('playlists:id');
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
@@ -33,7 +36,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  console.log(`/playlists/${params.id}`);
+  debug(`/playlists/${params.id}`);
   const api = new Minarets();
 
   const playlist = await api.playlists.getPlaylist(params.id);

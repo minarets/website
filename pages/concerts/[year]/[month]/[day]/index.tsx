@@ -1,3 +1,4 @@
+import Debug from 'debug';
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
@@ -6,6 +7,8 @@ import type { ReactElement } from 'react';
 
 import { Minarets } from '../../../../../minarets-api';
 import { getConcertUrl } from '../../../../../minarets-api/concertService';
+
+const debug = Debug('concerts:year:month:day');
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
@@ -38,7 +41,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  console.log(`/concerts/${params.year}/${params.month}/${params.day}`);
+  debug(`/concerts/${params.year}/${params.month}/${params.day}`);
   const api = new Minarets();
 
   const concert = await api.concerts.getConcertByUrlParts(params.year, params.month, params.day, 'unknown');
