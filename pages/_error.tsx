@@ -8,10 +8,10 @@ import * as React from 'react';
 interface IProps extends ErrorProps {
   hasGetInitialPropsRun?: boolean;
   err?:
-    | null
     | (Error & {
         statusCode?: number;
-      });
+      })
+    | null;
 }
 
 function SentryError({ statusCode, hasGetInitialPropsRun, err }: IProps): ReactElement {
