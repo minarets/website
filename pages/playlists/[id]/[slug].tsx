@@ -38,6 +38,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 interface IParams {
   params: {
     id: number;
+    slug: string;
   };
 }
 
@@ -54,6 +55,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
+  console.log(`/playlists/${params.id}/${params.slug}`);
   const api = new Minarets();
   let playlist: Playlist;
   try {

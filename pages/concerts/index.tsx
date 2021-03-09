@@ -18,6 +18,7 @@ interface IProps {
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
+  console.log(`/concerts`);
   const api = new Minarets();
   const [
     popularConcertsResults, //

@@ -29,6 +29,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 }
 
 export default function Page({ venues }: IProps): ReactElement {
+  console.log(`/venues`);
   const title = 'Venues';
   useDocumentTitle(title);
 

@@ -29,6 +29,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
+  console.log(`/venues/${params.id}`);
   const api = new Minarets();
 
   const venue = await api.venues.getVenue(params.id);

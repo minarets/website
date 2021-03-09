@@ -48,6 +48,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 }
 
 export default function Page({ allCompilations, popularCompilations, recentCompilations }: IProps): ReactElement {
+  console.log(`/compilations`);
   const title = 'Compilations';
   useDocumentTitle(title);
 

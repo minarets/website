@@ -33,6 +33,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
+  console.log(`/playlists/${params.id}`);
   const api = new Minarets();
 
   const playlist = await api.playlists.getPlaylist(params.id);

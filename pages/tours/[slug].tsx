@@ -38,6 +38,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
+  console.log(`/tours/${params.slug}`);
   const api = new Minarets();
 
   const [

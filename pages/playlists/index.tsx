@@ -15,6 +15,7 @@ interface IProps {
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
+  console.log(`/playlists`);
   const api = new Minarets();
 
   const [

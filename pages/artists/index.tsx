@@ -40,6 +40,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 }
 
 export default function Page({ allArtists, popularArtists }: IProps): ReactElement {
+  console.log(`/artists`);
   const title = 'Artists';
   useDocumentTitle(title);
 

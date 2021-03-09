@@ -33,6 +33,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 interface IParams {
   params: {
     year: string;
+    month: string;
   };
 }
 
@@ -41,6 +42,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
+  console.log(`/concerts/${params.year}/${params.month}`);
   const api = new Minarets();
 
   const tour = await api.tours.getTour(params.year);

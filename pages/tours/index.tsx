@@ -14,6 +14,7 @@ interface IProps {
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
+  console.log(`/tours`);
   const api = new Minarets();
   const tourResults = await api.tours.listTours();
 
@@ -26,9 +27,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
     return acc;
   }, {});
 
-  tourResults.items.sort((item1, item2) => {
-    return new Date(item2.startsOn).getTime() - new Date(item1.startsOn).getTime();
-  });
+  tourResults.items.sort((item1, item2) => new Date(item2.startsOn).getTime() - new Date(item1.startsOn).getTime());
 
   const tours: TourWithChildren[] = [];
   for (const tour of tourResults.items) {

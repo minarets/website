@@ -38,6 +38,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
+  console.log(`/concerts/${params.year}/${params.month}/${params.day}`);
   const api = new Minarets();
 
   const concert = await api.concerts.getConcertByUrlParts(params.year, params.month, params.day, 'unknown');

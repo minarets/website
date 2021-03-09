@@ -29,6 +29,7 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
+  console.log(`/compilations/${params.id}`);
   const api = new Minarets();
 
   const compilation = await api.compilations.getCompilation(params.id);
