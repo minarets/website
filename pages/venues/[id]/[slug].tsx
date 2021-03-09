@@ -1,4 +1,3 @@
-import Debug from 'debug';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -15,26 +14,16 @@ import { pick } from '../../../minarets-api/objectService';
 import type { LimitedConcert, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../minarets-api/types';
 import { getVenueUrl } from '../../../minarets-api/venueService';
 
-const debug = Debug('venues:id:slug');
-
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  try {
-    const api = new Minarets();
-    const venues = await api.venues.listAllVenues();
-    const paths = venues.items.map((venue: VenueSummary) => getVenueUrl(venue));
+  const api = new Minarets();
+  const venues = await api.venues.listAllVenues();
+  const paths = venues.items.map((venue: VenueSummary) => getVenueUrl(venue));
 
-    return {
-      paths,
-      // Means other routes should 404
-      fallback: false,
-    };
-  } catch (ex) {
-    console.error(ex);
-    return {
-      paths: [],
-      fallback: false,
-    };
-  }
+  return {
+    paths,
+    // Means other routes should 404
+    fallback: false,
+  };
 }
 
 interface IParams {
@@ -53,7 +42,6 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  debug(`/venues/${params.id}/${params.slug}`);
   const api = new Minarets();
 
   const [

@@ -1,4 +1,3 @@
-import Debug from 'debug';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -14,8 +13,6 @@ import { getArtistUrl } from '../../../minarets-api/artistService';
 import type { Artist, ArtistSummary } from '../../../minarets-api/minarets/types';
 import { pick } from '../../../minarets-api/objectService';
 import type { LimitedConcert, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../minarets-api/types';
-
-const debug = Debug('artists:id:slug');
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
@@ -45,7 +42,6 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  debug(`/artists/${params.id}/${params.slug}`);
   const api = new Minarets();
 
   const [

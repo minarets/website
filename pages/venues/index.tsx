@@ -1,4 +1,3 @@
-import Debug from 'debug';
 import type { GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
@@ -12,8 +11,6 @@ import type { Venue } from '../../minarets-api/minarets/types';
 interface IProps {
   venues: Venue[];
 }
-
-const debug = Debug('venues');
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
   const api = new Minarets();
@@ -32,7 +29,6 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 }
 
 export default function Page({ venues }: IProps): ReactElement {
-  debug(`/venues`);
   const title = 'Venues';
   useDocumentTitle(title);
 

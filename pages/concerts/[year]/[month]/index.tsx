@@ -1,4 +1,3 @@
-import Debug from 'debug';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
@@ -6,8 +5,6 @@ import type { ReactElement } from 'react';
 
 import { Minarets } from '../../../../minarets-api';
 import { getTourUrl } from '../../../../minarets-api/tourService';
-
-const debug = Debug('concerts:year:month');
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
@@ -45,7 +42,6 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  debug(`/concerts/${params.year}/${params.month}`);
   const api = new Minarets();
 
   const tour = await api.tours.getTour(params.year);

@@ -1,4 +1,3 @@
-import Debug from 'debug';
 import type { GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
@@ -13,8 +12,6 @@ interface IProps {
   allArtists: Artist[];
   popularArtists: Artist[];
 }
-
-const debug = Debug('artists');
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
   const api = new Minarets();
@@ -43,7 +40,6 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
 }
 
 export default function Page({ allArtists, popularArtists }: IProps): ReactElement {
-  debug(`/artists`);
   const title = 'Artists';
   useDocumentTitle(title);
 

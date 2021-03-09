@@ -1,4 +1,3 @@
-import Debug from 'debug';
 import type { GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -14,10 +13,7 @@ interface IProps {
   tours: TourWithChildren[];
 }
 
-const debug = Debug('tours');
-
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
-  debug(`/tours`);
   const api = new Minarets();
   const tourResults = await api.tours.listTours();
 

@@ -1,4 +1,3 @@
-import Debug from 'debug';
 import moment from 'moment';
 import type { GetStaticPropsResult } from 'next';
 import Head from 'next/head';
@@ -18,10 +17,7 @@ interface IProps {
   artistsById: Record<number, LimitedArtist>;
 }
 
-const debug = Debug('concerts');
-
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
-  debug(`/concerts`);
   const api = new Minarets();
   const [
     popularConcertsResults, //
