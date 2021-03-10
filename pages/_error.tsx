@@ -70,4 +70,4 @@ SentryError.getInitialProps = async (context: NextPageContext): Promise<ErrorPro
   return errorInitialProps;
 };
 
-export default Error;
+export default SentryError;
