@@ -48,12 +48,14 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     props: {
       url,
     },
+    revalidate: false,
   };
 }
 
 export default function Page({ url }: IProps): ReactElement {
   return (
     <Head>
+      <link rel="canonical" href={url} />
       <meta httpEquiv="refresh" content={`0;url=${url}`} />
     </Head>
   );

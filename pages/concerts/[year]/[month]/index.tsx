@@ -56,6 +56,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     props: {
       url,
     },
+    revalidate: false,
   };
 }
 
