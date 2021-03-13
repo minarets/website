@@ -21,6 +21,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     if (session && (session.user as User).email === 'jim@biacreations.com') {
       if (!process.env.ALGOLIA_APPLICATION_ID || !process.env.ALGOLIA_ADMIN_API_KEY) {
+        console.log(`ALGOLIA_APPLICATION_ID: ${process.env.ALGOLIA_APPLICATION_ID || ''}`);
+        console.log(`ALGOLIA_ADMIN_API_KEY: ${process.env.ALGOLIA_ADMIN_API_KEY || ''}`);
         res.end(
           JSON.stringify({
             ok: false,

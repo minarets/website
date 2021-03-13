@@ -72,10 +72,7 @@ function Layout({ children }: LayoutParams): React.ReactElement {
             <a className={`navbar-brand ${styles.logo}`}>Minarets</a>
           </Link>
           <div className="flex-grow-1 px-3">
-            {/*<input className="form-control form-control-dark w-100" type="text" placeholder="Search for concerts by date, songs, venues..." aria-label="Search" />*/}
-            <div className="nav-container d-none d-md-block">
-              <MainMenu />
-            </div>
+            <MainMenu />
           </div>
           {session && !randomClicked && (
             <div className="pe-3 my-auto">

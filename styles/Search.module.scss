@@ -1,0 +1,21 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+.searchBar {
+  display: flex;
+  min-width: 25rem;
+
+  @include media-breakpoint-down(lg) {
+    min-width: auto;
+  }
+
+  .react-autosuggest__container {
+    display: flex;
+    flex-grow: 1;
+
+    .react-autosuggest__input {
+      flex-grow: 1;
+    }
+  }
+}

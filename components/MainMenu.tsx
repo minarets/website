@@ -1,6 +1,10 @@
 import Link from 'next/link';
 import * as React from 'react';
 
+import styles from '../styles/MainMenu.module.scss';
+
+import Search from './Search';
+
 // async function getPlaylists(): Promise<PlaylistSummary[]> {
 //   const response = await fetch('/api/minarets/getMyPlaylists');
 //   if (response.ok) {
@@ -31,50 +35,41 @@ export default function MainMenu(): React.ReactElement {
   // }, [session, setPlaylists]);
 
   return (
-    <nav>
-      <ul className="nav">
-        <li className="nav-item">
-          <Link href="/">
-            <a className="nav-link">Home</a>
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link href="/concerts">
-            <a className="nav-link">Concerts</a>
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link href="/tours">
-            <a className="nav-link">Tours</a>
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link href="/artists">
-            <a className="nav-link">Artists</a>
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link href="/playlists">
-            <a className="nav-link">Playlists</a>
-          </Link>
-          {/*{!!playlists.length && (
-              <ul className="nav flex-column">
-                {playlists.map((playlist) => (
-                  <li className="nav-item ps-2" key={playlist.id}>
-                    <Link href={`/playlists/${playlist.id}/${slugify(playlist.name)}`}>
-                      <a className="nav-link">{playlist.name}</a>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}*/}
-        </li>
-        <li className="nav-item">
-          <Link href="/compilations">
-            <a className="nav-link">Compilations</a>
-          </Link>
-        </li>
-      </ul>
-    </nav>
+    <div className="d-flex">
+      <div className="flex-grow-1">
+        <nav className={styles.navScroller}>
+          <div className="nav">
+            <Link href="/concerts">
+              <a className="nav-link">Concerts</a>
+            </Link>
+            <Link href="/tours">
+              <a className="nav-link">Tours</a>
+            </Link>
+            <Link href="/artists">
+              <a className="nav-link">Artists</a>
+            </Link>
+            <Link href="/playlists">
+              <a className="nav-link">Playlists</a>
+            </Link>
+            {/*{!!playlists.length && (
+                <ul className="nav flex-column">
+                  {playlists.map((playlist) => (
+                    <li className="nav-item ps-2" key={playlist.id}>
+                      <Link href={`/playlists/${playlist.id}/${slugify(playlist.name)}`}>
+                        <a className="nav-link">{playlist.name}</a>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}*/}
+            <Link href="/compilations">
+              <a className="nav-link">Compilations</a>
+            </Link>
+          </div>
+        </nav>
+      </div>
+
+      <Search />
+    </div>
   );
 }
