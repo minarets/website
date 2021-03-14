@@ -6,7 +6,12 @@ import AutoSuggest from 'react-autosuggest';
 import type { BasicDoc, Hit } from 'react-instantsearch-core';
 import { Highlight, connectAutoComplete } from 'react-instantsearch-dom';
 
+import styles from '../styles/Search.module.scss';
+
+import SearchPoweredBy from './SearchPoweredBy';
+
 interface IndexedDocument extends BasicDoc {
+  objectID: string;
   name: string;
   url: string;
 }
@@ -22,6 +27,12 @@ interface SearchAutoCompleteProps<TDoc = BasicDoc> {
 function SearchAutoComplete({ currentRefinement, hits, refine }: SearchAutoCompleteProps<IndexedDocument>): React.ReactElement {
   const [value, setValue] = React.useState<string>(currentRefinement);
   const router = useRouter();
+  const hitIds: string[] = [];
+  for (const hitSection of hits) {
+    for (const hit of hitSection.hits) {
+      hitIds.push(hit.objectID);
+    }
+  }
 
   function onSuggestionsFetchRequested({ value: requestValue }: SuggestionsFetchRequestedParams): void {
     refine(requestValue);
@@ -43,7 +54,27 @@ function SearchAutoComplete({ currentRefinement, hits, refine }: SearchAutoCompl
     router.push(suggestion.url).catch((ex) => Sentry.captureException(ex));
   }
 
-  function renderSectionTitle(section: { index: React.ReactNode }): React.ReactNode {
+  function renderSectionTitle(section: { index: string; isFooter?: boolean }): React.ReactNode {
+    if (section.isFooter) {
+      return (
+        <>
+          <hr className="dropdown-divider" />
+          <li className="dropdown-item-text">
+            <SearchPoweredBy />
+          </li>
+        </>
+      );
+    }
+
+    if (section.index) {
+      return (
+        <h6 className="dropdown-header">
+          {section.index.charAt(0).toUpperCase()}
+          {section.index.slice(1)}
+        </h6>
+      );
+    }
+
     return section.index;
   }
 
@@ -59,14 +90,26 @@ function SearchAutoComplete({ currentRefinement, hits, refine }: SearchAutoCompl
     value,
   };
 
-  const joinedHits = [];
-  for (const section of hits) {
-    joinedHits.push(...section.hits);
+  const sectionsWithHits = [];
+  if (value) {
+    for (const section of hits) {
+      if (section.hits.length) {
+        sectionsWithHits.push(section);
+      }
+    }
+
+    if (sectionsWithHits.length) {
+      sectionsWithHits.push({
+        isFooter: true,
+        hits: [],
+      });
+    }
   }
 
   return (
     <AutoSuggest
-      suggestions={joinedHits}
+      suggestions={sectionsWithHits}
+      multiSection
       onSuggestionsFetchRequested={onSuggestionsFetchRequested}
       onSuggestionsClearRequested={onSuggestionsClearRequested}
       onSuggestionSelected={onSuggestionSelected}
@@ -76,12 +119,13 @@ function SearchAutoComplete({ currentRefinement, hits, refine }: SearchAutoCompl
       renderSectionTitle={renderSectionTitle}
       getSectionSuggestions={getSectionSuggestions}
       theme={{
-        container: 'flex-grow-1',
+        container: `flex-grow-1 dropdown ${styles.searchContainer}`,
         getFromContainer: 'autosuggest',
         input: 'form-control shadow-none',
-        suggestionsContainer: 'dropdown',
-        suggestionsList: `dropdown-menu ${hits.length ? 'show' : ''}`,
-        suggestion: 'dropdown-item',
+        suggestionsContainer: 'dropdown-menu',
+        suggestionsContainerOpen: 'show',
+        suggestionsList: `list-unstyled`,
+        suggestion: `dropdown-item ${styles.searchItem}`,
         suggestionHighlighted: 'active',
       }}
     />

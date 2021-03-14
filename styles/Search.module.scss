@@ -9,13 +9,25 @@
   @include media-breakpoint-down(lg) {
     min-width: auto;
   }
+}
 
-  .react-autosuggest__container {
-    display: flex;
-    flex-grow: 1;
+.searchContainer {
+  margin-bottom: auto;
+}
 
-    .react-autosuggest__input {
-      flex-grow: 1;
-    }
+.searchItem {
+  cursor: pointer;
+}
+
+.poweredByLink {
+  &:visited,
+  &:active,
+  &:focus,
+  &:hover {
+    color: inherit !important;
   }
+}
+
+.algoliaLogo {
+  height: 1.3rem;
 }
