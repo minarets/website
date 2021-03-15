@@ -15,6 +15,12 @@
   margin-bottom: auto;
 }
 
+.searchItemList {
+  &:empty {
+    display: none;
+  }
+}
+
 .searchItem {
   cursor: pointer;
 }

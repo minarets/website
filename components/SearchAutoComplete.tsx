@@ -124,7 +124,7 @@ function SearchAutoComplete({ currentRefinement, hits, refine }: SearchAutoCompl
         input: 'form-control shadow-none',
         suggestionsContainer: 'dropdown-menu',
         suggestionsContainerOpen: 'show',
-        suggestionsList: `list-unstyled`,
+        suggestionsList: `list-unstyled ${styles.searchItemList}`,
         suggestion: `dropdown-item ${styles.searchItem}`,
         suggestionHighlighted: 'active',
       }}
