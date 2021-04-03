@@ -4,7 +4,6 @@ import { getSession } from 'next-auth/client';
 
 import { Minarets } from '../../../minarets-api';
 import { getConcertUrl } from '../../../minarets-api/concertService';
-import type { User } from '../../../minarets-api/minarets/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const session = await getSession({ req });
@@ -14,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   res.setHeader('Content-Type', 'application/json');
 
   if (session) {
-    const api = new Minarets((session.user as User).token);
+    const api = new Minarets(session.user.token as string);
 
     const { query } = req;
     const [action] = query.minarets;

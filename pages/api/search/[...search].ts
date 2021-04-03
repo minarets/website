@@ -6,7 +6,6 @@ import { getSession } from 'next-auth/client';
 import { Minarets } from '../../../minarets-api';
 import * as compilationService from '../../../minarets-api/compilationService';
 import * as concertService from '../../../minarets-api/concertService';
-import type { User } from '../../../minarets-api/minarets/types';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const session = await getSession({ req });
@@ -19,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   res.setHeader('Content-Type', 'application/json');
 
   try {
-    if (session && (session.user as User).email === 'jim@biacreations.com') {
+    if (session && session.user.email === 'jim@biacreations.com') {
       if (!process.env.ALGOLIA_APPLICATION_ID || !process.env.ALGOLIA_ADMIN_API_KEY) {
         console.log(`ALGOLIA_APPLICATION_ID: ${process.env.ALGOLIA_APPLICATION_ID || ''}`);
         console.log(`ALGOLIA_ADMIN_API_KEY: ${process.env.ALGOLIA_ADMIN_API_KEY || ''}`);
@@ -32,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return;
       }
 
-      const api = new Minarets((session.user as User).token);
+      const api = new Minarets(session.user.token as string);
       const client = algoliasearch(process.env.ALGOLIA_APPLICATION_ID, process.env.ALGOLIA_ADMIN_API_KEY);
 
       const { query } = req;

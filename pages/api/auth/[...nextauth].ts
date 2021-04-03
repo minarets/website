@@ -1,17 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth from 'next-auth';
-import type { User as NextAuthUser, InitOptions } from 'next-auth';
-import type { SessionBase, GenericObject } from 'next-auth/_utils';
+import type { User as NextAuthUser, NextAuthOptions, Session } from 'next-auth';
+import type { NextApiHandler } from 'next-auth/_next';
+import type { WithAdditionalParams } from 'next-auth/_utils';
 import Providers from 'next-auth/providers';
+import type { Providers as ProvidersType } from 'next-auth/providers';
 
 import MinaretsAdapter from '../../../minarets-api/auth';
 import type { User } from '../../../minarets-api/minarets/types';
 
-interface IExtendedNextAuthUser extends NextAuthUser {
-  token: string;
-}
-
-const providers = [
+const providers: ProvidersType = [
   Providers.Email({
     server: {
       host: process.env.EMAIL_SERVER_HOST || '',
@@ -34,22 +32,20 @@ if (process.env.NEXTAUTH_GOOGLE_ID && process.env.NEXTAUTH_GOOGLE_SECRET) {
   );
 }
 
-const options: InitOptions = {
+const options: NextAuthOptions = {
   secret: process.env.AUTH_SECRET,
   adapter: MinaretsAdapter(),
   providers,
   callbacks: {
-    session(session: SessionBase, user: User): Promise<GenericObject> {
-      if (!user) {
-        return Promise.resolve(session);
-      }
-
+    session(session: Session, user: NextAuthUser | User): Promise<WithAdditionalParams<Session>> {
       const sessionWithUserToken = { ...session };
-      (sessionWithUserToken.user as IExtendedNextAuthUser).token = user.token;
+      if (user) {
+        sessionWithUserToken.user.token = (user as User).token;
+      }
 
       return Promise.resolve(sessionWithUserToken);
     },
   },
 };
 
-export default (req: NextApiRequest, res: NextApiResponse): Promise<void> => NextAuth(req, res, options);
+export default (req: NextApiRequest, res: NextApiResponse): ReturnType<NextApiHandler> => NextAuth(req, res, options);

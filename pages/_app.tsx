@@ -1,4 +1,5 @@
-import type { Session } from 'next-auth/client';
+import type { Session } from 'next-auth';
+import type { WithAdditionalParams } from 'next-auth/_utils';
 import { Provider } from 'next-auth/client';
 import type { AppProps } from 'next/app';
 import type { ReactElement } from 'react';
@@ -11,7 +12,7 @@ import { PlayerProvider } from '../contexts/PlayerContext';
 import { init } from '../minarets-api/sentryService';
 
 interface IPageProps {
-  session: Session;
+  session: WithAdditionalParams<Session>;
 }
 
 interface IProps extends AppProps<IPageProps> {
@@ -27,8 +28,11 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
 }
 
 function App({ Component, pageProps, err }: IProps): ReactElement {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
-  const session: Session = pageProps.session;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const session: WithAdditionalParams<Session> = {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    ...pageProps.session,
+  };
 
   return (
     <Provider session={session}>

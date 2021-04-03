@@ -2,25 +2,37 @@ import { createHash } from 'crypto';
 
 import Redis from 'ioredis';
 import type { AppOptions } from 'next-auth';
-import type { Adapter, AdapterInstance, Profile, Session, VerificationRequest } from 'next-auth/adapters';
-import type { SessionProvider } from 'next-auth/client';
+import type { Adapter, AdapterInstance, Profile, Session, VerificationRequest, EmailAppProvider } from 'next-auth/adapters';
+import type { Provider } from 'next-auth/providers';
 import { v4 as uuid } from 'uuid';
 
 import { Minarets } from '../minarets';
 import type { User } from '../minarets/types';
 
-interface ISendVerificationRequestParams {
+interface VerificationRequestParams extends Provider {
   identifier: string;
   url: string;
-  token: string;
   baseUrl: string;
-  provider: SessionProvider;
+  token: string;
+  provider: ProviderEmailOptions;
 }
 
-type EmailSessionProvider = SessionProvider & {
-  sendVerificationRequest: (params: ISendVerificationRequestParams) => Promise<void>;
-  maxAge: number | undefined;
-};
+interface ProviderEmailOptions {
+  name?: string;
+  server?: ProviderEmailServer | string;
+  from?: string;
+  maxAge?: number;
+  sendVerificationRequest?: (options: VerificationRequestParams) => Promise<void>;
+}
+
+interface ProviderEmailServer {
+  host: string;
+  port: number;
+  auth: {
+    user: string;
+    pass: string;
+  };
+}
 
 interface ICreateUserParams extends Profile {
   emailVerified?: Date;
@@ -44,7 +56,7 @@ export default (): Adapter<User, Profile, Session, VerificationRequest> => {
 
   const redisClient = global.redisClient;
 
-  function getAdapter({ baseUrl }: AppOptions): Promise<AdapterInstance<User, Profile, Session, VerificationRequest>> {
+  function getAdapter(adapterOptions: AppOptions): Promise<AdapterInstance<User, Profile, Session, VerificationRequest>> {
     const oneHourAsMilliseconds = 60 * 60 * 1000;
     const oneDayAsMilliseconds = 24 * oneHourAsMilliseconds;
     const thirtyDaysAsMilliseconds = 30 * oneDayAsMilliseconds;
@@ -156,7 +168,7 @@ export default (): Adapter<User, Profile, Session, VerificationRequest> => {
       await redisClient.del(`s_${sessionToken}`);
     }
 
-    async function createVerificationRequest(identifier: string, url: string, token: string, secret: string, provider: EmailSessionProvider): Promise<VerificationRequest> {
+    async function createVerificationRequest(identifier: string, url: string, token: string, secret: string, provider: EmailAppProvider): Promise<VerificationRequest> {
       const hashedToken = createHash('sha256').update(`${token}${secret}`).digest('hex');
       const key = `vr_${identifier}${hashedToken}`;
       const { sendVerificationRequest, maxAge } = provider;
@@ -174,7 +186,15 @@ export default (): Adapter<User, Profile, Session, VerificationRequest> => {
 
       await redisClient.set(key, JSON.stringify(verificationRequest), 'PX', oneHourAsMilliseconds);
 
-      await sendVerificationRequest({ identifier, url, token, baseUrl, provider });
+      if (sendVerificationRequest) {
+        await sendVerificationRequest({
+          baseUrl: adapterOptions.baseUrl || '',
+          identifier,
+          url,
+          token,
+          provider,
+        });
+      }
 
       return verificationRequest;
     }

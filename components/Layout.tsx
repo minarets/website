@@ -1,5 +1,4 @@
 import * as Sentry from '@sentry/browser';
-import type { User as NextAuthUser } from 'next-auth';
 import { useSession } from 'next-auth/client';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -16,10 +15,6 @@ const Player = dynamic(() => import('./Player'), { ssr: false });
 
 interface LayoutParams {
   children: React.ReactElement;
-}
-
-interface IExtendedNextAuthUser extends NextAuthUser {
-  token: string;
 }
 
 function Layout({ children }: LayoutParams): React.ReactElement {
@@ -107,7 +102,7 @@ function Layout({ children }: LayoutParams): React.ReactElement {
                 </Link>
               )}
               {session && !loading && session.user && session.user.image && (
-                <img className={`rounded ${styles.userImage}`} src={session.user.image} alt={`${session.user.name || ''} - ${(session.user as IExtendedNextAuthUser).token}`} />
+                <img className={`rounded ${styles.userImage}`} src={session.user.image} alt={`${session.user.name || ''} - ${(session.user.token as string) || ''}`} />
               )}
             </div>
           )}
