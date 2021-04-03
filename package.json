@@ -40,7 +40,7 @@
     "algoliasearch": "4.8.6",
     "bootstrap": "^5.0.0-beta3",
     "cross-fetch": "3.1.4",
-    "domutils": "2.5.1",
+    "domutils": "2.4.4",
     "htmlparser2": "6.0.1",
     "ioredis": "4.25.0",
     "moment": "2.29.1",
