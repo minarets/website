@@ -20,7 +20,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "tsc --noEmit && eslint  --fix --ext .ts,.tsx api components pages",
+    "lint": "tsc --noEmit && eslint  --fix --ext .ts,.tsx components contexts hooks minarets-api pages",
     "lint:staged": "lint-staged",
     "postinstall": "husky install",
     "prepublishOnly": "pinst --disable",

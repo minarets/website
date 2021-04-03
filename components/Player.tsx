@@ -15,7 +15,7 @@ export default function Player(): React.ReactElement {
   const [session] = useSession();
   const playerState = usePlayerState();
   const playerDispatch = usePlayerDispatch();
-  const [seekTime, setSeekTime] = React.useState<null | number>(null);
+  const [seekTime, setSeekTime] = React.useState<number | null>(null);
 
   useHotkeys(
     'space',
@@ -35,7 +35,7 @@ export default function Player(): React.ReactElement {
     return getTimeDisplay(playerState.currentTime);
   }
 
-  function handleTrackSeek(value: number[] | null | number | undefined): void {
+  function handleTrackSeek(value: number[] | number | null | undefined): void {
     if (value == null) {
       return;
     }
@@ -54,7 +54,7 @@ export default function Player(): React.ReactElement {
     setSeekTime(valueAsNumber);
   }
 
-  function handleTrackProgressChange(value: number[] | null | number | undefined): void {
+  function handleTrackProgressChange(value: number[] | number | null | undefined): void {
     setSeekTime(null);
     if (value == null) {
       return;
@@ -74,7 +74,7 @@ export default function Player(): React.ReactElement {
     playerState.player.seek(valueAsNumber);
   }
 
-  function handleSetVolume(value: number[] | null | number | undefined): void {
+  function handleSetVolume(value: number[] | number | null | undefined): void {
     if (value == null) {
       return;
     }

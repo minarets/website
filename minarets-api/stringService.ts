@@ -1,4 +1,4 @@
-export function slugify(input: null | string | undefined): string {
+export function slugify(input: string | null | undefined): string {
   if (!input) {
     return '';
   }

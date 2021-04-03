@@ -3,8 +3,8 @@ import type { User } from './types';
 
 export interface ICreateUserRequest {
   name?: string;
-  email: null | string;
-  image?: null | string;
+  email: string | null;
+  image?: string | null;
 }
 
 interface ISetEmailVerifiedRequest {
