@@ -23,7 +23,7 @@ function Layout({ children }: LayoutParams): React.ReactElement {
   const router = useRouter();
 
   React.useEffect(() => {
-    if (session) {
+    if (session && session.user) {
       Sentry.setUser({
         id: session.user.email || undefined,
         email: session.user.email || undefined,
