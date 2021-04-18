@@ -226,20 +226,33 @@ function MessageText({ text }: { text: string }): ReactElement {
           return <TextOrImage node={node} expandTextLinks key={`${text}_${nodeIndex}`} />;
         }
 
-        // Chat text is very simple. It can contain an image tag or a link tag. All other html tags are unsupported
-        if (isTag(node) && node.name === 'a' && node.attribs.href) {
-          const href: string = (node.attribs.href || '').replace('https://meetattheshow.com', '').replace(/^\/concerts\/detail/i, '/concerts');
-          return (
-            // eslint-disable-next-line react/no-array-index-key
-            <Link href={href} key={`${text}_${nodeIndex}`}>
-              <a>
+        // Chat text is very simple. It can contain an image tag, a link tag, or a bold tag. All other html tags are unsupported
+        if (isTag(node)) {
+          if (node.name === 'b') {
+            return (
+              <b>
                 {node.children.map((child: Node, childIndex: number) => (
                   // eslint-disable-next-line react/no-array-index-key
                   <TextOrImage node={child} expandTextLinks={false} key={`${text}_${nodeIndex}_${childIndex}`} />
                 ))}
-              </a>
-            </Link>
-          );
+              </b>
+            );
+          }
+
+          if (node.name === 'a' && node.attribs.href) {
+            const href: string = (node.attribs.href || '').replace('https://meetattheshow.com', '').replace(/^\/concerts\/detail/i, '/concerts');
+            return (
+              // eslint-disable-next-line react/no-array-index-key
+              <Link href={href} key={`${text}_${nodeIndex}`}>
+                <a>
+                  {node.children.map((child: Node, childIndex: number) => (
+                    // eslint-disable-next-line react/no-array-index-key
+                    <TextOrImage node={child} expandTextLinks={false} key={`${text}_${nodeIndex}_${childIndex}`} />
+                  ))}
+                </a>
+              </Link>
+            );
+          }
         }
 
         return null;
