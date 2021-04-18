@@ -51,6 +51,7 @@ async function sendMessage(text: string, chatDispatch: React.Dispatch<ChatAction
 export default function ChatWidget(): React.ReactElement {
   const [windowIsActive, setWindowIsActive] = React.useState(true);
   const [isFirstLoad, setIsFirstLoad] = React.useState(true);
+  const [isSendingMessage, setIsSendingMessage] = React.useState(false);
   const [chatRefreshErrorCount, setChatRefreshErrorCount] = React.useState(0);
   const [hasNotifiedChatError, setHasNotifiedChatError] = React.useState(false);
   const chatState = useChatState();
@@ -62,7 +63,7 @@ export default function ChatWidget(): React.ReactElement {
   const onBlur = (): void => setWindowIsActive(false);
   const onSendMessage = (e: KeyboardEvent<HTMLTextAreaElement>): void => {
     if ((e.key === 'Enter' || e.keyCode === 13) && !e.shiftKey && messageRef.current) {
-      messageRef.current.readOnly = true;
+      setIsSendingMessage(true);
       sendMessage(messageRef.current.value || '', chatDispatch)
         .then(() => {
           if (messageRef.current) {
@@ -72,9 +73,7 @@ export default function ChatWidget(): React.ReactElement {
           return true;
         })
         .finally(() => {
-          if (messageRef.current) {
-            messageRef.current.readOnly = false;
-          }
+          setIsSendingMessage(false);
         })
         .catch((ex) => Sentry.captureException(ex));
     }
@@ -152,8 +151,8 @@ export default function ChatWidget(): React.ReactElement {
           <ChatMessageRow message={chatMessage} key={chatMessage.id} />
         ))}
       </div>
-      <div className={styles.chatInputArea}>
-        <textarea ref={messageRef} className={styles.chatTextArea} placeholder="Click here to type a chat message." maxLength={4096} onKeyDown={onSendMessage} />
+      <div className={`${styles.chatInputArea} ${isSendingMessage ? styles.disabledChatInputArea : ''}`}>
+        <textarea ref={messageRef} className={styles.chatTextArea} placeholder="Click here to type a chat message." maxLength={4096} onKeyDown={onSendMessage} disabled={isSendingMessage} />
       </div>
     </>
   );

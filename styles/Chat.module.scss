@@ -30,6 +30,10 @@
   padding: 0.5rem;
 }
 
+.disabledChatInputArea {
+  background: rgba(0,0,0,.03);
+}
+
 .chatTextArea {
   width: 100%;
   min-height: 44px;
@@ -40,4 +44,9 @@
   outline: none;
   color: $black;
   resize: none;
+
+  &:disabled {
+    background: transparent;
+    color: $gray-600;
+  }
 }
