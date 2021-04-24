@@ -6,6 +6,7 @@ import AutoSuggest from 'react-autosuggest';
 import type { BasicDoc, Hit } from 'react-instantsearch-core';
 import { Highlight, connectAutoComplete } from 'react-instantsearch-dom';
 
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import styles from '../styles/Search.module.scss';
 
 import SearchPoweredBy from './SearchPoweredBy';
@@ -82,8 +83,10 @@ function SearchAutoComplete({ currentRefinement, hits, refine }: SearchAutoCompl
     return section.hits;
   }
 
+  const isMobile = useMediaQuery('(max-width: 576px)');
+
   const inputProps = {
-    placeholder: 'Search for concerts by date, songs, venues...',
+    placeholder: isMobile ? 'Search' : 'Search for concerts by date, songs, venues...',
     onChange(_event: React.FormEvent, { newValue }: ChangeEvent): void {
       setValue(newValue);
     },

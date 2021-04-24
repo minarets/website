@@ -37,6 +37,11 @@
   }
 }
 
+.searchBar {
+  display: flex;
+  max-width: 25rem;
+}
+
 .hoverGrow {
   transition: none 33ms cubic-bezier(0.3, 0, 0.7, 1);
   transition-property: all;

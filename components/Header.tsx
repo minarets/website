@@ -66,11 +66,11 @@ export default function Header(): React.ReactElement {
   }
 
   return (
-    <header className={`${styles.headerNavbar} px-3 py-3 navbar navbar-expand-md`}>
+    <header className={`${styles.headerNavbar} px-3 py-3 navbar navbar-expand-lg`}>
       <Link href="/">
-        <a className={`navbar-brand ${styles.logo} d-none d-md-block`}>Minarets</a>
+        <a className={`navbar-brand ${styles.logo} d-none d-lg-block`}>Minarets</a>
       </Link>
-      <div className="dropdown d-md-none" ref={mainMenuContainerRef}>
+      <div className="dropdown d-lg-none" ref={mainMenuContainerRef}>
         <Link href="/">
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
           <a className={`navbar-brand ${styles.logo} dropdown-toggle`} onClick={handleMainMenuClick} onKeyPress={handleMainMenuClick} role="button" tabIndex={0}>
@@ -109,11 +109,17 @@ export default function Header(): React.ReactElement {
               <a className="dropdown-item">Compilations</a>
             </Link>
           </li>
+          <li>
+            <hr className="dropdown-divider" />
+          </li>
+          <li className="px-2">
+            <Search />
+          </li>
         </ul>
       </div>
       <div className="flex-grow-1 px-3">
         <div className="d-flex justify-content-between">
-          <div className="flex-shrink-1 pe-3 d-none d-md-block">
+          <div className="flex-shrink-1 pe-3 d-none d-lg-block">
             <nav>
               <div className="nav navbar-nav">
                 <Link href="/concerts">
@@ -146,7 +152,9 @@ export default function Header(): React.ReactElement {
             </nav>
           </div>
 
-          <Search />
+          <div className={`d-none d-sm-block flex-grow-1 ${styles.searchBar}`}>
+            <Search />
+          </div>
         </div>
       </div>
       {session && !randomClicked && (
