@@ -4,11 +4,7 @@
 
 .searchBar {
   display: flex;
-  min-width: 25rem;
-
-  @include media-breakpoint-down(lg) {
-    min-width: auto;
-  }
+  max-width: 25rem;
 }
 
 .searchContainer {

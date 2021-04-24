@@ -10,7 +10,7 @@ const searchClient = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_I
 
 export default function Search(): React.ReactElement {
   return (
-    <div className={styles.searchBar}>
+    <div className={`flex-grow-1 ${styles.searchBar}`}>
       <InstantSearch indexName="concerts" searchClient={searchClient}>
         <SearchAutoComplete />
         <Configure hitsPerPage={5} attributesToSnippet={['name:7']} />
