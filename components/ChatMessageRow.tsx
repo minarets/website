@@ -218,41 +218,41 @@ function MessageText({ text }: { text: string }): ReactElement {
   // Do not show more than 2 blank lines in a row
   const document = parseDocument(text.replace(/[\n\r][\n\r][\n\r]+/, '\n\n'), { decodeEntities: true });
 
+  // Chat text is very simple. It can contain an image tag, a link tag, or a bold tag. All other html tags are unsupported
   return (
     <>
       {document.childNodes.map((node: Node, nodeIndex: number) => {
         if (isText(node) || (isTag(node) && node.name === 'img' && node.attribs.src)) {
           // eslint-disable-next-line react/no-array-index-key
-          return <TextOrImage node={node} expandTextLinks key={`${text}_${nodeIndex}`} />;
+          return <TextOrImage node={node} expandTextLinks key={`img_${text}_${nodeIndex}`} />;
         }
 
-        // Chat text is very simple. It can contain an image tag, a link tag, or a bold tag. All other html tags are unsupported
-        if (isTag(node)) {
-          if (node.name === 'b') {
-            return (
-              <b>
+        if (isTag(node) && node.name === 'b') {
+          /* eslint-disable react/no-array-index-key */
+          return (
+            <b>
+              {node.children.map((child: Node, childIndex: number) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <TextOrImage node={child} expandTextLinks={false} key={`b_${text}_${nodeIndex}_${childIndex}`} />
+              ))}
+            </b>
+          );
+          /* eslint-enable react/no-array-index-key */
+        }
+
+        if (isTag(node) && node.name === 'a' && node.attribs.href) {
+          const href: string = (node.attribs.href || '').replace('https://meetattheshow.com', '').replace(/^\/concerts\/detail/i, '/concerts');
+          return (
+            // eslint-disable-next-line react/no-array-index-key
+            <Link href={href} key={`${text}_${nodeIndex}`}>
+              <a>
                 {node.children.map((child: Node, childIndex: number) => (
                   // eslint-disable-next-line react/no-array-index-key
-                  <TextOrImage node={child} expandTextLinks={false} key={`${text}_${nodeIndex}_${childIndex}`} />
+                  <TextOrImage node={child} expandTextLinks={false} key={`a_${text}_${nodeIndex}_${childIndex}`} />
                 ))}
-              </b>
-            );
-          }
-
-          if (node.name === 'a' && node.attribs.href) {
-            const href: string = (node.attribs.href || '').replace('https://meetattheshow.com', '').replace(/^\/concerts\/detail/i, '/concerts');
-            return (
-              // eslint-disable-next-line react/no-array-index-key
-              <Link href={href} key={`${text}_${nodeIndex}`}>
-                <a>
-                  {node.children.map((child: Node, childIndex: number) => (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <TextOrImage node={child} expandTextLinks={false} key={`${text}_${nodeIndex}_${childIndex}`} />
-                  ))}
-                </a>
-              </Link>
-            );
-          }
+              </a>
+            </Link>
+          );
         }
 
         return null;
