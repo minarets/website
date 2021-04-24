@@ -19,8 +19,8 @@ export default function Page(): ReactElement {
         <h4 className="card-header">Donation Information</h4>
         <div className="card-body">
           <p className="card-text">
-            Thanks for your interest in donating to keep the site alive! This site exists to build and foster the community of fans of the Dave Matthews Band. Chat with others while reliving shows
-            from the past!
+            Thanks for your interest in donating to keep the site alive! This site exists to build and foster the community of fans of the Dave Matthews Band. Chat with others while reliving past
+            shows!
           </p>
           <p className="card-text">Your donations and support help cover the costs associated with running the site. The costs come from running the web servers and bandwidth from streaming songs.</p>
           <p className="card-text">There are no ads on this website. Ads suck, they are a parasite of modern websites. I would rather cover all costs for this project by myself than introduce ads.</p>
