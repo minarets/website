@@ -1,16 +1,29 @@
+import * as Sentry from '@sentry/browser';
 import { useSession } from 'next-auth/client';
 import Head from 'next/head';
 import * as React from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 import { usePlayerState } from '../contexts/PlayerContext';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import type { PlaybackTrack, PlaybackTrackAlbum } from '../minarets-api/types';
 
 import PlayerDesktop from './PlayerDesktop';
+import PlayerMobile from './PlayerMobile';
 
 export default function Player(): React.ReactElement {
   const [session] = useSession();
   const playerState = usePlayerState();
+
+  useHotkeys(
+    'space',
+    (e) => {
+      e.preventDefault();
+      playerState.player.togglePlay().catch((ex: Error) => Sentry.captureException(ex));
+    },
+    {},
+    [playerState],
+  );
 
   function uniqueTracksById(tracks: readonly (PlaybackTrack | undefined)[]): PlaybackTrack[] {
     const result: PlaybackTrack[] = [];
@@ -52,6 +65,7 @@ export default function Player(): React.ReactElement {
               <link rel="preload" href={album.imageUrl} as="image" key={`preload-art-${album.id}`} />
             ))}
           </Head>
+          {isMobile && <PlayerMobile />}
           {!isMobile && <PlayerDesktop />}
         </>
       )}

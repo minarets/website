@@ -1,8 +1,6 @@
-import * as Sentry from '@sentry/browser';
 import { useSession } from 'next-auth/client';
 import Link from 'next/link';
 import * as React from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
 import ReactSlider from 'react-slider';
 
 import { usePlayerState, usePlayerDispatch } from '../contexts/PlayerContext';
@@ -14,16 +12,6 @@ export default function PlayerDesktop(): React.ReactElement {
   const playerState = usePlayerState();
   const playerDispatch = usePlayerDispatch();
   const [seekTime, setSeekTime] = React.useState<number | null>(null);
-
-  useHotkeys(
-    'space',
-    (e) => {
-      e.preventDefault();
-      playerState.player.togglePlay().catch((ex: Error) => Sentry.captureException(ex));
-    },
-    {},
-    [playerState],
-  );
 
   function getPlaybackTime(): string {
     if (seekTime != null) {
