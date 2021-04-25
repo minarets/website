@@ -1,5 +1,6 @@
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
 
 $player-button-color: #b3b3b3;
 $player-button-hover-color: $white;
@@ -130,8 +131,15 @@ $player-button-disabled-color: #535353;
 
 .nowPlayingBarCenter {
   width: 40%;
-  min-width: 600px;
 }
+
+@include media-breakpoint-down(xl) {
+  .nowPlayingBarLeft,
+  .nowPlayingBarCenter {
+    width: 35%;
+  }
+}
+
 
 .nowPlayingArt {
   display: flex;

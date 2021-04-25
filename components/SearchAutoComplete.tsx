@@ -83,7 +83,7 @@ function SearchAutoComplete({ currentRefinement, hits, refine }: SearchAutoCompl
     return section.hits;
   }
 
-  const isMobile = useMediaQuery('(max-width: 576px)');
+  const isMobile = useMediaQuery('(max-width: 1023px)');
 
   const inputProps = {
     placeholder: isMobile ? 'Search' : 'Search for concerts by date, songs, venues...',

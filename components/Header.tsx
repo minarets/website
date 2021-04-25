@@ -152,7 +152,7 @@ export default function Header(): React.ReactElement {
             </nav>
           </div>
 
-          <div className={`d-none d-sm-block flex-grow-1 ${styles.searchBar}`}>
+          <div className={`d-none d-lg-block flex-grow-1 ${styles.searchBar}`}>
             <Search />
           </div>
         </div>
