@@ -3,6 +3,7 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import type { Track } from '../minarets-api/minarets/types';
+import { getTrackNotes } from '../minarets-api/trackService';
 
 interface IProps {
   concertUrl?: string;
@@ -14,28 +15,8 @@ interface IProps {
 }
 
 function TrackLinkRow({ artistUrl, concertUrl, concertName, concertAdditionalDetailsByToken, track, trackNumber }: IProps): ReactElement {
-  let trackName = track.name;
-  let firstTimePlayedText: string | undefined;
-  const trackNotes: string[] = [];
-  if (concertAdditionalDetailsByToken) {
-    for (const char of track.additionalInfo || '') {
-      const trackNote = concertAdditionalDetailsByToken[char];
-      if (trackNote) {
-        if (/^first\s+time/gi.test(trackNote)) {
-          firstTimePlayedText = trackNote;
-        } else {
-          trackNotes.push(trackNote);
-        }
-      } else if (char === '-') {
-        // skip
-      } else {
-        trackName += ` ${char}`;
-      }
-    }
-  }
-
-  const joinedTrackNotes = trackNotes.join(', ');
-  const hasTrackNotes = firstTimePlayedText || joinedTrackNotes;
+  const trackNotes = getTrackNotes(track, concertAdditionalDetailsByToken);
+  const hasTrackNotes = trackNotes.firstTimePlayedText || trackNotes.notes;
 
   // TODO: Add hover to row to show play button, for non-touch devices. Otherwise, replace track number with play button
   // If touch, then entire track name & notes block is clickable to play
@@ -45,11 +26,14 @@ function TrackLinkRow({ artistUrl, concertUrl, concertName, concertAdditionalDet
     <div className="row">
       <div className="d-none d-sm-flex col-sm-2 col-lg-1">{!!trackNumber && <span className={hasTrackNotes ? 'align-top' : 'align-middle'}>{trackNumber}</span>}</div>
       <div className="col text-truncate">
-        <div>{trackName}</div>
+        <div>
+          {track.name}
+          {trackNotes.trackNameSuffix}
+        </div>
         {hasTrackNotes && (
           <div>
-            {firstTimePlayedText && <small className="pe-4">&#9733; {firstTimePlayedText}</small>}
-            {joinedTrackNotes && <small>{joinedTrackNotes}</small>}
+            {trackNotes.firstTimePlayedText && <small className="pe-4">&#9733; {trackNotes.firstTimePlayedText}</small>}
+            {trackNotes.notes && <small>{trackNotes.notes}</small>}
           </div>
         )}
       </div>

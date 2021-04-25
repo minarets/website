@@ -128,24 +128,30 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
     playerState.player
       .playTracks(
         concert.tracks.map((track) =>
-          getPlaybackTrack({
-            ...track,
-            concert,
-          }),
+          getPlaybackTrack(
+            {
+              ...track,
+              concert,
+            },
+            detailsByToken,
+          ),
         ),
       )
       .catch((ex) => Sentry.captureException(ex));
-  }, [playerState, concert]);
+  }, [playerState, concert, detailsByToken]);
   const queueCb = React.useCallback(() => {
     playerState.player.queuePriorityTracks(
       concert.tracks.map((track) =>
-        getPlaybackTrack({
-          ...track,
-          concert,
-        }),
+        getPlaybackTrack(
+          {
+            ...track,
+            concert,
+          },
+          detailsByToken,
+        ),
       ),
     );
-  }, [playerState, concert]);
+  }, [playerState, concert, detailsByToken]);
 
   const concertUrl = getConcertUrl(concert);
   const artistUrl = getArtistUrl(concert.artist);

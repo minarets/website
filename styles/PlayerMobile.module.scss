@@ -108,20 +108,23 @@ $player-button-disabled-color: #535353;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 2px 12px;
   user-select: none;
+  min-width: 0;
 }
 
 .nowPlayingBarCenter {
-  flex-grow: 1;
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: flex-start;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .nowPlayingBarRight {
-  flex-shrink: 1;
+  flex-shrink: 0;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -130,18 +133,6 @@ $player-button-disabled-color: #535353;
 
 .progressBarMinimized {
   height: 0.1rem;
-}
-
-.nowPlayingArt {
-  display: flex;
-  align-items: center;
-  padding-right: 16px;
-
-  img {
-    height: 60px;
-    background: #2b2b2b;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-  }
 }
 
 .playerControls {
@@ -160,55 +151,22 @@ $player-button-disabled-color: #535353;
   flex-flow: row nowrap;
 }
 
-.playbackBar {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center
-}
-
-.playbackTime {
-  min-width: 3rem;
-  text-align: center;
-  font-size: $font-size-base * .75;
-}
-
 .trackName {
-  font-size: $font-size-base;
+  font-size: $font-size-base * .8;
   line-height: $line-height-lg;
   text-align: left;
   color: $white;
+}
 
-  a {
-    &:link,
-    &:visited {
-      color: $player-button-hover-color;
-      fill: $player-button-hover-color;
-    }
-
-    &:active,
-    &:focus,
-    &:hover {
-      color: $player-button-hover-color;
-      fill: $player-button-hover-color;
-      text-decoration: underline;
-    }
-  }
+.albumName {
+  font-size: $font-size-base * .7;
+  line-height: $line-height-base;
 }
 
 .trackDetails {
-  font-size: $font-size-base * .8;
+  font-size: $font-size-base * .6;
   line-height: $line-height-sm;
   text-align: left;
-
-  a {
-    &:active,
-    &:focus,
-    &:hover {
-      text-decoration: underline;
-    }
-  }
 }
 
 .extraControls {
