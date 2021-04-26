@@ -82,6 +82,8 @@ export default function PlayerDesktop(): React.ReactElement {
     });
   }
 
+  const hasTrackNotes = playerState.currentTrack && (playerState.currentTrack.firstTimePlayedText || playerState.currentTrack.notes);
+
   return (
     <>
       {!!session && (
@@ -109,9 +111,21 @@ export default function PlayerDesktop(): React.ReactElement {
                       </Link>
                     </div>
                     <div>
-                      <Link href={playerState.currentTrack.artist.url}>
-                        <a>{playerState.currentTrack.artist.name}</a>
-                      </Link>
+                      {hasTrackNotes && (
+                        <>
+                          <Link href={playerState.currentTrack.artist.url}>
+                            <a>{playerState.currentTrack.artist.abbr}</a>
+                          </Link>
+                          <span> - </span>
+                          {playerState.currentTrack.firstTimePlayedText && <span className="pe-4">&#9733; {playerState.currentTrack.firstTimePlayedText}</span>}
+                          {playerState.currentTrack.notes && <span>{playerState.currentTrack.notes}</span>}
+                        </>
+                      )}
+                      {!hasTrackNotes && (
+                        <Link href={playerState.currentTrack.artist.url}>
+                          <a>{playerState.currentTrack.artist.name}</a>
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
