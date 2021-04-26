@@ -2,15 +2,18 @@ import { useSession } from 'next-auth/client';
 import * as React from 'react';
 import ReactSlider from 'react-slider';
 
-import { usePlayerState } from '../contexts/PlayerContext';
+import { usePlayerState, usePlayerDispatch } from '../contexts/PlayerContext';
 import styles from '../styles/PlayerMobile.module.scss';
 
 export default function PlayerMobile(): React.ReactElement {
   const [session] = useSession();
   const playerState = usePlayerState();
+  const playerDispatch = usePlayerDispatch();
 
   function handleNowPlayingBarClick(): void {
-    console.log('Open nowPlayingModal');
+    playerDispatch({
+      type: 'ShowFullPlayer',
+    });
   }
 
   const hasTrackNotes = playerState.currentTrack && (playerState.currentTrack.firstTimePlayedText || playerState.currentTrack.notes);

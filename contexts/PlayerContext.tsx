@@ -16,6 +16,7 @@ export interface IPlayerState {
   priorityTracks: PlaybackTrack[];
   nextTracks: PlaybackTrack[];
   historyTracks: PlaybackTrack[];
+  showFullPlayer: boolean;
 }
 
 interface IMuteAction {
@@ -51,7 +52,11 @@ interface ITrackStartEndAction {
   track: PlaybackTrack;
 }
 
-type PlayerAction = IMuteAction | IProgressAction | ISetVolumeAction | ITrackStartEndAction | IUpdatePlayerStateAction;
+interface IShowHideFullPlayerAction {
+  type: 'HideFullPlayer' | 'ShowFullPlayer';
+}
+
+type PlayerAction = IMuteAction | IProgressAction | ISetVolumeAction | IShowHideFullPlayerAction | ITrackStartEndAction | IUpdatePlayerStateAction;
 
 function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState {
   try {
@@ -151,6 +156,18 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
           volume: action.volume,
         };
       }
+      case 'ShowFullPlayer': {
+        return {
+          ...state,
+          showFullPlayer: true,
+        };
+      }
+      case 'HideFullPlayer': {
+        return {
+          ...state,
+          showFullPlayer: false,
+        };
+      }
       default:
         throw new Error(`Unhandled action: ${JSON.stringify(action)}`);
     }
@@ -177,6 +194,7 @@ export const PlayerProvider = ({ children }: IPlayerContextProviderProps): React
     isPaused: true,
     repeatMode: RepeatMode.noRepeat,
     isMuted: false,
+    showFullPlayer: false,
     volume: 60,
     player: new Player<PlaybackTrack>({
       volume: 60,

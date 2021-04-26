@@ -10,6 +10,7 @@ import type { PlaybackTrack, PlaybackTrackAlbum } from '../minarets-api/types';
 
 import PlayerDesktop from './PlayerDesktop';
 import PlayerMobile from './PlayerMobile';
+import PlayerMobileFull from './PlayerMobileFull';
 
 export default function Player(): React.ReactElement {
   const [session] = useSession();
@@ -65,7 +66,8 @@ export default function Player(): React.ReactElement {
               <link rel="preload" href={album.imageUrl} as="image" key={`preload-art-${album.id}`} />
             ))}
           </Head>
-          {isMobile && <PlayerMobile />}
+          {isMobile && !playerState.showFullPlayer && <PlayerMobile />}
+          {isMobile && playerState.showFullPlayer && <PlayerMobileFull />}
           {!isMobile && <PlayerDesktop />}
         </>
       )}
