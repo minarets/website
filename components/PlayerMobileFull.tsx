@@ -83,52 +83,50 @@ export default function PlayerMobileFull(): React.ReactElement {
               </div>
               <div className="modal-body">
                 <div className={styles.playerContent}>
-                  <div className="flex-grow-1">
+                  <div className={styles.playerArt}>
                     {!!playerState.currentTrack.album.imageUrl && <img className="img-fluid" src={playerState.currentTrack.album.imageUrl} alt={playerState.currentTrack.album.name} />}
-                    {!playerState.currentTrack.album.imageUrl && (
-                      <img className="img-fluid" src="https://live.staticflickr.com/3440/3817483161_945573465d_z.jpg" alt={playerState.currentTrack.album.name} />
-                    )}
                   </div>
-                  <div className="text-truncate flex-grow-1">
-                    <div className={styles.trackName}>
-                      <Link href={playerState.currentTrack.album.url}>
-                        <a>{playerState.currentTrack.name}</a>
-                      </Link>
-                    </div>
-                    <div className={styles.trackDetails}>
-                      <div>
+                  <div className={styles.nowPlaying}>
+                    <div className="text-truncate flex-grow-1">
+                      <div className={styles.trackName}>
                         <Link href={playerState.currentTrack.album.url}>
-                          <a>{playerState.currentTrack.album.name}</a>
+                          <a>{playerState.currentTrack.name}</a>
                         </Link>
                       </div>
-                      <div>
-                        <Link href={playerState.currentTrack.artist.url}>
-                          <a>{playerState.currentTrack.artist.name}</a>
-                        </Link>
+                      <div className={styles.trackDetails}>
+                        <div>
+                          <Link href={playerState.currentTrack.album.url}>
+                            <a>{playerState.currentTrack.album.name}</a>
+                          </Link>
+                        </div>
+                        <div>
+                          <Link href={playerState.currentTrack.artist.url}>
+                            <a>{playerState.currentTrack.artist.name}</a>
+                          </Link>
+                        </div>
+                        {playerState.currentTrack.notes && <div>{playerState.currentTrack.notes}</div>}
+                        {playerState.currentTrack.firstTimePlayedText && <div>&#9733; {playerState.currentTrack.firstTimePlayedText}</div>}
                       </div>
-                      {playerState.currentTrack.notes && <div>{playerState.currentTrack.notes}</div>}
-                      {playerState.currentTrack.firstTimePlayedText && <div>&#9733; {playerState.currentTrack.firstTimePlayedText}</div>}
-                    </div>
-                  </div>
-
-                  <div className={styles.playerControls}>
-                    <div className={styles.playbackBar}>
-                      <ReactSlider
-                        ariaLabel="Player progress"
-                        className="react-slider"
-                        max={playerState.currentTrack && Number.isFinite(playerState.duration) ? playerState.duration : 100}
-                        value={playerState.currentTrack && Number.isFinite(playerState.currentTime) ? playerState.currentTime : 0}
-                        onChange={handleTrackSeek}
-                        onAfterChange={handleTrackProgressChange}
-                      />
-                    </div>
-                    <div className={styles.playbackTime}>
-                      <div>{getPlaybackTime()}</div>
-                      <div>{getTimeDisplay(playerState.currentTrack ? playerState.duration : 0)}</div>
                     </div>
 
-                    <div className={styles.playerControlsButtons}>
-                      {/*{false && !player.isShuffleEnabled && (
+                    <div className={styles.playerControls}>
+                      <div className={styles.playbackBar}>
+                        <ReactSlider
+                          ariaLabel="Player progress"
+                          className="react-slider"
+                          max={playerState.currentTrack && Number.isFinite(playerState.duration) ? playerState.duration : 100}
+                          value={playerState.currentTrack && Number.isFinite(playerState.currentTime) ? playerState.currentTime : 0}
+                          onChange={handleTrackSeek}
+                          onAfterChange={handleTrackProgressChange}
+                        />
+                      </div>
+                      <div className={styles.playbackTime}>
+                        <div>{getPlaybackTime()}</div>
+                        <div>{getTimeDisplay(playerState.currentTrack ? playerState.duration : 0)}</div>
+                      </div>
+
+                      <div className={styles.playerControlsButtons}>
+                        {/*{false && !player.isShuffleEnabled && (
                             <button title="Enable shuffle" type="button" onClick={(): void => playerDispatch({ type: 'EnableShuffle' })}>
                               <svg role="img" height="16" width="16" viewBox="0 0 16 16">
                                 <path d="M4.5 6.8l.7-.8C4.1 4.7 2.5 4 .9 4v1c1.3 0 2.6.6 3.5 1.6l.1.2zm7.5 4.7c-1.2 0-2.3-.5-3.2-1.3l-.6.8c1 1 2.4 1.5 3.8 1.5V14l3.5-2-3.5-2v1.5zm0-6V7l3.5-2L12 3v1.5c-1.6 0-3.2.7-4.2 2l-3.4 3.9c-.9 1-2.2 1.6-3.5 1.6v1c1.6 0 3.2-.7 4.2-2l3.4-3.9c.9-1 2.2-1.6 3.5-1.6z" />
@@ -142,32 +140,32 @@ export default function PlayerMobileFull(): React.ReactElement {
                               </svg>
                             </button>
                           )}*/}
-                      <button title="Previous" type="button" onClick={(): Promise<void> => playerState.player.previousTrack()}>
-                        <svg role="img" height="16" width="16" viewBox="0 0 16 16">
-                          <path d="M13 2.5L5 7.119V3H3v10h2V8.881l8 4.619z" />
-                        </svg>
-                      </button>
-                      {playerState.isPaused && (
-                        <button title="Play" type="button" className={styles.playPause} disabled={!playerState.currentTrack} onClick={(): Promise<void> => playerState.player.play()}>
+                        <button title="Previous" type="button" onClick={(): Promise<void> => playerState.player.previousTrack()}>
                           <svg role="img" height="16" width="16" viewBox="0 0 16 16">
-                            <path d="M4.018 14L14.41 8 4.018 2z" />
+                            <path d="M13 2.5L5 7.119V3H3v10h2V8.881l8 4.619z" />
                           </svg>
                         </button>
-                      )}
-                      {!playerState.isPaused && (
-                        <button title="Pause" type="button" className={styles.playPause} onClick={(): void => playerState.player.pause()}>
+                        {playerState.isPaused && (
+                          <button title="Play" type="button" className={styles.playPause} disabled={!playerState.currentTrack} onClick={(): Promise<void> => playerState.player.play()}>
+                            <svg role="img" height="16" width="16" viewBox="0 0 16 16">
+                              <path d="M4.018 14L14.41 8 4.018 2z" />
+                            </svg>
+                          </button>
+                        )}
+                        {!playerState.isPaused && (
+                          <button title="Pause" type="button" className={styles.playPause} onClick={(): void => playerState.player.pause()}>
+                            <svg role="img" height="16" width="16" viewBox="0 0 16 16">
+                              <path fill="none" d="M0 0h16v16H0z" />
+                              <path d="M3 2h3v12H3zM10 2h3v12h-3z" />
+                            </svg>
+                          </button>
+                        )}
+                        <button title="Next" type="button" onClick={(): Promise<void> => playerState.player.nextTrack()}>
                           <svg role="img" height="16" width="16" viewBox="0 0 16 16">
-                            <path fill="none" d="M0 0h16v16H0z" />
-                            <path d="M3 2h3v12H3zM10 2h3v12h-3z" />
+                            <path d="M11 3v4.119L3 2.5v11l8-4.619V13h2V3z" />
                           </svg>
                         </button>
-                      )}
-                      <button title="Next" type="button" onClick={(): Promise<void> => playerState.player.nextTrack()}>
-                        <svg role="img" height="16" width="16" viewBox="0 0 16 16">
-                          <path d="M11 3v4.119L3 2.5v11l8-4.619V13h2V3z" />
-                        </svg>
-                      </button>
-                      {/*{!player.isRepeatOneEnabled && !player.isRepeatEnabled && (
+                        {/*{!player.isRepeatOneEnabled && !player.isRepeatEnabled && (
                             <button title="Enable repeat" type="button" onClick={(): void => playerDispatch({ type: 'EnableRepeat' })}>
                               <svg role="img" height="16" width="16" viewBox="0 0 16 16">
                                 <path d="M10.989 9.99q-1.871 0-3.481 0.951t-2.561 2.561-0.951 3.481q0 1.395 0.603 2.601l-1.808 0.999q-0.793-1.602-0.793-3.6 0-2.458 1.197-4.527t3.267-3.267 4.527-1.197h8.991v-2.997l6.993 3.996-6.993 3.996v-2.997h-8.991M29.177 13.384q0.793 1.602 0.793 3.6 0 2.458-1.197 4.527t-3.267 3.267-4.527 1.197h-8.991v2.997l-6.993-3.996 6.993-3.996v2.997h8.991q1.871 0 3.481-0.951t2.561-2.561 0.951-3.481q0-1.395-0.603-2.601l1.808-0.999z" />
@@ -188,6 +186,7 @@ export default function PlayerMobileFull(): React.ReactElement {
                               </svg>
                             </button>
                           )}*/}
+                      </div>
                     </div>
                   </div>
                 </div>

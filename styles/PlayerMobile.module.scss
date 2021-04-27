@@ -103,24 +103,18 @@ $player-button-disabled-color: #535353;
 }
 
 .nowPlayingBar {
-  flex-grow: 1;
   align-items: stretch;
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 2px 12px;
+  padding: 0.15rem 0.6rem;
   user-select: none;
-  min-width: 0;
 }
 
 .nowPlayingBarCenter {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  padding-right: 0.3rem;
+  flex-grow: 1;
+  min-width: 0;
 }
 
 .nowPlayingBarRight {
@@ -154,7 +148,6 @@ $player-button-disabled-color: #535353;
 .trackName {
   font-size: $font-size-base * .8;
   line-height: $line-height-lg;
-  text-align: left;
   color: $white;
 }
 
@@ -163,10 +156,19 @@ $player-button-disabled-color: #535353;
   line-height: $line-height-base;
 }
 
+.trackTitle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .trackDetails {
   font-size: $font-size-base * .6;
   line-height: $line-height-sm;
   text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .extraControls {

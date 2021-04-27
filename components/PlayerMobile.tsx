@@ -37,7 +37,7 @@ export default function PlayerMobile(): React.ReactElement {
           <div className={styles.nowPlayingBar}>
             {playerState.currentTrack && (
               <div className={styles.nowPlayingBarCenter} onClick={handleNowPlayingBarClick} onKeyPress={handleNowPlayingBarClick} role="button" tabIndex={0}>
-                <div>
+                <div className={styles.trackTitle}>
                   <span className={styles.trackName}>{playerState.currentTrack.name} - </span>
                   <span className={styles.albumName}>{playerState.currentTrack.album.name}</span>
                 </div>
