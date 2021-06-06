@@ -1,3 +1,6 @@
+import LRUCache from 'lru-cache';
+import moment from 'moment';
+
 import { ApiBase } from './apiBase';
 import type { BasicConcert, BasicConcertWithNotes, Concert, ConcertSummary, ListAllResponse, ListResponse } from './types';
 
@@ -43,21 +46,46 @@ export interface IListConcertsByVenueRequest extends IListConcertsRequest {
   venueId: number;
 }
 
+const cache = new LRUCache<string, Concert>({
+  max: 100000,
+  maxAge: 60 * 60 * 1000, // 60 minutes
+});
+
 export class Concerts extends ApiBase {
   public async getConcert(id: string): Promise<Concert> {
     if (!id) {
       throw new Error('Unable to get concert by empty id.');
     }
 
-    const response = await this.get(`${this.apiUrl}/api/concerts/${id}`);
+    const cacheKey = `concerts_id/${id}`;
+    let result = cache.get(cacheKey);
+    if (!result) {
+      const response = await this.get(`${this.apiUrl}/api/concerts/${id}`);
 
-    return (await response.json()) as Concert;
+      result = (await response.json()) as Concert;
+      if (result) {
+        cache.set(cacheKey, result);
+        cache.set(`concerts_date/${moment.utc(result.date).format('yyyy/MM/DD')}`, result);
+      }
+    }
+
+    return result;
   }
 
   public async getConcertByUrlParts(year: string, month: string, day: string, slug: string): Promise<Concert> {
-    const response = await this.get(`${this.apiUrl}/api/concerts/${year}/${month}/${day}/${slug}`);
+    const cacheKey = `concerts_date/${year}/${month}/${day}`;
+    let result = cache.get(cacheKey);
+    if (!result) {
+      const response = await this.get(`${this.apiUrl}/api/concerts/${year}/${month}/${day}/${slug}`);
 
-    return (await response.json()) as Concert;
+      result = (await response.json()) as Concert;
+      if (result) {
+        cache.set(cacheKey, result);
+        cache.set(`concerts_id/${result.id}`, result);
+      }
+    }
+
+    return result;
   }
 
   public async getRandomConcert(request: IGetRandomConcertRequest = {}): Promise<ConcertSummary> {

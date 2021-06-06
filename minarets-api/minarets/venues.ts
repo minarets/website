@@ -1,3 +1,4 @@
+import LRUCache from 'lru-cache';
 import SmartyStreetSDK from 'smartystreets-javascript-sdk';
 
 import { ApiBase } from './apiBase';
@@ -10,15 +11,29 @@ export interface IListVenuesRequest {
   sortDesc?: string;
 }
 
+const cache = new LRUCache<string, Venue>({
+  max: 100000,
+  maxAge: 60 * 60 * 1000, // 60 minutes
+});
+
 export class Venues extends ApiBase {
   public async getVenue(id: number): Promise<Venue> {
     if (!id) {
       throw new Error('Unable to get venue by empty id.');
     }
 
-    const response = await this.get(`${this.apiUrl}/api/venues/${id}`);
+    const cacheKey = `venues/${id}`;
+    let result = cache.get(cacheKey);
+    if (!result) {
+      const response = await this.get(`${this.apiUrl}/api/venues/${id}`);
 
-    return (await response.json()) as Venue;
+      result = (await response.json()) as Venue;
+      if (result) {
+        cache.set(cacheKey, result);
+      }
+    }
+
+    return result;
   }
 
   public async listAllVenues(): Promise<ListAllResponse<VenueSummary>> {

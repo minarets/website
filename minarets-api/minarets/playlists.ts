@@ -1,3 +1,5 @@
+import LRUCache from 'lru-cache';
+
 import { ApiBase } from './apiBase';
 import type { ListAllResponse, ListResponse, Playlist, PlaylistSummary } from './types';
 
@@ -8,15 +10,29 @@ export interface IListPlaylistsRequest {
   sortDesc?: string;
 }
 
+const cache = new LRUCache<string, Playlist>({
+  max: 100000,
+  maxAge: 60 * 60 * 1000, // 60 minutes
+});
+
 export class Playlists extends ApiBase {
   public async getPlaylist(id: number): Promise<Playlist> {
     if (!id) {
       throw new Error('Unable to get playlist by empty id.');
     }
 
-    const response = await this.get(`${this.apiUrl}/api/playlists/${id}`);
+    const cacheKey = `playlists/${id}`;
+    let result = cache.get(cacheKey);
+    if (!result) {
+      const response = await this.get(`${this.apiUrl}/api/playlists/${id}`);
 
-    return (await response.json()) as Playlist;
+      result = (await response.json()) as Playlist;
+      if (result) {
+        cache.set(cacheKey, result);
+      }
+    }
+
+    return result;
   }
 
   public async listAllPlaylists(): Promise<ListAllResponse<PlaylistSummary>> {
