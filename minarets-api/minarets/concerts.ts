@@ -144,7 +144,7 @@ export class Concerts extends ApiBase {
     return (await response.json()) as ListResponse<BasicConcert>;
   }
 
-  public async listConcertsByPlaylist(request: IListConcertsByPlaylistRequest): Promise<ListResponse<BasicConcert>> {
+  public async listConcertsByPlaylist(request: IListConcertsByPlaylistRequest): Promise<ListResponse<BasicConcertWithNotes>> {
     const { playlistId, ...queryParams } = request;
     const query = this.queryParams(queryParams);
     const response = await this.get(`${this.apiUrl}/api/playlists/${playlistId}/concerts`, { query });

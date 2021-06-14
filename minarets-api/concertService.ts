@@ -47,30 +47,55 @@ export function getConcertUrl(concert: ConcertSummary): string {
 export function extractTokenDetailsFromConcertNote(concert: Pick<BasicConcertWithNotes, 'notes'>): IExtractTokenDetailsFromConcertNoteResult {
   const detailsByToken: Record<string, string> = {};
   const noteLines: string[] = [];
-  let hasMoreTokens = true;
   for (const line of (concert.notes || '').trim().split('\n')) {
     let isToken = false;
     const trimmedLine = line.trim();
-    if (hasMoreTokens && trimmedLine) {
-      const token = trimmedLine[0];
-      switch (token) {
-        case '!':
-        case '@':
-        case '#':
-        case '$':
-        case '%':
-        case '^':
-        case '&':
-        case '*':
-          detailsByToken[token] = trimmedLine.slice(1).trim();
-          isToken = true;
-          break;
-        default:
-          hasMoreTokens = false;
-          break;
+    const token = trimmedLine[0];
+    switch (token) {
+      case '!':
+      case '@':
+      case '#':
+      case '$':
+      case '%':
+      case '^':
+      case '&':
+      case '*':
+      case '+':
+      case '~': {
+        const collaborator = trimmedLine
+          .slice(1)
+          .replace(/^\s*With\s+/i, '')
+          .trim();
+
+        // Remove notes like "Dave on piano" or "Talking Heads cover"
+        if (/^(?:Dave|Dave\s+Matthews)\s+on\s+/i.test(collaborator) || /.*\s+cover$/i.test(collaborator)) {
+          detailsByToken[token] = '';
+        } else {
+          const collaboratorMatches = /^(.*)(\s+on\s+.*)/gi.exec(collaborator);
+          if (collaboratorMatches && collaboratorMatches.length) {
+            detailsByToken[token] = collaboratorMatches[1];
+          } else {
+            detailsByToken[token] = collaborator;
+          }
+        }
+
+        isToken = true;
+        break;
       }
-    } else if (hasMoreTokens) {
-      hasMoreTokens = false;
+      default: {
+        const entireShowMatches = /^\s*Entire\s+(?:show|set)\s+with\s+(.*)/i.exec(trimmedLine);
+        if (entireShowMatches && entireShowMatches.length) {
+          const collaborator = entireShowMatches[1].replace(/\s+on\s+.*/i, '').replace(/\.+$/, '');
+
+          if (detailsByToken.allTracks) {
+            detailsByToken.allTracks += `, ${collaborator}`;
+          } else {
+            detailsByToken.allTracks = `${collaborator}`;
+          }
+          isToken = true;
+        }
+        break;
+      }
     }
 
     if (!isToken && (noteLines.length || trimmedLine)) {

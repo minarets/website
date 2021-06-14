@@ -1,0 +1,14 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+.trackRow {
+  display: grid;
+  grid-template-columns: minmax(3ch, 4ch) 1fr 1fr fit-content(3ch) fit-content(5ch);
+}
+
+@include media-breakpoint-down(lg) {
+  .trackRow {
+    display: block;
+  }
+}

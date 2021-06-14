@@ -4,6 +4,7 @@ import type { ReactElement } from 'react';
 
 import type { Track } from '../minarets-api/minarets/types';
 import { getTrackNotes } from '../minarets-api/trackService';
+import styles from '../styles/components/TrackLinkRow.module.scss';
 
 interface IProps {
   concertUrl?: string;
@@ -23,9 +24,9 @@ function TrackLinkRow({ artistUrl, concertUrl, concertName, concertAdditionalDet
   // TODO: Add swipe right to add to queue. Swipe left to heart?
   // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Interact_with_the_clipboard#Using_the_Clipboard_API
   return (
-    <div className="row">
-      <div className="d-none d-sm-flex col-sm-2 col-lg-1">{!!trackNumber && <span className={hasTrackNotes ? 'align-top' : 'align-middle'}>{trackNumber}</span>}</div>
-      <div className="col text-truncate">
+    <div className={styles.trackRow}>
+      <div className="d-none d-lg-block">{!!trackNumber && <span className={hasTrackNotes ? 'align-top' : 'align-middle'}>{trackNumber}</span>}</div>
+      <div className="text-truncate">
         <div>
           {track.name}
           {trackNotes.trackNameSuffix}
@@ -38,13 +39,13 @@ function TrackLinkRow({ artistUrl, concertUrl, concertName, concertAdditionalDet
         )}
       </div>
       {concertUrl && concertName && (
-        <div className="d-none d-md-flex col-lg-5 col-xl-3 text-truncate">
+        <div className="text-truncate">
           <Link href={concertUrl}>
-            <a className="nav-link">{concertName}</a>
+            <a>{concertName}</a>
           </Link>
         </div>
       )}
-      <div className="col-3 col-sm-2 col-lg-1 text-end d-none">
+      <div className="text-end d-none">
         <span>...</span>
         <div className="track-menu">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
@@ -70,7 +71,7 @@ function TrackLinkRow({ artistUrl, concertUrl, concertName, concertAdditionalDet
           </ul>
         </div>
       </div>
-      <div className="d-none d-sm-block col-sm-2 col-lg-1 text-end">
+      <div className="d-none d-lg-block text-end">
         <span className={hasTrackNotes ? 'align-top' : 'align-middle'}>{track.duration}</span>
       </div>
     </div>

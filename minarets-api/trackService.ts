@@ -21,10 +21,10 @@ export function getTrackNotes(track: Track, concertAdditionalDetailsByToken: Rec
 
   for (const char of track.additionalInfo || '') {
     const trackNote = concertAdditionalDetailsByToken[char];
-    if (trackNote) {
+    if (trackNote != null) {
       if (/^first\s+time/gi.test(trackNote)) {
         result.firstTimePlayedText = trackNote;
-      } else {
+      } else if (trackNote) {
         trackNotes.push(trackNote);
       }
     } else if (char === '-') {
@@ -32,6 +32,10 @@ export function getTrackNotes(track: Track, concertAdditionalDetailsByToken: Rec
     } else {
       result.trackNameSuffix += ` ${char}`;
     }
+  }
+
+  if (concertAdditionalDetailsByToken.allTracks) {
+    trackNotes.push(concertAdditionalDetailsByToken.allTracks);
   }
 
   result.notes = trackNotes.join(', ');
