@@ -243,7 +243,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
               </tr>
               <tr>
                 <th>Date:</th>
-                <td>{moment.utc(concert.date).format('MMM D, YYYY')}</td>
+                <td>{moment.utc(concert.date).format('MMMM D, YYYY')}</td>
               </tr>
               <tr>
                 <th>Tour:</th>
