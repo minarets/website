@@ -1,5 +1,7 @@
+import * as Sentry from '@sentry/browser';
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
+import { useSession } from 'next-auth/client';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -10,6 +12,7 @@ import ContentLoader from 'react-content-loader';
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
 import TourBreadcrumbRow from '../../../components/TourBreadcrumbRow';
 import TrackLinkRow from '../../../components/TrackLinkRow';
+import { usePlayerState } from '../../../contexts/PlayerContext';
 import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { Minarets } from '../../../minarets-api';
 import { getArtistUrl } from '../../../minarets-api/artistService';
@@ -17,6 +20,7 @@ import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } fro
 import type { BasicArtist, ErrorWithResponse, Playlist } from '../../../minarets-api/minarets/types';
 import { pick } from '../../../minarets-api/objectService';
 import { getPlaylistUrl } from '../../../minarets-api/playlistService';
+import { getPlaybackTrack } from '../../../minarets-api/trackService';
 import type { LimitedArtist, LimitedConcert, LimitedConcertWithTokenDetails, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../minarets-api/types';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
@@ -144,6 +148,16 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
   const title = router.isFallback ? 'Loading playlist...' : playlist.name;
   useDocumentTitle(title);
 
+  const [session] = useSession();
+  const playerState = usePlayerState();
+
+  const playCb = React.useCallback(() => {
+    playerState.player.playTracks(playlist.tracks.map((track) => getPlaybackTrack(track, concertsById[track.concert.id].tokenDetails || {}))).catch((ex) => Sentry.captureException(ex));
+  }, [playerState, playlist, concertsById]);
+  const queueCb = React.useCallback(() => {
+    playerState.player.queuePriorityTracks(playlist.tracks.map((track) => getPlaybackTrack(track, concertsById[track.concert.id].tokenDetails || {})));
+  }, [playerState, playlist, concertsById]);
+
   if (router.isFallback) {
     return (
       <>
@@ -207,6 +221,26 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
       <header>
         <h1>{playlist.name}</h1>
       </header>
+
+      {!session && (
+        <div className="mb-3">
+          <Link href="/api/auth/signin">
+            <a className="btn btn-success rounded-pill" rel="nofollow">
+              Play
+            </a>
+          </Link>
+        </div>
+      )}
+      {session && (
+        <section className="mb-3">
+          <button className="btn btn-success rounded-pill" type="button" onClick={(): void => playCb()}>
+            Play
+          </button>
+          <button className="btn btn-success rounded-pill" type="button" onClick={(): void => queueCb()}>
+            Add to Queue
+          </button>
+        </section>
+      )}
 
       <section className="card mb-3">
         <h4 className="card-header">Playlist Information</h4>
