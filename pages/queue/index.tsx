@@ -37,7 +37,7 @@ export default function Page(): ReactElement {
         <section className="card mb-3">
           <h4 className="card-header">Now Playing</h4>
           <div className="card-body">
-            <QueueTrackLinkRow track={playerState.currentTrack} />
+            <QueueTrackLinkRow track={playerState.currentTrack} trackNumber={1} />
           </div>
         </section>
       )}
@@ -46,8 +46,8 @@ export default function Page(): ReactElement {
         <section className="card mb-3">
           <h4 className="card-header">Next In Queue</h4>
           <div className="card-body">
-            {playerState.priorityTracks.map((track) => (
-              <QueueTrackLinkRow track={track} key={track.uniqueId} />
+            {playerState.priorityTracks.map((track, trackIndex) => (
+              <QueueTrackLinkRow track={track} trackNumber={trackIndex + 1 + (playerState.currentTrack ? 1 : 0)} key={track.uniqueId} />
             ))}
           </div>
         </section>
@@ -57,8 +57,8 @@ export default function Page(): ReactElement {
         <section className="card">
           <h4 className="card-header">Next Up</h4>
           <div className="card-body">
-            {playerState.nextTracks.map((track) => (
-              <QueueTrackLinkRow track={track} key={track.uniqueId} />
+            {playerState.nextTracks.map((track, trackIndex) => (
+              <QueueTrackLinkRow track={track} trackNumber={trackIndex + 1 + (playerState.currentTrack ? 1 : 0) + playerState.priorityTracks.length} key={track.uniqueId} />
             ))}
           </div>
         </section>
