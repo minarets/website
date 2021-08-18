@@ -28,8 +28,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
 
   return {
     paths,
-    // Means other routes should 404
-    fallback: false,
+    fallback: true,
   };
 }
 
@@ -110,8 +109,8 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
       venueConcerts: venueConcertResults.items.map((venueConcert) => pick(venueConcert, 'id', 'date', 'name')),
       toursById,
     },
-    // Re-generate the data at most every 24 hours
-    revalidate: 86400,
+    // Re-generate the data at most every 15 minutes
+    revalidate: 900,
   };
 }
 

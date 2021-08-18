@@ -83,8 +83,8 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
       latestConcerts,
       artistsById,
     },
-    // Re-generate the data at most every 24 hours
-    revalidate: 86400,
+    // Re-generate the data at most every 15 minutes
+    revalidate: 900,
   };
 }
 
