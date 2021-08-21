@@ -3,7 +3,7 @@ import type { User } from './types';
 
 export interface ICreateUserRequest {
   name?: string;
-  email: string | null;
+  email?: string | null;
   image?: string | null;
 }
 

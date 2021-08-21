@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   res.setHeader('Content-Type', 'application/json');
 
   if (session) {
-    const api = new Minarets(session.user.token as string);
+    const api = new Minarets(session.userToken as string);
 
     const { query } = req;
     const [action] = query.minarets;

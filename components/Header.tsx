@@ -189,9 +189,7 @@ export default function Header(): React.ReactElement {
               <a title="Login">Login</a>
             </Link>
           )}
-          {session && !loading && session.user && session.user.image && (
-            <img className={`rounded ${styles.userImage}`} src={session.user.image} alt={`${session.user.name || ''} - ${(session.user.token as string) || ''}`} />
-          )}
+          {session && !loading && session.user && session.user.image && <img className={`rounded ${styles.userImage}`} src={session.user.image} alt={`${session.user.name || ''}`} />}
         </div>
       )}
     </header>

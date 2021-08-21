@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   res.setHeader('Content-Type', 'application/json');
 
   try {
-    if (session && session.user.email === 'jim@biacreations.com') {
+    if (session && session.user?.email === 'jim@biacreations.com') {
       if (!process.env.ALGOLIA_APPLICATION_ID || !process.env.ALGOLIA_ADMIN_API_KEY) {
         console.log(`ALGOLIA_APPLICATION_ID: ${process.env.ALGOLIA_APPLICATION_ID || ''}`);
         console.log(`ALGOLIA_ADMIN_API_KEY: ${process.env.ALGOLIA_ADMIN_API_KEY || ''}`);
@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return;
       }
 
-      const api = new Minarets(session.user.token as string);
+      const api = new Minarets(session.userToken as string);
       const client = algoliasearch(process.env.ALGOLIA_APPLICATION_ID, process.env.ALGOLIA_ADMIN_API_KEY);
 
       const { query } = req;

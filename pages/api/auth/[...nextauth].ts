@@ -1,15 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth from 'next-auth';
 import type { User as NextAuthUser, NextAuthOptions, Session } from 'next-auth';
-import type { NextApiHandler } from 'next-auth/_next';
-import type { WithAdditionalParams } from 'next-auth/_utils';
+import type { NextApiHandler } from 'next-auth/internals/utils';
+import type { AppProviders } from 'next-auth/providers';
 import Providers from 'next-auth/providers';
-import type { Providers as ProvidersType } from 'next-auth/providers';
 
 import MinaretsAdapter from '../../../minarets-api/auth';
 import type { User } from '../../../minarets-api/minarets/types';
 
-const providers: ProvidersType = [
+const providers: AppProviders = [
   Providers.Email({
     server: {
       host: process.env.EMAIL_SERVER_HOST || '',
@@ -37,10 +36,10 @@ const options: NextAuthOptions = {
   adapter: MinaretsAdapter(),
   providers,
   callbacks: {
-    session(session: Session, user: NextAuthUser | User): Promise<WithAdditionalParams<Session>> {
+    session(session: Session, user: NextAuthUser | User): Promise<Session> {
       const sessionWithUserToken = { ...session };
       if (user) {
-        sessionWithUserToken.user.token = (user as User).token;
+        sessionWithUserToken.userToken = (user as User).token;
       }
 
       return Promise.resolve(sessionWithUserToken);
