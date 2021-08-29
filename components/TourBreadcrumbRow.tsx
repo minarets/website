@@ -13,7 +13,7 @@ interface IProps {
 
 function TourBreadcrumbRow({ tour, toursById, skipParent }: IProps): ReactElement {
   return (
-    <h6 className="pb-2">
+    <h6 className="pb-2 fw-bold">
       <TourBreadcrumb tour={tour} toursById={toursById} skipParent={skipParent} />
     </h6>
   );

@@ -5,16 +5,19 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import ConcertAndArtistLinkRow from '../../components/ConcertAndArtistLinkRow';
+import ConcertLinkRow from '../../components/ConcertLinkRow';
+import TourBreadcrumbRow from '../../components/TourBreadcrumbRow';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { Minarets } from '../../minarets-api';
 import { pick } from '../../minarets-api/objectService';
-import type { LimitedArtist, LimitedConcertWithArtistId } from '../../minarets-api/types';
+import type { LimitedArtist, LimitedConcertWithArtistId, LimitedTour, LimitedTourWithLimitedConcerts } from '../../minarets-api/types';
 
 interface IProps {
   popularConcerts: LimitedConcertWithArtistId[];
   newConcerts: LimitedConcertWithArtistId[];
-  latestConcerts: LimitedConcertWithArtistId[];
+  latestConcertsByTour: LimitedTourWithLimitedConcerts[];
   artistsById: Record<number, LimitedArtist>;
+  toursById: Record<number, LimitedTour>;
 }
 
 export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
@@ -23,6 +26,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
     popularConcertsResults, //
     newConcertsResults,
     latestConcertsResults,
+    tourResults,
   ] = await Promise.all([
     api.concerts.listConcerts({
       sortDesc: 'Popular',
@@ -37,6 +41,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
       sortDesc: 'ConcertDate',
       itemsPerPage: 10,
     }),
+    api.tours.listTours(),
   ]);
 
   const artistsById: Record<number, LimitedArtist> = {};
@@ -64,31 +69,38 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
     });
   }
 
-  const latestConcerts: LimitedConcertWithArtistId[] = [];
+  const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {
+    acc[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
+
+    return acc;
+  }, {});
+
+  const latestConcertsByTour: LimitedTourWithLimitedConcerts[] = [];
   for (const concert of latestConcertsResults.items) {
-    if (!artistsById[concert.artist.id]) {
-      artistsById[concert.artist.id] = pick(concert.artist, 'id', 'name', 'abbr');
+    if (!latestConcertsByTour.length || latestConcertsByTour[latestConcertsByTour.length - 1].tour.id !== concert.tour.id) {
+      latestConcertsByTour.push({
+        tour: toursById[concert.tour.id],
+        concerts: [],
+      });
     }
 
-    latestConcerts.push({
-      ...pick(concert, 'id', 'date', 'name'),
-      artistId: concert.artist.id,
-    });
+    latestConcertsByTour[latestConcertsByTour.length - 1].concerts.push(pick(concert, 'id', 'date', 'name'));
   }
 
   return {
     props: {
       popularConcerts,
       newConcerts,
-      latestConcerts,
+      latestConcertsByTour,
       artistsById,
+      toursById,
     },
     // Re-generate the data at most every 15 minutes
     revalidate: 900,
   };
 }
 
-export default function Page({ popularConcerts, newConcerts, latestConcerts, artistsById }: IProps): ReactElement {
+export default function Page({ popularConcerts, newConcerts, latestConcertsByTour, artistsById, toursById }: IProps): ReactElement {
   const title = 'Concerts';
   useDocumentTitle(title);
 
@@ -121,8 +133,14 @@ export default function Page({ popularConcerts, newConcerts, latestConcerts, art
           <section className="card">
             <h4 className="card-header">Latest Concerts</h4>
             <div className="card-body">
-              {latestConcerts.map((concert) => (
-                <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
+              {latestConcertsByTour.map((latestConcerts: LimitedTourWithLimitedConcerts) => (
+                <div className="pb-4" key={`${latestConcerts.tour.id}_${latestConcerts.concerts[0].id}`}>
+                  <TourBreadcrumbRow tour={latestConcerts.tour} toursById={toursById} key={latestConcerts.tour.id} />
+
+                  {latestConcerts.concerts.map((concert) => (
+                    <ConcertLinkRow concert={concert} key={concert.id} />
+                  ))}
+                </div>
               ))}
             </div>
           </section>
