@@ -15,7 +15,7 @@ import { useDocumentTitle } from '../../../../../hooks/useDocumentTitle';
 import { Minarets } from '../../../../../minarets-api';
 import { getArtistUrl } from '../../../../../minarets-api/artistService';
 import { extractTokenDetailsFromConcertNote, getConcertDescription, getConcertKeywords, getConcertTitle, getConcertUrl } from '../../../../../minarets-api/concertService';
-import type { Concert, ConcertSummary } from '../../../../../minarets-api/minarets/types';
+import type { Concert } from '../../../../../minarets-api/minarets/types';
 import { pick } from '../../../../../minarets-api/objectService';
 import { getPlaybackTrack } from '../../../../../minarets-api/trackService';
 import type { LimitedConcert, LimitedTour } from '../../../../../minarets-api/types';
@@ -24,7 +24,12 @@ import { getVenueUrl } from '../../../../../minarets-api/venueService';
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
   const concerts = await api.concerts.listAllConcerts();
-  const paths = concerts.items.map((concert: ConcertSummary) => getConcertUrl(concert));
+  const paths: string[] = [];
+  for (const concert of concerts.items) {
+    if (concert.name && concert.date) {
+      paths.push(getConcertUrl(concert));
+    }
+  }
 
   return {
     paths,
