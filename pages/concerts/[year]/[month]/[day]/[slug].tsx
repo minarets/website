@@ -26,7 +26,7 @@ export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const concerts = await api.concerts.listAllConcerts();
   const paths: string[] = [];
   for (const concert of concerts.items) {
-    if (concert.name && concert.date) {
+    if (concert && concert.name && concert.date) {
       paths.push(getConcertUrl(concert));
     }
   }
@@ -58,10 +58,13 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
+  console.log(`Building static page: ${params.year}/${params.month}/${params.day}/${params.slug}`);
   const api = new Minarets();
 
   const concert = await api.concerts.getConcertByUrlParts(params.year, params.month, params.day, params.slug);
   if (!concert) {
+    console.log(`Concert not found: ${params.year}/${params.month}/${params.day}/${params.slug}`);
+
     return {
       notFound: true,
     };
