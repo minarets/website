@@ -4,8 +4,10 @@ import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import { useSession } from 'next-auth/client';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import type { ReactElement } from 'react';
+import ContentLoader from 'react-content-loader';
 
 import ConcertLinkRow from '../../../../../components/ConcertLinkRow';
 import TourBreadcrumbRow from '../../../../../components/TourBreadcrumbRow';
@@ -58,80 +60,72 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  try {
-    const api = new Minarets();
+  const api = new Minarets();
 
-    const concert = await api.concerts.getConcertByUrlParts(params.year, params.month, params.day, params.slug);
-    if (!concert) {
-      return {
-        notFound: true,
-      };
-    }
-
-    const [
-      relatedConcertResults, //
-      venueConcertResults,
-      tourResults,
-    ] = await Promise.all([
-      api.concerts.listRelatedConcerts(concert.id), //
-      api.concerts.listConcertsByVenue({ venueId: concert.venue.id }),
-      api.tours.listTours(),
-    ]);
-
-    const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {
-      acc[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
-
-      return acc;
-    }, {});
-
-    const { noteLines, detailsByToken } = extractTokenDetailsFromConcertNote(concert);
-
-    let previousConcert: LimitedConcert | null = null;
-    let nextConcert: LimitedConcert | null = null;
-    const relatedConcerts: LimitedConcert[] = [];
-    for (const relatedConcert of relatedConcertResults.items) {
-      const limitedConcert = pick(relatedConcert, 'id', 'date', 'name');
-      relatedConcerts.push(limitedConcert);
-      const relatedConcertMoment = moment.utc(relatedConcert.date);
-
-      if (relatedConcertMoment.isBefore(concert.date) && (!previousConcert || relatedConcertMoment.isAfter(previousConcert.date))) {
-        previousConcert = limitedConcert;
-      }
-
-      if (relatedConcertMoment.isAfter(concert.date) && (!nextConcert || relatedConcertMoment.isBefore(nextConcert.date))) {
-        nextConcert = limitedConcert;
-      }
-    }
-
-    // TODO: Remove notes from concert object
-    return {
-      props: {
-        concert,
-        previousConcert,
-        nextConcert,
-        noteLines,
-        detailsByToken,
-        relatedConcerts,
-        venueConcerts: venueConcertResults.items.map((venueConcert) => pick(venueConcert, 'id', 'date', 'name')),
-        toursById,
-      },
-      // Re-generate the data at most every 15 minutes
-      revalidate: 900,
-    };
-  } catch (ex) {
-    console.log(`Error building page for: ${params.year}/${params.month}/${params.day}/${params.slug}`);
-
+  const concert = await api.concerts.getConcertByUrlParts(params.year, params.month, params.day, params.slug);
+  if (!concert) {
     return {
       notFound: true,
     };
   }
+
+  const [
+    relatedConcertResults, //
+    venueConcertResults,
+    tourResults,
+  ] = await Promise.all([
+    api.concerts.listRelatedConcerts(concert.id), //
+    api.concerts.listConcertsByVenue({ venueId: concert.venue.id }),
+    api.tours.listTours(),
+  ]);
+
+  const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {
+    acc[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
+
+    return acc;
+  }, {});
+
+  const { noteLines, detailsByToken } = extractTokenDetailsFromConcertNote(concert);
+
+  let previousConcert: LimitedConcert | null = null;
+  let nextConcert: LimitedConcert | null = null;
+  const relatedConcerts: LimitedConcert[] = [];
+  for (const relatedConcert of relatedConcertResults.items) {
+    const limitedConcert = pick(relatedConcert, 'id', 'date', 'name');
+    relatedConcerts.push(limitedConcert);
+    const relatedConcertMoment = moment.utc(relatedConcert.date);
+
+    if (relatedConcertMoment.isBefore(concert.date) && (!previousConcert || relatedConcertMoment.isAfter(previousConcert.date))) {
+      previousConcert = limitedConcert;
+    }
+
+    if (relatedConcertMoment.isAfter(concert.date) && (!nextConcert || relatedConcertMoment.isBefore(nextConcert.date))) {
+      nextConcert = limitedConcert;
+    }
+  }
+
+  // TODO: Remove notes from concert object
+  return {
+    props: {
+      concert,
+      previousConcert,
+      nextConcert,
+      noteLines,
+      detailsByToken,
+      relatedConcerts,
+      venueConcerts: venueConcertResults.items.map((venueConcert) => pick(venueConcert, 'id', 'date', 'name')),
+      toursById,
+    },
+    // Re-generate the data at most every 15 minutes
+    revalidate: 900,
+  };
 }
 
 export default function Page({ concert, noteLines, detailsByToken, previousConcert, nextConcert, relatedConcerts, venueConcerts, toursById }: IProps): ReactElement {
-  const title = getConcertTitle(concert);
+  const router = useRouter();
+
+  const title = router.isFallback ? 'Loading concert...' : getConcertTitle(concert);
   useDocumentTitle(title);
-  const description = getConcertDescription(concert);
-  const keywords = getConcertKeywords(concert);
 
   const [session] = useSession();
   const playerState = usePlayerState();
@@ -165,6 +159,47 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
     );
   }, [playerState, concert, detailsByToken]);
 
+  if (router.isFallback) {
+    return (
+      <>
+        <Head>
+          <title>{title} · Minarets</title>
+        </Head>
+
+        <ContentLoader speed={2} width={700} height={350} viewBox="0 0 700 350" backgroundColor="#e9ecef" foregroundColor="#ced4da">
+          {/* Page title */}
+          <rect className="rounded" x="0" y="0" rx="4" ry="4" width="480" height="24" />
+
+          {/* Card border */}
+          <rect x="0" y="40" rx="3" ry="3" width="8" height="260" />
+          <rect x="0" y="294" rx="3" ry="3" width="670" height="8" />
+          <rect x="664" y="40" rx="3" ry="3" width="8" height="260" />
+          <rect x="0" y="40" rx="3" ry="3" width="668" height="8" />
+
+          {/* Card title */}
+          <rect x="16" y="64" rx="4" ry="4" width="140" height="11" />
+          <rect x="186" y="64" rx="4" ry="4" width="210" height="11" />
+          <rect x="0" y="88" rx="3" ry="3" width="670" height="4" />
+
+          {/* Card labels and values */}
+          <rect x="16" y="116" rx="4" ry="4" width="60" height="11" />
+          <rect x="130" y="116" rx="4" ry="4" width="265" height="11" />
+
+          <rect x="16" y="156" rx="4" ry="4" width="80" height="11" />
+          <rect x="130" y="156" rx="4" ry="4" width="50" height="11" />
+          <rect x="16" y="196" rx="4" ry="4" width="70" height="11" />
+          <rect x="130" y="196" rx="4" ry="4" width="180" height="11" />
+          <rect x="16" y="236" rx="4" ry="4" width="90" height="11" />
+          <rect x="130" y="236" rx="4" ry="4" width="520" height="11" />
+          <rect x="130" y="256" rx="4" ry="4" width="520" height="11" />
+          <rect x="130" y="276" rx="4" ry="4" width="520" height="11" />
+        </ContentLoader>
+      </>
+    );
+  }
+
+  const description = getConcertDescription(concert);
+  const keywords = getConcertKeywords(concert);
   const concertUrl = getConcertUrl(concert);
   const artistUrl = getArtistUrl(concert.artist);
 
