@@ -5,17 +5,16 @@ import * as React from 'react';
 import type { ReactElement } from 'react';
 
 import ConcertAndArtistLinkRow from '../components/ConcertAndArtistLinkRow';
-import ConcertLinkRow from '../components/ConcertLinkRow';
 import TourBreadcrumbRow from '../components/TourBreadcrumbRow';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { Minarets } from '../minarets-api';
 import { pick } from '../minarets-api/objectService';
-import type { LimitedArtist, LimitedConcertWithArtistId, LimitedTour, LimitedTourWithLimitedConcerts } from '../minarets-api/types';
+import type { LimitedArtist, LimitedConcertWithArtistId, LimitedTour, LimitedTourWithLimitedConcertsWithArtistId } from '../minarets-api/types';
 
 interface IProps {
   popularConcerts: LimitedConcertWithArtistId[];
   newConcerts: LimitedConcertWithArtistId[];
-  latestConcertsByTour: LimitedTourWithLimitedConcerts[];
+  latestConcertsByTour: LimitedTourWithLimitedConcertsWithArtistId[];
   artistsById: Record<number, LimitedArtist>;
   toursById: Record<number, LimitedTour>;
 }
@@ -75,7 +74,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
     return acc;
   }, {});
 
-  const latestConcertsByTour: LimitedTourWithLimitedConcerts[] = [];
+  const latestConcertsByTour: LimitedTourWithLimitedConcertsWithArtistId[] = [];
   for (const concert of latestConcertsResults.items) {
     if (!latestConcertsByTour.length || latestConcertsByTour[latestConcertsByTour.length - 1].tour.id !== concert.tour.id) {
       latestConcertsByTour.push({
@@ -84,7 +83,10 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
       });
     }
 
-    latestConcertsByTour[latestConcertsByTour.length - 1].concerts.push(pick(concert, 'id', 'date', 'name'));
+    latestConcertsByTour[latestConcertsByTour.length - 1].concerts.push({
+      ...pick(concert, 'id', 'date', 'name'),
+      artistId: concert.artist.id,
+    });
   }
 
   return {
@@ -133,12 +135,12 @@ export default function Page({ popularConcerts, newConcerts, latestConcertsByTou
           <div className="card">
             <h4 className="card-header">Latest Concerts</h4>
             <div className="card-body">
-              {latestConcertsByTour.map((latestConcerts: LimitedTourWithLimitedConcerts) => (
+              {latestConcertsByTour.map((latestConcerts: LimitedTourWithLimitedConcertsWithArtistId) => (
                 <div className="pb-4" key={`${latestConcerts.tour.id}_${latestConcerts.concerts[0].id}`}>
                   <TourBreadcrumbRow tour={latestConcerts.tour} toursById={toursById} key={latestConcerts.tour.id} />
 
                   {latestConcerts.concerts.map((concert) => (
-                    <ConcertLinkRow concert={concert} key={concert.id} />
+                    <ConcertAndArtistLinkRow artist={artistsById[concert.artistId]} concert={concert} key={concert.id} />
                   ))}
                 </div>
               ))}
