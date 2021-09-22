@@ -58,68 +58,73 @@ interface IProps {
 }
 
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
-  console.log(`Building static page: ${params.year}/${params.month}/${params.day}/${params.slug}`);
-  const api = new Minarets();
+  try {
+    const api = new Minarets();
 
-  const concert = await api.concerts.getConcertByUrlParts(params.year, params.month, params.day, params.slug);
-  if (!concert) {
-    console.log(`Concert not found: ${params.year}/${params.month}/${params.day}/${params.slug}`);
+    const concert = await api.concerts.getConcertByUrlParts(params.year, params.month, params.day, params.slug);
+    if (!concert) {
+      return {
+        notFound: true,
+      };
+    }
+
+    const [
+      relatedConcertResults, //
+      venueConcertResults,
+      tourResults,
+    ] = await Promise.all([
+      api.concerts.listRelatedConcerts(concert.id), //
+      api.concerts.listConcertsByVenue({ venueId: concert.venue.id }),
+      api.tours.listTours(),
+    ]);
+
+    const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {
+      acc[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
+
+      return acc;
+    }, {});
+
+    const { noteLines, detailsByToken } = extractTokenDetailsFromConcertNote(concert);
+
+    let previousConcert: LimitedConcert | null = null;
+    let nextConcert: LimitedConcert | null = null;
+    const relatedConcerts: LimitedConcert[] = [];
+    for (const relatedConcert of relatedConcertResults.items) {
+      const limitedConcert = pick(relatedConcert, 'id', 'date', 'name');
+      relatedConcerts.push(limitedConcert);
+      const relatedConcertMoment = moment.utc(relatedConcert.date);
+
+      if (relatedConcertMoment.isBefore(concert.date) && (!previousConcert || relatedConcertMoment.isAfter(previousConcert.date))) {
+        previousConcert = limitedConcert;
+      }
+
+      if (relatedConcertMoment.isAfter(concert.date) && (!nextConcert || relatedConcertMoment.isBefore(nextConcert.date))) {
+        nextConcert = limitedConcert;
+      }
+    }
+
+    // TODO: Remove notes from concert object
+    return {
+      props: {
+        concert,
+        previousConcert,
+        nextConcert,
+        noteLines,
+        detailsByToken,
+        relatedConcerts,
+        venueConcerts: venueConcertResults.items.map((venueConcert) => pick(venueConcert, 'id', 'date', 'name')),
+        toursById,
+      },
+      // Re-generate the data at most every 15 minutes
+      revalidate: 900,
+    };
+  } catch (ex) {
+    console.log(`Error building page for: ${params.year}/${params.month}/${params.day}/${params.slug}`);
 
     return {
       notFound: true,
     };
   }
-
-  const [
-    relatedConcertResults, //
-    venueConcertResults,
-    tourResults,
-  ] = await Promise.all([
-    api.concerts.listRelatedConcerts(concert.id), //
-    api.concerts.listConcertsByVenue({ venueId: concert.venue.id }),
-    api.tours.listTours(),
-  ]);
-
-  const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {
-    acc[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
-
-    return acc;
-  }, {});
-
-  const { noteLines, detailsByToken } = extractTokenDetailsFromConcertNote(concert);
-
-  let previousConcert: LimitedConcert | null = null;
-  let nextConcert: LimitedConcert | null = null;
-  const relatedConcerts: LimitedConcert[] = [];
-  for (const relatedConcert of relatedConcertResults.items) {
-    const limitedConcert = pick(relatedConcert, 'id', 'date', 'name');
-    relatedConcerts.push(limitedConcert);
-    const relatedConcertMoment = moment.utc(relatedConcert.date);
-
-    if (relatedConcertMoment.isBefore(concert.date) && (!previousConcert || relatedConcertMoment.isAfter(previousConcert.date))) {
-      previousConcert = limitedConcert;
-    }
-
-    if (relatedConcertMoment.isAfter(concert.date) && (!nextConcert || relatedConcertMoment.isBefore(nextConcert.date))) {
-      nextConcert = limitedConcert;
-    }
-  }
-
-  // TODO: Remove notes from concert object
-  return {
-    props: {
-      concert,
-      previousConcert,
-      nextConcert,
-      noteLines,
-      detailsByToken,
-      relatedConcerts,
-      venueConcerts: venueConcertResults.items.map((venueConcert) => pick(venueConcert, 'id', 'date', 'name')),
-      toursById,
-    },
-    // Re-generate the data at most every 15 minutes
-    revalidate: 900,
-  };
 }
 
 export default function Page({ concert, noteLines, detailsByToken, previousConcert, nextConcert, relatedConcerts, venueConcerts, toursById }: IProps): ReactElement {
