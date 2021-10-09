@@ -13,22 +13,56 @@ If you are interested in contributing to this project, please submit a PR! This 
 on [Next.js](https://nextjs.org) and hosted by [Vercel](https://vercel.com).
 
 
-### Getting Started
+### Running the site locally
 
-Install dependencies:
-```bash
+1. Create an account using an email address at: https://minarets.io. You'll use the email address to login during development.
+
+2. Install redis:
+
+```zsh
+brew update
+brew install redis
+brew services start redis
+```
+
+3. Install dependencies:
+```zsh
 yarn install
 ```
 
-First, run the development server:
+4. Run a local dev smtp server. For example:
+```zsh
+npx maildev
+```
 
-```bash
+5. Create .env.local at the root of the project with the following content
+```zsh
+EMAIL_SERVER_HOST=localhost
+EMAIL_SERVER_PORT=1025
+EMAIL_FROM=dev@minarets.io
+
+MINARETS_API_URL=https://api.minarets.io
+MINARETS_API_KEY=ca6dd411-69f2-433d-95b4-8609efae5660
+MINARETS_API_TOKEN=xs6sg5nezndzpk6xjfwrg4qgcyncznhz
+
+REDIS_URL=redis://localhost:6379
+
+AUTH_SECRET=NotASecret
+NEXTAUTH_URL=http://localhost:3000/
+
+NODE_TLS_REJECT_UNAUTHORIZED='0'
+
+```
+
+6. Start the development server:
+
+```zsh
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+7. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+NOTE: When logging in, you can get the login link from your local dev smtp server by visiting http://localhost:1080.
 
 ### Learn More
 
