@@ -133,7 +133,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
       }
     } catch (ex) {
       if (this.onError) {
-        this.onError(ex);
+        this.onError(ex as Error);
       }
     }
   }
@@ -150,7 +150,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
       this.triggerOnStateChange();
     } catch (ex) {
       if (this.onError) {
-        this.onError(ex);
+        this.onError(ex as Error);
       }
     }
   }
@@ -186,7 +186,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
       }
     } catch (ex) {
       if (this.onError) {
-        this.onError(ex);
+        this.onError(ex as Error);
       }
     }
   }
@@ -204,7 +204,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
       }
     } catch (ex) {
       if (this.onError) {
-        this.onError(ex);
+        this.onError(ex as Error);
       }
     }
   }
@@ -227,7 +227,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
       }
     } catch (ex) {
       if (this.onError) {
-        this.onError(ex);
+        this.onError(ex as Error);
       }
     }
   }
@@ -271,7 +271,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
       }
     } catch (ex) {
       if (this.onError) {
-        this.onError(ex);
+        this.onError(ex as Error);
       }
     }
   }
@@ -287,7 +287,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
       await this.playNextTrack();
     } catch (ex) {
       if (this.onError) {
-        this.onError(ex);
+        this.onError(ex as Error);
       }
     }
   }
