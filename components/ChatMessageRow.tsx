@@ -286,7 +286,7 @@ function ChatMessageRow({ message, previousMessage }: IProps): ReactElement {
           </div>
         </div>
       )}
-      <div className={styles.messageText}>
+      <div className={`${styles.messageText} ${isSystemMessage ? styles.systemMessage : ''}`}>
         <MessageText text={message.text} />
       </div>
     </div>
