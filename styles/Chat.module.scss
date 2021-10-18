@@ -8,15 +8,20 @@
   padding: 0.5rem;
 }
 
+.systemMessage {
+  background-color: #eff5ff;
+  border-radius: 8px;
+}
+
 .messageText {
-  padding-top: .2rem;
-  padding-bottom: .2rem;
+  padding: 0.4rem;
   white-space: pre-line;
 }
 
 .messageDetails {
   color: $secondary;
 
+  padding-left: 0.4rem;
   display: flex;
   flex-direction: row;
 }
@@ -26,12 +31,12 @@
 }
 
 .chatInputArea {
-  border-top: 1px solid rgba(0,0,0,.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
   padding: 0.5rem;
 }
 
 .disabledChatInputArea {
-  background: rgba(0,0,0,.03);
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .chatTextArea {
