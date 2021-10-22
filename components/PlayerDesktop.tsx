@@ -202,8 +202,8 @@ export default function PlayerDesktop(): React.ReactElement {
                     className="react-slider"
                     max={playerState.currentTrack && Number.isFinite(playerState.duration) ? playerState.duration : 100}
                     value={playerState.currentTrack && Number.isFinite(playerState.currentTime) ? playerState.currentTime : 0}
-                    onChange={handleTrackSeek}
-                    onAfterChange={handleTrackProgressChange}
+                    onChange={(value): void => handleTrackSeek(value)}
+                    onAfterChange={(value): void => handleTrackProgressChange(value)}
                   />
                   <div className={styles.playbackTime}>{getTimeDisplay(playerState.currentTrack ? playerState.duration : 0)}</div>
                 </div>
@@ -244,7 +244,7 @@ export default function PlayerDesktop(): React.ReactElement {
                     </button>
                   )}
 
-                  <ReactSlider ariaLabel="Volume" className="react-slider" value={playerState.isMuted ? 0 : playerState.volume} onAfterChange={handleSetVolume} />
+                  <ReactSlider ariaLabel="Volume" className="react-slider" value={playerState.isMuted ? 0 : playerState.volume} onAfterChange={(value): void => handleSetVolume(value)} />
                 </div>
               </div>
             </div>

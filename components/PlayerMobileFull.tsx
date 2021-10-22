@@ -116,8 +116,8 @@ export default function PlayerMobileFull(): React.ReactElement {
                           className="react-slider"
                           max={playerState.currentTrack && Number.isFinite(playerState.duration) ? playerState.duration : 100}
                           value={playerState.currentTrack && Number.isFinite(playerState.currentTime) ? playerState.currentTime : 0}
-                          onChange={handleTrackSeek}
-                          onAfterChange={handleTrackProgressChange}
+                          onChange={(value): void => handleTrackSeek(value)}
+                          onAfterChange={(value): void => handleTrackProgressChange(value)}
                         />
                       </div>
                       <div className={styles.playbackTime}>

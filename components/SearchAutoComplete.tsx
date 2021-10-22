@@ -113,14 +113,14 @@ function SearchAutoComplete({ currentRefinement, hits, refine }: SearchAutoCompl
     <AutoSuggest
       suggestions={sectionsWithHits}
       multiSection
-      onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-      onSuggestionsClearRequested={onSuggestionsClearRequested}
-      onSuggestionSelected={onSuggestionSelected}
-      getSuggestionValue={getSuggestionValue}
-      renderSuggestion={renderSuggestion}
+      onSuggestionsFetchRequested={(request): void => onSuggestionsFetchRequested(request)}
+      onSuggestionsClearRequested={(): void => onSuggestionsClearRequested()}
+      onSuggestionSelected={(event, params: SuggestionSelectedEventData<AutoCompleteType>): void => onSuggestionSelected(event, params)}
+      getSuggestionValue={(): string => getSuggestionValue()}
+      renderSuggestion={(suggestion: Hit): React.ReactElement => renderSuggestion(suggestion)}
       inputProps={inputProps}
-      renderSectionTitle={renderSectionTitle}
-      getSectionSuggestions={getSectionSuggestions}
+      renderSectionTitle={(section: { index: string; isFooter?: boolean }): React.ReactNode => renderSectionTitle(section)}
+      getSectionSuggestions={(section: { hits: AutoCompleteType[] }): AutoCompleteType[] => getSectionSuggestions(section)}
       theme={{
         container: `flex-grow-1 dropdown ${styles.searchContainer}`,
         getFromContainer: 'autosuggest',
