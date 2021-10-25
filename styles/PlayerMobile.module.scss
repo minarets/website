@@ -1,13 +1,15 @@
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
 
-$player-button-color: #b3b3b3;
+$player-button-color: #fff;
+$player-button-fill-color: #000;
+$player-button-bg-color: #fff;
 $player-button-hover-color: $white;
 $player-button-disabled-color: #535353;
 
 .playerBar {
-  height: 45px;
+  height: 100px;
   width: 100%;
   z-index: $zindex-fixed;
   background: #1e1e1e;
@@ -71,18 +73,20 @@ $player-button-disabled-color: #535353;
       transition-property: all;
       border: 1px solid $player-button-color;
       border-radius: 32px;
+      fill: $player-button-fill-color;
+      background-color: $player-button-bg-color;
 
-      @media(min-device-pixel-ratio: 2) {
+      @media (min-device-pixel-ratio: 2) {
         transition-duration: 50ms;
       }
 
       &:focus,
-      &:hover{
+      &:hover {
         transition: none 33ms cubic-bezier(0.3, 0, 0, 1);
         transform: scale(1.06);
         border-color: $player-button-hover-color;
 
-        @media(min-device-pixel-ratio: 2) {
+        @media (min-device-pixel-ratio: 2) {
           transition-duration: 66ms;
         }
       }
@@ -105,6 +109,7 @@ $player-button-disabled-color: #535353;
 .nowPlayingBar {
   align-items: stretch;
   display: flex;
+  flex-direction: column;
   padding: 0.15rem 0.6rem;
   user-select: none;
 }
@@ -122,7 +127,7 @@ $player-button-disabled-color: #535353;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .progressBarMinimized {
@@ -146,13 +151,13 @@ $player-button-disabled-color: #535353;
 }
 
 .trackName {
-  font-size: $font-size-base * .8;
+  font-size: $font-size-base * 0.8;
   line-height: $line-height-lg;
   color: $white;
 }
 
 .albumName {
-  font-size: $font-size-base * .7;
+  font-size: $font-size-base * 0.7;
   line-height: $line-height-base;
 }
 
@@ -163,7 +168,7 @@ $player-button-disabled-color: #535353;
 }
 
 .trackDetails {
-  font-size: $font-size-base * .6;
+  font-size: $font-size-base * 0.6;
   line-height: $line-height-sm;
   text-align: left;
   white-space: nowrap;

@@ -53,6 +53,11 @@ export default function PlayerMobile(): React.ReactElement {
             )}
             {!playerState.currentTrack && <div className={styles.nowPlayingBarCenter} />}
             <div className={styles.nowPlayingBarRight}>
+              <button title="Previous" type="button" onClick={(): Promise<void> => playerState.player.previousTrack()}>
+                <svg role="img" height="16" width="16" viewBox="0 0 16 16">
+                  <path d="M13 2.5L5 7.119V3H3v10h2V8.881l8 4.619z" />
+                </svg>
+              </button>
               {playerState.isPaused && (
                 <button title="Play" type="button" className={styles.playPause} disabled={!playerState.currentTrack} onClick={(): Promise<void> => playerState.player.play()}>
                   <svg role="img" height="16" width="16" viewBox="0 0 16 16">
@@ -68,6 +73,11 @@ export default function PlayerMobile(): React.ReactElement {
                   </svg>
                 </button>
               )}
+              <button title="Next" type="button" onClick={(): Promise<void> => playerState.player.nextTrack()}>
+                <svg role="img" height="16" width="16" viewBox="0 0 16 16">
+                  <path d="M11 3v4.119L3 2.5v11l8-4.619V13h2V3z" />
+                </svg>
+              </button>
             </div>
           </div>
         </div>
