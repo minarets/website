@@ -263,26 +263,33 @@ function MessageText({ text }: { text: string }): ReactElement {
 /* eslint-enable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 
 function ChatMessageRow({ message, previousMessage }: IProps): ReactElement {
-  let isContinuingPreviousMessage = false;
-  if (previousMessage) {
-    isContinuingPreviousMessage = message.createdBy.id === previousMessage.createdBy.id && new Date(message.createdOn).getTime() - new Date(previousMessage.createdOn).getTime() > 300000;
-  }
-
   const createdOnMoment = moment(message.createdOn);
   const isSystemMessage = message.createdBy.id < 1;
-  const isToday = createdOnMoment.isSame(new Date(), 'day');
-  let dateFormat = 'MMM D';
-  if (!isSystemMessage && isToday) {
-    dateFormat = 'h:mma';
+  const isToday = createdOnMoment.isSame(moment(), 'day');
+  const isYesterday = !isToday && createdOnMoment.isSame(moment().subtract(1, 'day'), 'day');
+  const isTodayHistory = isSystemMessage && message.text.startsWith('Today in dmb history');
+
+  let isContinuingPreviousMessage = false;
+  if (previousMessage) {
+    if (message.createdBy.id === previousMessage.createdBy.id) {
+      const previousCreatedOnMoment = moment(previousMessage.createdOn);
+      if (isToday) {
+        isContinuingPreviousMessage = previousCreatedOnMoment.diff(createdOnMoment, 'minutes') < 5;
+      } else {
+        isContinuingPreviousMessage = previousCreatedOnMoment.diff(createdOnMoment, 'hours') < 2;
+      }
+    }
   }
 
   return (
     <div className="pt-2">
-      {!isContinuingPreviousMessage && (
+      {!isContinuingPreviousMessage && !isTodayHistory && (
         <div className={styles.messageDetails}>
           {!isSystemMessage && <div>{message.createdBy.name}</div>}
           <div className={!isSystemMessage ? styles.messageDate : ''} title={createdOnMoment.format('MMMM D, h:mma')}>
-            {createdOnMoment.format(dateFormat)}
+            {isToday && `Today at ${createdOnMoment.format('h:mma')}`}
+            {isYesterday && `Yesterday at ${createdOnMoment.format('h:mma')}`}
+            {!isToday && !isYesterday && createdOnMoment.format('MMM D')}
           </div>
         </div>
       )}

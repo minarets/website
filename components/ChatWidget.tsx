@@ -147,8 +147,8 @@ export default function ChatWidget(): React.ReactElement {
   return (
     <>
       <div className={styles.messageContainer} ref={messageContainerRef}>
-        {oldestFirstMessages.map((chatMessage: ChatMessage) => (
-          <ChatMessageRow message={chatMessage} key={chatMessage.id} />
+        {oldestFirstMessages.map((chatMessage: ChatMessage, messageIndex: number) => (
+          <ChatMessageRow message={chatMessage} previousMessage={messageIndex > 0 ? oldestFirstMessages[messageIndex - 1] : undefined} key={chatMessage.id} />
         ))}
       </div>
       <div className={`${styles.chatInputArea} ${isSendingMessage ? styles.disabledChatInputArea : ''}`}>
