@@ -1,0 +1,32 @@
+{
+  "version": "0.1",
+  "language": "en",
+  "ignorePaths": ["**/node_modules/**", "**/*.{json}", ".cspell.json", "package.json", "package-lock.json", "yarn.lock", ".github/workflows/**", ".husky/**", ".idea/**", ".vscode/**"],
+  "words": [
+    "algolia",
+    "algoliasearch",
+    "biggrin",
+    "checkin",
+    "chatmessages",
+    "dmbalmanac",
+    "domhandler",
+    "domutils",
+    "firedancer",
+    "Gapless",
+    "Geurts",
+    "jgeurts",
+    "loko",
+    "maildev",
+    "meetattheshow",
+    "markdownlint",
+    "nezndzpk",
+    "NextAuth",
+    "qgcyncznhz",
+    "smartystreets",
+    "socio",
+    "unstyled",
+    "Vercel",
+    "xjfwrg"
+  ],
+  "dictionaries": ["en_US", "softwareTerms"]
+}

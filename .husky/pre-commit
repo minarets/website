@@ -6,4 +6,4 @@ PATH=$PATH:/usr/local/bin
 
 echo 'NOTE: If node/npm/yarn is not found, you may need to run brew link for your specific node version'
 
-yarn lint:staged
+yarn lint-staged

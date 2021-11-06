@@ -1,6 +1,6 @@
-@import "~bootstrap/scss/bootstrap";
-@import "./type";
-@import "./react-slider";
+@import '~bootstrap/scss/bootstrap';
+@import './type';
+@import './react-slider';
 
 @each $breakpoint in map-keys($grid-breakpoints) {
   @include media-breakpoint-up($breakpoint) {
@@ -14,7 +14,8 @@
   }
 }
 
-html, body {
+html,
+body {
   height: 100% !important;
   overflow: hidden;
 }

@@ -68,11 +68,10 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
     });
   }
 
-  const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {
-    acc[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
-
-    return acc;
-  }, {});
+  const toursById: Record<string, Pick<LimitedTour, 'id' | 'name' | 'parentId' | 'slug'>> = {};
+  for (const tour of tourResults.items) {
+    toursById[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
+  }
 
   const latestConcertsByTour: LimitedTourWithLimitedConcertsWithArtistId[] = [];
   for (const concert of latestConcertsResults.items) {

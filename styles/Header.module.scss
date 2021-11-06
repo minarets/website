@@ -1,6 +1,6 @@
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
 
 .headerNavbar {
   display: flex;
@@ -46,7 +46,7 @@
   transition: none 33ms cubic-bezier(0.3, 0, 0.7, 1);
   transition-property: all;
 
-  @media(min-device-pixel-ratio: 2) {
+  @media (min-device-pixel-ratio: 2) {
     transition-duration: 50ms;
   }
 
@@ -55,7 +55,7 @@
     transition: none 33ms cubic-bezier(0.3, 0, 0, 1);
     transform: scale(1.06);
 
-    @media(min-device-pixel-ratio: 2) {
+    @media (min-device-pixel-ratio: 2) {
       transition-duration: 66ms;
     }
   }

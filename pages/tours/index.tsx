@@ -17,14 +17,13 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
   const api = new Minarets();
   const tourResults = await api.tours.listTours();
 
-  const toursById = tourResults.items.reduce((acc: Record<string, TourWithChildren>, tour) => {
-    acc[tour.id] = {
+  const toursById: Record<string, TourWithChildren> = {};
+  for (const tour of tourResults.items) {
+    toursById[tour.id] = {
       ...tour,
       children: [],
     };
-
-    return acc;
-  }, {});
+  }
 
   tourResults.items.sort((item1, item2) => new Date(item2.startsOn).getTime() - new Date(item1.startsOn).getTime());
 

@@ -6,12 +6,12 @@ export function slugify(input: string | null | undefined): string {
   return input
     .toLowerCase()
     .trim()
-    .replace(/[@]+/g, 'at')
-    .replace(/[&]+/g, 'and')
-    .replace(/[?]+/g, '-question')
-    .replace(/[^\w\s]+/g, '')
+    .replace(/@+/g, 'at')
+    .replace(/&+/g, 'and')
+    .replace(/\?+/g, '-question')
+    .replace(/[^\s\w]+/g, '')
     .replace(/\s+/g, '-')
-    .replace(/[-]{2,}/g, '-')
-    .replace(/^[-]+(.*)/, '$1')
-    .replace(/(.*)[-]+$/, '$1');
+    .replace(/-{2,}/g, '-')
+    .replace(/^-+(.*)/, '$1')
+    .replace(/(.*)-+$/, '$1');
 }

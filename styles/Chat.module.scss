@@ -1,5 +1,5 @@
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
 
 .messageContainer {
   overflow-y: auto;
@@ -9,6 +9,11 @@
 }
 
 .systemMessage {
+  background-color: #fef8c0;
+  border-radius: 8px;
+}
+
+.mentionMessage {
   background-color: #eff5ff;
   border-radius: 8px;
 }

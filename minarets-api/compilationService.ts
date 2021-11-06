@@ -10,7 +10,7 @@ export function toSearchRecord(compilation: Compilation): Record<string, unknown
     objectID: compilation.id,
     name: compilation.name,
     description: compilation.description,
-    tracks: compilation.tracks.filter((track) => !/^Intro/i.test(track.name)).map((track) => track.name),
+    tracks: compilation.tracks.filter((track) => !/^intro/i.test(track.name)).map((track) => track.name),
     url: getCompilationUrl(compilation),
   };
 }

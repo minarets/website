@@ -9,12 +9,12 @@ import { getTourUrl } from '../../../../minarets-api/tourService';
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
   const tours = await api.tours.listAllTours();
-  const tourSlugs = tours.items.map((tour) => tour.slug);
+  const tourSlugs = new Set(tours.items.map((tour) => tour.slug));
 
   const currentYear = new Date().getFullYear();
   const paths: string[] = [];
   for (let year = 1991; year <= currentYear; year += 1) {
-    if (tourSlugs.includes(`${year}`)) {
+    if (tourSlugs.has(`${year}`)) {
       for (let month = 1; month <= 12; month += 1) {
         paths.push(`/concerts/${year}/${month}`);
         if (month < 10) {

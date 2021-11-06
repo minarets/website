@@ -52,12 +52,12 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     }),
   ]);
 
-  const toursById = tour.children.reduce((acc: Record<string, LimitedTour>, childTour) => {
-    acc[childTour.id] = pick(childTour, 'id', 'name', 'parentId', 'slug');
-
-    return acc;
-  }, {});
-  toursById[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
+  const toursById: Record<string, Pick<LimitedTour, 'id' | 'name' | 'parentId' | 'slug'>> = {
+    [tour.id]: pick(tour, 'id', 'name', 'parentId', 'slug'),
+  };
+  for (const childTour of tour.children) {
+    toursById[childTour.id] = pick(childTour, 'id', 'name', 'parentId', 'slug');
+  }
 
   if (tour.parentId && !toursById[tour.parentId]) {
     const parentTour = await api.tours.getTour(tour.parentId);

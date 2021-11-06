@@ -26,6 +26,7 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   init();
 }
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function App({ Component, pageProps, err }: IProps): ReactElement {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const session: Session = {

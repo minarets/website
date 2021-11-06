@@ -1,6 +1,6 @@
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
 
 $player-button-color: #b3b3b3;
 $player-button-hover-color: $white;
@@ -67,17 +67,17 @@ $player-button-disabled-color: #535353;
       border: 1px solid $player-button-color;
       border-radius: 32px;
 
-      @media(min-device-pixel-ratio: 2) {
+      @media (min-device-pixel-ratio: 2) {
         transition-duration: 50ms;
       }
 
       &:focus,
-      &:hover{
+      &:hover {
         transition: none 33ms cubic-bezier(0.3, 0, 0, 1);
         transform: scale(1.06);
         border-color: $player-button-hover-color;
 
-        @media(min-device-pixel-ratio: 2) {
+        @media (min-device-pixel-ratio: 2) {
           transition-duration: 66ms;
         }
       }

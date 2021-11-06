@@ -64,11 +64,11 @@ export function extractTokenDetailsFromConcertNote(concert: Pick<BasicConcertWit
       case '~': {
         const collaborator = trimmedLine
           .slice(1)
-          .replace(/^\s*With\s+/i, '')
+          .replace(/^\s*with\s+/i, '')
           .trim();
 
         // Remove notes like "Dave on piano" or "Talking Heads cover"
-        if (/^(?:Dave|Dave\s+Matthews)\s+on\s+/i.test(collaborator) || /.*\s+cover$/i.test(collaborator)) {
+        if (/^(?:dave|dave\s+matthews)\s+on\s+/i.test(collaborator) || /.*\s+cover$/i.test(collaborator)) {
           detailsByToken[token] = '';
         } else {
           const collaboratorMatches = /^(.*)(\s+on\s+.*)/gi.exec(collaborator);
@@ -83,7 +83,7 @@ export function extractTokenDetailsFromConcertNote(concert: Pick<BasicConcertWit
         break;
       }
       default: {
-        const entireShowMatches = /^\s*Entire\s+(?:show|set)\s+with\s+(.*)/i.exec(trimmedLine);
+        const entireShowMatches = /^\s*entire\s+(?:show|set)\s+with\s+(.*)/i.exec(trimmedLine);
         if (entireShowMatches && entireShowMatches.length) {
           const collaborator = entireShowMatches[1].replace(/\s+on\s+.*/i, '').replace(/\.+$/, '');
 
@@ -121,7 +121,7 @@ export function toSearchRecord(concert: Concert): Record<string, unknown> {
     artist: concert.artist.name,
     playCount: concert.playCount,
     notes: concert.notes,
-    tracks: concert.tracks.filter((track) => !/^Intro/i.test(track.name)).map((track) => track.name),
+    tracks: concert.tracks.filter((track) => !/^intro/i.test(track.name)).map((track) => track.name),
     url: getConcertUrl(concert),
   };
 }

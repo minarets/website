@@ -216,7 +216,7 @@ function TextOrImage({ node, expandTextLinks }: { node: Node; expandTextLinks: b
 
 function MessageText({ text }: { text: string }): ReactElement {
   // Do not show more than 2 blank lines in a row
-  const document = parseDocument(text.replace(/[\n\r][\n\r][\n\r]+/, '\n\n'), { decodeEntities: true });
+  const document = parseDocument(text.replace(/[\n\r]{3,}/, '\n\n'), { decodeEntities: true });
 
   // Chat text is very simple. It can contain an image tag, a link tag, or a bold tag. All other html tags are unsupported
   return (

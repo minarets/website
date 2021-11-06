@@ -64,11 +64,10 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     api.tours.listTours(),
   ]);
 
-  const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {
-    acc[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
-
-    return acc;
-  }, {});
+  const toursById: Record<string, Pick<LimitedTour, 'id' | 'name' | 'parentId' | 'slug'>> = {};
+  for (const tour of tourResults.items) {
+    toursById[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
+  }
 
   concertsResults.items.sort((item1, item2) => new Date(item1.date).getTime() - new Date(item2.date).getTime());
 

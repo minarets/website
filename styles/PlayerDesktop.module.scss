@@ -1,6 +1,6 @@
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
 
 $player-button-color: #b3b3b3;
 $player-button-hover-color: $white;
@@ -71,17 +71,17 @@ $player-button-disabled-color: #535353;
       border: 1px solid $player-button-color;
       border-radius: 32px;
 
-      @media(min-device-pixel-ratio: 2) {
+      @media (min-device-pixel-ratio: 2) {
         transition-duration: 50ms;
       }
 
       &:focus,
-      &:hover{
+      &:hover {
         transition: none 33ms cubic-bezier(0.3, 0, 0, 1);
         transform: scale(1.06);
         border-color: $player-button-hover-color;
 
-        @media(min-device-pixel-ratio: 2) {
+        @media (min-device-pixel-ratio: 2) {
           transition-duration: 66ms;
         }
       }
@@ -140,7 +140,6 @@ $player-button-disabled-color: #535353;
   }
 }
 
-
 .nowPlayingArt {
   display: flex;
   align-items: center;
@@ -174,13 +173,13 @@ $player-button-disabled-color: #535353;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center
+  align-items: center;
 }
 
 .playbackTime {
   min-width: 3rem;
   text-align: center;
-  font-size: $font-size-base * .75;
+  font-size: $font-size-base * 0.75;
 }
 
 .trackName {
@@ -207,7 +206,7 @@ $player-button-disabled-color: #535353;
 }
 
 .trackDetails {
-  font-size: $font-size-base * .8;
+  font-size: $font-size-base * 0.8;
   line-height: $line-height-sm;
   text-align: left;
 

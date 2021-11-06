@@ -79,11 +79,10 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
     api.tours.listTours(),
   ]);
 
-  const toursById = tourResults.items.reduce((acc: Record<string, LimitedTour>, tour) => {
-    acc[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
-
-    return acc;
-  }, {});
+  const toursById: Record<string, Pick<LimitedTour, 'id' | 'name' | 'parentId' | 'slug'>> = {};
+  for (const tour of tourResults.items) {
+    toursById[tour.id] = pick(tour, 'id', 'name', 'parentId', 'slug');
+  }
 
   const { noteLines, detailsByToken } = extractTokenDetailsFromConcertNote(concert);
 
