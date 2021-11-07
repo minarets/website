@@ -192,5 +192,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     Sentry.captureException(ex);
   }
 
+  const { returnUrl } = req.query;
+  if (returnUrl && typeof returnUrl === 'string' && returnUrl.startsWith('http')) {
+    res.redirect(302, returnUrl);
+  }
+
   res.end(body);
 }
