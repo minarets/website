@@ -21,7 +21,7 @@
     "build": "next build",
     "start": "next start",
     "check:spelling": "cspell --config=.cspell.json \"**/*.{md,ts,js}\"",
-    "format": "prettier --write \"**/*.{json,md,css,scss,yml}\"",
+    "format": "prettier --write \"**/*.{md,css,scss,yml}\"",
     "lint:ts": "tsc --noEmit && eslint --fix --ext .ts,.tsx components contexts hooks minarets-api pages",
     "lint:markdown": "prettier --write '*.md' && markdownlint '*.md' --config=.github/linters/.markdown-lint.yml --fix",
     "lint": "yarn lint:ts && yarn lint:markdown && yarn format",
@@ -31,12 +31,11 @@
     "postpublish": "pinst --enable"
   },
   "lint-staged": {
-    "*.json": ["prettier --write"],
     "*.yml": ["prettier --write"],
     "*.md": ["prettier --write", "markdownlint --config=.github/linters/.markdown-lint.yml --fix", "cspell --config=.cspell.json"],
     "*.css": ["prettier --write"],
     "*.scss": ["prettier --write"],
-    "*.{ts,tsx}": ["eslint --fix", "cspell --config=.cspell.json"]
+    "*.{ts,tsx}": ["eslint --fix"]
   },
   "dependencies": {
     "@popperjs/core": "^2.10.2",
