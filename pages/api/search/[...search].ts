@@ -80,7 +80,47 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           await index.saveObjects(searchRecords);
 
           body = JSON.stringify({
-            ok: false,
+            ok: true,
+            message: `Indexed ${searchRecords.length} concerts`,
+          });
+
+          break;
+        }
+        case 'indexMostRecentConcerts': {
+          console.log(`Starting ${action}`);
+          const searchRecords: Record<string, unknown>[] = [];
+          const concerts = await api.concerts.listConcertsFull({
+            page: 1,
+            itemsPerPage: 100,
+            sortDesc: 'ApprovedOn',
+          });
+
+          searchRecords.push(...concerts.items.map((concert) => concertService.toSearchRecord(concert)));
+
+          const index = client.initIndex('concerts');
+          console.log('Setting searchable attributes for concerts index');
+          await index.setSettings({
+            searchableAttributes: [
+              'name', //
+              'venue',
+              'tour',
+              'date',
+              'dateTimestamp',
+              'artist',
+              'unordered(tracks)',
+              'notes',
+            ],
+            attributesForFaceting: [
+              'venue', //
+              'tour',
+              'artist',
+            ],
+          });
+          console.log(`Saving ${searchRecords.length} concert records`);
+          await index.saveObjects(searchRecords);
+
+          body = JSON.stringify({
+            ok: true,
             message: `Indexed ${searchRecords.length} concerts`,
           });
 
@@ -143,7 +183,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           await index.saveObjects(searchRecords);
 
           body = JSON.stringify({
-            ok: false,
+            ok: true,
             message: `Indexed ${searchRecords.length} compilations`,
           });
 
