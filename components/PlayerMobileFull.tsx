@@ -140,7 +140,7 @@ export default function PlayerMobileFull(): React.ReactElement {
                               </svg>
                             </button>
                           )}*/}
-                        <button title="Previous" type="button" onClick={(): Promise<void> => playerState.player.previousTrack()}>
+                        <button title="Previous" type="button" className={styles.controlButton} onClick={(): Promise<void> => playerState.player.previousTrack()}>
                           <svg role="img" height="16" width="16" viewBox="0 0 16 16">
                             <path d="M13 2.5L5 7.119V3H3v10h2V8.881l8 4.619z" />
                           </svg>
@@ -160,7 +160,7 @@ export default function PlayerMobileFull(): React.ReactElement {
                             </svg>
                           </button>
                         )}
-                        <button title="Next" type="button" onClick={(): Promise<void> => playerState.player.nextTrack()}>
+                        <button title="Next" type="button" className={styles.controlButton} onClick={(): Promise<void> => playerState.player.nextTrack()}>
                           <svg role="img" height="16" width="16" viewBox="0 0 16 16">
                             <path d="M11 3v4.119L3 2.5v11l8-4.619V13h2V3z" />
                           </svg>
