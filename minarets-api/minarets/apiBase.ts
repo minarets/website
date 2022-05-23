@@ -1,15 +1,25 @@
 import { URL } from 'url';
 
-import fetch from 'cross-fetch';
+import setupFetch from '@vercel/fetch';
+import type { RequestInit, Response } from 'node-fetch';
+import nodeFetch, { Headers } from 'node-fetch';
 
 import type { ErrorWithResponse } from './types';
 
+const fetch = setupFetch(
+  {
+    Headers,
+    default: nodeFetch,
+  },
+  {
+    // This prevents socketTimeout errors from throwing during build stage. Looks like otherwise too many requests hit
+    // the .net api and some requests time out
+    maxFreeSockets: 10,
+  },
+);
+
 interface IGetParams {
   query: Record<string, string>;
-}
-
-interface IPostParams {
-  body: BodyInit;
 }
 
 export function convertToBase64(str: string): string {
@@ -89,7 +99,7 @@ export abstract class ApiBase {
     throw error;
   }
 
-  protected async post(url: string, { body }: IPostParams): Promise<Response> {
+  protected async post(url: string, { body }: Pick<RequestInit, 'body'>): Promise<Response> {
     const response = await fetch(url, {
       method: 'POST',
       headers: new Headers(this.defaultHeaders),

@@ -5,7 +5,7 @@ import type { ListAllResponse, ListResponse, Tour, TourSummary, TourWithChildren
 
 const cache = new LRUCache<string, TourWithChildren>({
   max: 100000,
-  maxAge: 60 * 60 * 1000, // 60 minutes
+  ttl: 60 * 60 * 1000, // 60 minutes
 });
 
 export class Tours extends ApiBase {

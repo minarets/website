@@ -48,7 +48,7 @@ export interface IListConcertsByVenueRequest extends IListConcertsRequest {
 
 const cache = new LRUCache<string, Concert>({
   max: 100000,
-  maxAge: 60 * 60 * 1000, // 60 minutes
+  ttl: 60 * 60 * 1000, // 60 minutes
 });
 
 export class Concerts extends ApiBase {

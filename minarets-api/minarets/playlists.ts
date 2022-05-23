@@ -12,7 +12,7 @@ export interface IListPlaylistsRequest {
 
 const cache = new LRUCache<string, Playlist>({
   max: 100000,
-  maxAge: 60 * 60 * 1000, // 60 minutes
+  ttl: 60 * 60 * 1000, // 60 minutes
 });
 
 export class Playlists extends ApiBase {

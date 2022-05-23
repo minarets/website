@@ -8,7 +8,8 @@ import { getTimeDisplay } from '../minarets-api/Player';
 import styles from '../styles/PlayerMobileFull.module.scss';
 
 export default function PlayerMobileFull(): React.ReactElement | null {
-  const { data: session } = useSession();
+  const { status: authStatus } = useSession();
+  const isAuthenticated = authStatus === 'authenticated';
   const playerState = usePlayerState();
   const playerDispatch = usePlayerDispatch();
   const [seekTime, setSeekTime] = React.useState<number | null>(null);
@@ -66,7 +67,7 @@ export default function PlayerMobileFull(): React.ReactElement | null {
     });
   }
 
-  if (!session || !playerState.currentTrack) {
+  if (!isAuthenticated || !playerState.currentTrack) {
     return null;
   }
 

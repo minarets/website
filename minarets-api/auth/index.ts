@@ -1,6 +1,7 @@
 import { createHash } from 'crypto';
 
 import Redis from 'ioredis';
+import LRUCache from 'lru-cache';
 import type { Account } from 'next-auth';
 import type { Adapter, AdapterUser, AdapterSession, VerificationToken } from 'next-auth/adapters';
 import { v4 as uuid } from 'uuid';
@@ -13,6 +14,14 @@ interface IWithRedisClient {
 }
 
 declare const global: IWithRedisClient;
+const userCache = new LRUCache<string, User>({
+  max: 100,
+  ttl: 15 * 60 * 1000, // 15 minutes
+});
+const sessionCache = new LRUCache<string, AdapterSession>({
+  max: 1000,
+  ttl: 15 * 60 * 1000, // 15 minutes
+});
 
 function getGravatarImageUrl(email: string): string {
   const hash = createHash('md5')
@@ -44,6 +53,52 @@ export default function MinaretsAdapter(): Adapter {
 
   const redisClient = global.redisClient;
 
+  async function getUser(id: string): Promise<AdapterUser | null> {
+    let user: User | null | undefined = userCache.get(id, {
+      updateAgeOnGet: true,
+    });
+
+    if (!user) {
+      const api = new Minarets();
+      user = await api.users.getUser(id);
+
+      if (user) {
+        userCache.set(id, user);
+      }
+    }
+
+    if (user) {
+      return asAdapterUser(user);
+    }
+
+    return null;
+  }
+
+  async function getSession(sessionToken: string): Promise<AdapterSession | null> {
+    const cachedSession = sessionCache.get(sessionToken, {
+      allowStale: true,
+      updateAgeOnGet: true,
+    });
+
+    if (cachedSession) {
+      return cachedSession;
+    }
+
+    const value = await redisClient.get(`s_${sessionToken}`);
+    if (value) {
+      const session = JSON.parse(value) as AdapterSession;
+      // TODO: Remove after June 2022
+      if (typeof session.expires === 'string') {
+        session.expires = new Date(session.expires);
+      }
+
+      sessionCache.set(sessionToken, session);
+      return session;
+    }
+
+    return null;
+  }
+
   return {
     async createUser(profile: Omit<AdapterUser, 'id'>): Promise<AdapterUser> {
       const api = new Minarets();
@@ -51,16 +106,7 @@ export default function MinaretsAdapter(): Adapter {
 
       return asAdapterUser(user);
     },
-    async getUser(id: string): Promise<AdapterUser | null> {
-      const api = new Minarets();
-      const user = await api.users.getUser(id);
-
-      if (user) {
-        return asAdapterUser(user);
-      }
-
-      return null;
-    },
+    getUser,
     async getUserByEmail(email: string): Promise<AdapterUser | null> {
       const api = new Minarets();
       const user = await api.users.getUserByEmail(email);
@@ -91,6 +137,8 @@ export default function MinaretsAdapter(): Adapter {
         emailVerified: request.emailVerified || new Date(),
       });
 
+      userCache.set(request.id, user);
+
       return asAdapterUser(user);
     },
     async linkAccount(account: Account): Promise<void> {
@@ -102,63 +150,62 @@ export default function MinaretsAdapter(): Adapter {
       });
     },
     async createSession(session: Omit<AdapterSession, 'id'>): Promise<AdapterSession> {
-      const expires = new Date();
-      expires.setTime(expires.getTime() + thirtyDaysAsMilliseconds);
-
       const adapterSession: AdapterSession = {
         id: uuid(),
         ...session,
-        expires,
       };
 
       await redisClient.set(`s_${adapterSession.sessionToken}`, JSON.stringify(adapterSession), 'PX', thirtyDaysAsMilliseconds);
+      sessionCache.set(adapterSession.sessionToken, adapterSession);
+
       return adapterSession;
     },
     async getSessionAndUser(sessionToken: string): Promise<{
       session: AdapterSession;
       user: AdapterUser;
     } | null> {
-      const value = await redisClient.get(`s_${sessionToken}`);
-      if (value) {
-        const session = JSON.parse(value) as AdapterSession;
-        const user = await this.getUser(session.userId);
+      const session = await getSession(sessionToken);
 
-        if (user) {
-          return {
-            session,
-            user,
-          };
-        }
+      if (!session) {
+        return null;
       }
 
-      return null;
+      const user = await getUser(session.userId);
+      if (!user) {
+        return null;
+      }
+
+      return {
+        session,
+        user,
+      };
     },
     async updateSession({ sessionToken }: Partial<AdapterSession> & Pick<AdapterSession, 'sessionToken'>): Promise<AdapterSession | null | undefined> {
-      const value = await redisClient.get(`s_${sessionToken}`);
+      const session = await getSession(sessionToken);
 
-      if (value) {
-        const session = JSON.parse(value) as AdapterSession;
+      if (!session) {
+        return null;
+      }
 
-        // Only update session if last update was over an hour ago, to prevent thrashing session db
-        const lastExpiration = session.expires;
-        lastExpiration.setTime(lastExpiration.getTime() + oneHourAsMilliseconds);
+      // Only update session if last update was over an hour ago, to prevent thrashing session db
+      const lastExpiration = session.expires;
+      lastExpiration.setTime(lastExpiration.getTime() + oneHourAsMilliseconds);
 
-        if (lastExpiration > new Date()) {
-          return session;
-        }
-
-        // Set new expiration for session
-        session.expires = new Date();
-        session.expires.setTime(session.expires.getTime() + thirtyDaysAsMilliseconds);
-
-        await redisClient.set(`s_${session.sessionToken}`, JSON.stringify(session), 'PX', thirtyDaysAsMilliseconds);
-
+      if (lastExpiration > new Date()) {
         return session;
       }
 
-      return null;
+      // Set new expiration for session
+      session.expires = new Date();
+      session.expires.setTime(session.expires.getTime() + thirtyDaysAsMilliseconds);
+
+      await redisClient.set(`s_${session.sessionToken}`, JSON.stringify(session), 'PX', thirtyDaysAsMilliseconds);
+      sessionCache.set(session.sessionToken, session);
+
+      return session;
     },
     async deleteSession(sessionToken: string): Promise<void> {
+      sessionCache.delete(sessionToken);
       await redisClient.del(`s_${sessionToken}`);
     },
     async createVerificationToken(verificationToken: VerificationToken): Promise<VerificationToken> {

@@ -21,12 +21,13 @@ async function getPlaylists(): Promise<PlaylistSummary[]> {
 }
 
 export default function SideBarMenu(): React.ReactElement {
-  const { data: session } = useSession();
+  const { status: authStatus } = useSession();
+  const isAuthenticated = authStatus === 'authenticated';
   const chatState = useChatState();
   const [playlists, setPlaylists] = React.useState<PlaylistSummary[]>([]);
 
   React.useEffect(() => {
-    if (session) {
+    if (isAuthenticated) {
       getPlaylists()
         .then((playlistSummaries) => {
           setPlaylists(playlistSummaries);
@@ -35,7 +36,7 @@ export default function SideBarMenu(): React.ReactElement {
         })
         .catch((err) => Sentry.captureException(err));
     }
-  }, [session, setPlaylists]);
+  }, [isAuthenticated, setPlaylists]);
 
   return (
     <>
@@ -82,16 +83,18 @@ export default function SideBarMenu(): React.ReactElement {
               <a className="nav-link">Compilations</a>
             </Link>
           </li>
-          {!session && (
+          {/*
+          {!isAuthenticated && (
             <li className="nav-item">
               <Link href="/chat">
                 <a className="nav-link">Chat</a>
               </Link>
             </li>
           )}
+*/}
         </ul>
       </nav>
-      {!!session && chatState.isWidgetVisible && <ChatWidget />}
+      {isAuthenticated && chatState.isWidgetVisible && <ChatWidget />}
     </>
   );
 }

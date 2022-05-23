@@ -12,7 +12,7 @@ export interface IListCompilationsRequest {
 
 const cache = new LRUCache<string, Compilation>({
   max: 100000,
-  maxAge: 60 * 60 * 1000, // 60 minutes
+  ttl: 60 * 60 * 1000, // 60 minutes
 });
 
 export class Compilations extends ApiBase {

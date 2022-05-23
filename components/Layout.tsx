@@ -17,7 +17,8 @@ interface LayoutParams {
 }
 
 function Layout({ children }: LayoutParams): React.ReactElement {
-  const { data: session } = useSession();
+  const { data: session, status: authStatus } = useSession();
+  const isAuthenticated = authStatus === 'authenticated';
 
   React.useEffect(() => {
     if (session && session.user) {
@@ -74,7 +75,7 @@ function Layout({ children }: LayoutParams): React.ReactElement {
             </footer>
           </div>
           <aside className={styles.chatColumn}>
-            {!session && (
+            {!isAuthenticated && (
               <div className="position-relative">
                 <div className="position-absolute top-50 start-50 translate-middle">
                   <Link href="/api/auth/signin">
@@ -85,10 +86,10 @@ function Layout({ children }: LayoutParams): React.ReactElement {
                 </div>
               </div>
             )}
-            {!!session && <ChatWidget />}
+            {isAuthenticated && <ChatWidget />}
           </aside>
         </div>
-        {!!session && <Player />}
+        {isAuthenticated && <Player />}
       </div>
     </>
   );

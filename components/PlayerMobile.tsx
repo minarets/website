@@ -6,7 +6,8 @@ import { usePlayerState, usePlayerDispatch } from '../contexts/PlayerContext';
 import styles from '../styles/PlayerMobile.module.scss';
 
 export default function PlayerMobile(): React.ReactElement | null {
-  const { data: session } = useSession();
+  const { status: authStatus } = useSession();
+  const isAuthenticated = authStatus === 'authenticated';
   const playerState = usePlayerState();
   const playerDispatch = usePlayerDispatch();
 
@@ -18,7 +19,7 @@ export default function PlayerMobile(): React.ReactElement | null {
 
   const hasTrackNotes = playerState.currentTrack && (playerState.currentTrack.firstTimePlayedText || playerState.currentTrack.notes);
 
-  if (!session) {
+  if (!isAuthenticated) {
     return null;
   }
 

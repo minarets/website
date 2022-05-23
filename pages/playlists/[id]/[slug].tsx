@@ -147,7 +147,8 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
   const title = router.isFallback ? 'Loading playlist...' : playlist.name;
   useDocumentTitle(title);
 
-  const { data: session } = useSession();
+  const { status: authStatus } = useSession();
+  const isAuthenticated = authStatus === 'authenticated';
   const playerState = usePlayerState();
 
   const playCb = React.useCallback(() => {
@@ -221,7 +222,7 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
         <h1>{playlist.name}</h1>
       </header>
 
-      {!session && (
+      {!isAuthenticated && (
         <div className="mb-3">
           <Link href="/api/auth/signin">
             <a className="btn btn-success rounded-pill" rel="nofollow">
@@ -230,7 +231,7 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
           </Link>
         </div>
       )}
-      {session && (
+      {isAuthenticated && (
         <section className="mb-3">
           <button className="btn btn-success rounded-pill" type="button" onClick={(): void => playCb()}>
             Play

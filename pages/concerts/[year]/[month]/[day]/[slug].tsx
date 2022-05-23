@@ -126,7 +126,8 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
   const title = router.isFallback ? 'Loading concert...' : getConcertTitle(concert);
   useDocumentTitle(title);
 
-  const { data: session } = useSession();
+  const { status: authStatus } = useSession();
+  const isAuthenticated = authStatus === 'authenticated';
   const playerState = usePlayerState();
 
   const playCb = React.useCallback(() => {
@@ -254,7 +255,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
         </h1>
       </header>
 
-      {!session && (
+      {!isAuthenticated && (
         <div className="mb-3">
           <Link href="/api/auth/signin">
             <a className="btn btn-success rounded-pill" rel="nofollow">
@@ -263,7 +264,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
           </Link>
         </div>
       )}
-      {session && (
+      {isAuthenticated && (
         <section className="mb-3">
           <button className="btn btn-success rounded-pill" type="button" onClick={(): void => playCb()}>
             Play

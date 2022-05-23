@@ -8,7 +8,8 @@ import { getTimeDisplay } from '../minarets-api/Player';
 import styles from '../styles/PlayerDesktop.module.scss';
 
 export default function PlayerDesktop(): React.ReactElement | null {
-  const { data: session } = useSession();
+  const { status: authStatus } = useSession();
+  const isAuthenticated = authStatus === 'authenticated';
   const playerState = usePlayerState();
   const playerDispatch = usePlayerDispatch();
   const [seekTime, setSeekTime] = React.useState<number | null>(null);
@@ -84,7 +85,7 @@ export default function PlayerDesktop(): React.ReactElement | null {
 
   const hasTrackNotes = playerState.currentTrack && (playerState.currentTrack.firstTimePlayedText || playerState.currentTrack.notes);
 
-  if (!session) {
+  if (!isAuthenticated) {
     return null;
   }
 

@@ -13,7 +13,8 @@ import PlayerMobile from './PlayerMobile';
 import PlayerMobileFull from './PlayerMobileFull';
 
 export default function Player(): React.ReactElement | null {
-  const { data: session } = useSession();
+  const { status: authStatus } = useSession();
+  const isAuthenticated = authStatus === 'authenticated';
   const playerState = usePlayerState();
 
   useHotkeys(
@@ -54,7 +55,7 @@ export default function Player(): React.ReactElement | null {
 
   const isMobile = useMediaQuery('(max-width: 991px)');
 
-  if (!session) {
+  if (!isAuthenticated) {
     return null;
   }
 

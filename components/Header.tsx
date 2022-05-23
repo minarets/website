@@ -10,6 +10,7 @@ import Search from './Search';
 export default function Header(): React.ReactElement {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
+  const isAuthenticated = status === 'authenticated';
   const [randomClicked, setRandomClicked] = React.useState(false);
   const router = useRouter();
 
@@ -158,7 +159,7 @@ export default function Header(): React.ReactElement {
           </div>
         </div>
       </div>
-      {session && !randomClicked && (
+      {isAuthenticated && !randomClicked && (
         <div className="pe-3 my-auto">
           <a
             href="/"
@@ -175,7 +176,7 @@ export default function Header(): React.ReactElement {
           </a>
         </div>
       )}
-      {session && randomClicked && (
+      {isAuthenticated && randomClicked && (
         <div className="pe-3 my-auto">
           <div className={`${styles.randomConcertLoading} spinner-border spinner-border-sm`} role="status">
             <span className="visually-hidden">Loading...</span>
@@ -191,14 +192,14 @@ export default function Header(): React.ReactElement {
           </a>
         </Link>
       </div>
-      {(!session || (session.user && session.user.image)) && !loading && (
+      {(!isAuthenticated || (session && session.user && session.user.image)) && !loading && (
         <div className="my-auto">
-          {!session && !loading && (
+          {!isAuthenticated && !loading && (
             <Link href="/api/auth/signin">
               <a title="Login">Login</a>
             </Link>
           )}
-          {session && !loading && session.user && session.user.image && <img className={`rounded ${styles.userImage}`} src={session.user.image} alt={`${session.user.name || ''}`} />}
+          {isAuthenticated && session && session.user && session.user.image && <img className={`rounded ${styles.userImage}`} src={session.user.image} alt={`${session.user.name || ''}`} />}
         </div>
       )}
     </header>
