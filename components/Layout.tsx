@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -17,7 +17,7 @@ interface LayoutParams {
 }
 
 function Layout({ children }: LayoutParams): React.ReactElement {
-  const [session] = useSession();
+  const { data: session } = useSession();
 
   React.useEffect(() => {
     if (session && session.user) {

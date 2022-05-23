@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import * as React from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -12,8 +12,8 @@ import PlayerDesktop from './PlayerDesktop';
 import PlayerMobile from './PlayerMobile';
 import PlayerMobileFull from './PlayerMobileFull';
 
-export default function Player(): React.ReactElement {
-  const [session] = useSession();
+export default function Player(): React.ReactElement | null {
+  const { data: session } = useSession();
   const playerState = usePlayerState();
 
   useHotkeys(
@@ -54,23 +54,23 @@ export default function Player(): React.ReactElement {
 
   const isMobile = useMediaQuery('(max-width: 991px)');
 
+  if (!session) {
+    return null;
+  }
+
   return (
     <>
-      {!!session && (
-        <>
-          <Head>
-            {uniqueTracksById([playerState.currentTrack, ...playerState.priorityTracks, ...playerState.nextTracks.slice(0, 2)]).map((track) => (
-              <link rel="preload" href={track.url} as="audio" key={`preload-audio-${track.id}`} />
-            ))}
-            {uniqueAlbumsWithImageUrlFromTracks([playerState.currentTrack, ...playerState.priorityTracks, ...playerState.nextTracks.slice(0, 2)]).map((album) => (
-              <link rel="preload" href={album.imageUrl} as="image" key={`preload-art-${album.id}`} />
-            ))}
-          </Head>
-          {isMobile && !playerState.showFullPlayer && <PlayerMobile />}
-          {isMobile && playerState.showFullPlayer && <PlayerMobileFull />}
-          {!isMobile && <PlayerDesktop />}
-        </>
-      )}
+      <Head>
+        {uniqueTracksById([playerState.currentTrack, ...playerState.priorityTracks, ...playerState.nextTracks.slice(0, 2)]).map((track) => (
+          <link rel="preload" href={track.url} as="audio" key={`preload-audio-${track.id}`} />
+        ))}
+        {uniqueAlbumsWithImageUrlFromTracks([playerState.currentTrack, ...playerState.priorityTracks, ...playerState.nextTracks.slice(0, 2)]).map((album) => (
+          <link rel="preload" href={album.imageUrl} as="image" key={`preload-art-${album.id}`} />
+        ))}
+      </Head>
+      {isMobile && !playerState.showFullPlayer && <PlayerMobile />}
+      {isMobile && playerState.showFullPlayer && <PlayerMobileFull />}
+      {!isMobile && <PlayerDesktop />}
     </>
   );
 }

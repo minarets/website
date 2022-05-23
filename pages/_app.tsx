@@ -1,5 +1,5 @@
 import type { Session } from 'next-auth';
-import { Provider } from 'next-auth/client';
+import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import type { ReactElement } from 'react';
 import * as React from 'react';
@@ -35,7 +35,7 @@ function App({ Component, pageProps, err }: IProps): ReactElement {
   };
 
   return (
-    <Provider session={session}>
+    <SessionProvider session={session}>
       <PlayerProvider>
         <ChatProvider>
           <Layout>
@@ -44,7 +44,7 @@ function App({ Component, pageProps, err }: IProps): ReactElement {
           </Layout>
         </ChatProvider>
       </PlayerProvider>
-    </Provider>
+    </SessionProvider>
   );
 }
 

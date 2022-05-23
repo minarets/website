@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
-import { useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -147,7 +147,7 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
   const title = router.isFallback ? 'Loading playlist...' : playlist.name;
   useDocumentTitle(title);
 
-  const [session] = useSession();
+  const { data: session } = useSession();
   const playerState = usePlayerState();
 
   const playCb = React.useCallback(() => {

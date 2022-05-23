@@ -17,6 +17,7 @@ module.exports = {
     'airbnb/hooks',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
+    'plugin:@next/next/recommended',
     'plugin:prettier/recommended'
   ],
   env: {
@@ -326,4 +327,10 @@ module.exports = {
     '@typescript-eslint/unbound-method': 'error',
     '@typescript-eslint/unified-signatures': 'error',
   },
+  overrides: [{
+    files: ['components/**.tsx'],
+    rules: {
+      '@typescript-eslint/no-misused-promises': 'off',
+    },
+  }],
 };

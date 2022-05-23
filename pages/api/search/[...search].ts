@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/node';
 import algoliasearch from 'algoliasearch';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/client';
+import { getSession } from 'next-auth/react';
 
 import { Minarets } from '../../../minarets-api';
 import * as compilationService from '../../../minarets-api/compilationService';

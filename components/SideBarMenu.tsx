@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/browser';
-import { useSession } from 'next-auth/client';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import * as React from 'react';
 
@@ -21,7 +21,7 @@ async function getPlaylists(): Promise<PlaylistSummary[]> {
 }
 
 export default function SideBarMenu(): React.ReactElement {
-  const [session] = useSession();
+  const { data: session } = useSession();
   const chatState = useChatState();
   const [playlists, setPlaylists] = React.useState<PlaylistSummary[]>([]);
 
