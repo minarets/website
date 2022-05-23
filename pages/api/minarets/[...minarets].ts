@@ -5,9 +5,13 @@ import { getSession } from 'next-auth/react';
 import { Minarets } from '../../../minarets-api';
 import { getConcertUrl } from '../../../minarets-api/concertService';
 
+interface ResponseJson extends Record<string, unknown> {
+  ok: boolean;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const session = await getSession({ req });
-  let body: string;
+  let body: ResponseJson;
 
   res.status(200);
   res.setHeader('Content-Type', 'application/json');
@@ -21,9 +25,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       case 'getRandomConcert': {
         const concert = await api.concerts.getRandomConcert();
 
-        body = JSON.stringify({
+        body = {
+          ok: true,
           url: getConcertUrl(concert),
-        });
+        };
         break;
       }
       case 'getArtistRandomConcert': {
@@ -32,9 +37,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           artistId: id,
         });
 
-        body = JSON.stringify({
+        body = {
+          ok: true,
           url: getConcertUrl(concert),
-        });
+        };
         break;
       }
       case 'getTourRandomConcert': {
@@ -43,15 +49,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           tourId: id,
         });
 
-        body = JSON.stringify({
+        body = {
+          ok: true,
           url: getConcertUrl(concert),
-        });
+        };
         break;
       }
       case 'getMyPlaylists': {
         const playlists = await api.playlists.listMyPlaylists();
 
-        body = JSON.stringify(playlists);
+        body = {
+          ok: true,
+          ...playlists,
+        };
         break;
       }
       case 'playTrack': {
@@ -59,17 +69,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (id) {
           try {
             const response = await api.tracks.play(id);
-            body = JSON.stringify(response);
+            body = {
+              ...response,
+            };
           } catch (ex) {
             Sentry.captureException(ex);
-            body = JSON.stringify({
+            body = {
               ok: true,
-            });
+            };
           }
         } else {
-          body = JSON.stringify({
+          body = {
             ok: true,
-          });
+          };
         }
 
         break;
@@ -82,14 +94,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             includeOnlineUsers: true,
             lastMessageId: lastMessageId ? Number(lastMessageId) : undefined,
           });
-          body = JSON.stringify(response);
+          body = {
+            ok: true,
+            ...response,
+          };
         } catch (ex) {
           Sentry.captureException(ex);
           // TODO: Return false and back off future attempts?
-          body = JSON.stringify({
+          body = {
             ok: true,
             messages: [],
-          });
+          };
         }
 
         break;
@@ -103,14 +118,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             includeOnlineUsers: false,
             lastMessageId: lastMessageId ? Number(lastMessageId) : undefined,
           });
-          body = JSON.stringify(response);
+          body = {
+            ok: true,
+            ...response,
+          };
         } catch (ex) {
           Sentry.captureException(ex);
           // TODO: Return false and back off future attempts?
-          body = JSON.stringify({
+          body = {
             ok: true,
             messages: [],
-          });
+          };
         }
 
         break;
@@ -118,31 +136,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       case 'sendChatMessage': {
         try {
           const response = await api.chatMessages.send(req.body);
-          body = JSON.stringify(response);
+          body = {
+            ok: true,
+            ...response,
+          };
         } catch (ex) {
           Sentry.captureException(ex);
-          body = JSON.stringify({
+          body = {
             ok: false,
-          });
+          };
         }
 
         break;
       }
       default:
         res.status(404);
-        body = JSON.stringify({
+        body = {
           ok: false,
           message: 'Invalid api method',
-        });
+        };
         break;
     }
   } else {
     res.status(401);
-    body = JSON.stringify({
+    body = {
       ok: false,
       message: 'Unauthorized',
-    });
+    };
   }
 
-  res.end(body);
+  res.json(body);
 }

@@ -7,12 +7,16 @@ import { Minarets } from '../../../minarets-api';
 import * as compilationService from '../../../minarets-api/compilationService';
 import * as concertService from '../../../minarets-api/concertService';
 
+interface ResponseJson extends Record<string, unknown> {
+  ok: boolean;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
   const session = await getSession({ req });
-  let body = JSON.stringify({
+  let body: ResponseJson = {
     ok: false,
     message: 'Something went wrong :(',
-  });
+  };
 
   res.status(200);
   res.setHeader('Content-Type', 'application/json');
@@ -22,12 +26,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!process.env.ALGOLIA_APPLICATION_ID || !process.env.ALGOLIA_ADMIN_API_KEY) {
         console.log(`ALGOLIA_APPLICATION_ID: ${process.env.ALGOLIA_APPLICATION_ID || ''}`);
         console.log(`ALGOLIA_ADMIN_API_KEY: ${process.env.ALGOLIA_ADMIN_API_KEY || ''}`);
-        res.end(
-          JSON.stringify({
-            ok: false,
-            message: 'Missing Algolia credentials',
-          }),
-        );
+        res.json({
+          ok: false,
+          message: 'Missing Algolia credentials',
+        });
         return;
       }
 
@@ -79,10 +81,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.log(`Saving ${searchRecords.length} concert records`);
           await index.saveObjects(searchRecords);
 
-          body = JSON.stringify({
+          body = {
             ok: true,
             message: `Indexed ${searchRecords.length} concerts`,
-          });
+          };
 
           break;
         }
@@ -119,20 +121,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.log(`Saving ${searchRecords.length} concert records`);
           await index.saveObjects(searchRecords);
 
-          body = JSON.stringify({
+          body = {
             ok: true,
             message: `Indexed ${searchRecords.length} concerts`,
-          });
+          };
 
           break;
         }
         case 'indexConcert': {
           console.log(`Starting ${action}`);
           const [, id] = query.search;
-          body = JSON.stringify({
+          body = {
             ok: false,
             message: `Unable to find concert by id ${id}`,
-          });
+          };
 
           if (id) {
             const concert = await api.concerts.getConcert(id);
@@ -141,10 +143,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               const index = client.initIndex('concerts');
               await index.saveObject(searchRecord);
 
-              body = JSON.stringify({
+              body = {
                 ok: true,
                 message: `Indexed concert`,
-              });
+              };
             }
           }
 
@@ -182,20 +184,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           console.log(`Saving ${searchRecords.length} compilation records`);
           await index.saveObjects(searchRecords);
 
-          body = JSON.stringify({
+          body = {
             ok: true,
             message: `Indexed ${searchRecords.length} compilations`,
-          });
+          };
 
           break;
         }
         case 'indexCompilation': {
           console.log(`Starting ${action}`);
           const [, id] = query.search;
-          body = JSON.stringify({
+          body = {
             ok: false,
             message: `Unable to find compilation by id ${id}`,
-          });
+          };
 
           if (id) {
             const compilation = await api.compilations.getCompilation(Number(id));
@@ -204,10 +206,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               const index = client.initIndex('compilations');
               await index.saveObject(searchRecord);
 
-              body = JSON.stringify({
+              body = {
                 ok: true,
                 message: `Indexed compilation`,
-              });
+              };
             }
           }
 
@@ -215,18 +217,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         default:
           res.status(404);
-          body = JSON.stringify({
+          body = {
             ok: false,
             message: `Invalid api method: ${action}`,
-          });
+          };
           break;
       }
     } else {
       res.status(401);
-      body = JSON.stringify({
+      body = {
         ok: false,
         message: 'Unauthorized',
-      });
+      };
     }
   } catch (ex) {
     Sentry.captureException(ex);
@@ -235,7 +237,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { returnUrl } = req.query;
   if (returnUrl && typeof returnUrl === 'string' && returnUrl.startsWith('http')) {
     res.redirect(302, returnUrl);
+    return;
   }
 
-  res.end(body);
+  res.json(body);
 }
