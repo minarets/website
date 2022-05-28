@@ -6,17 +6,10 @@ import nodeFetch, { Headers } from 'node-fetch';
 
 import type { ErrorWithResponse } from './types';
 
-const fetch = setupFetch(
-  {
-    Headers,
-    default: nodeFetch,
-  },
-  {
-    // This prevents socketTimeout errors from throwing during build stage. Looks like otherwise too many requests hit
-    // the .net api and some requests time out
-    maxFreeSockets: 10,
-  },
-);
+const fetch = setupFetch({
+  Headers,
+  default: nodeFetch,
+});
 
 interface IGetParams {
   query: Record<string, string>;
