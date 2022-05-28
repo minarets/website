@@ -132,8 +132,9 @@ $player-button-disabled-color: #535353;
 }
 
 .playerArt {
-  flex-shrink: 1;
+  flex-grow: 1;
   overflow: hidden;
+  display: flex;
 }
 
 .nowPlaying {

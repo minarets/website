@@ -87,7 +87,7 @@ export default function PlayerMobileFull(): React.ReactElement | null {
           <div className="modal-body">
             <div className={styles.playerContent}>
               <div className={styles.playerArt}>
-                {!!playerState.currentTrack.album.imageUrl && <img className="img-fluid" src={playerState.currentTrack.album.imageUrl} alt={playerState.currentTrack.album.name} />}
+                {!!playerState.currentTrack.album.imageUrl && <img className="img-fluid mx-auto" src={playerState.currentTrack.album.imageUrl} alt={playerState.currentTrack.album.name} />}
               </div>
               <div className={styles.nowPlaying}>
                 <div className="text-truncate flex-grow-1">
