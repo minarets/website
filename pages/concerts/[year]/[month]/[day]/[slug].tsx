@@ -24,12 +24,15 @@ import type { LimitedConcert, LimitedTour } from '../../../../../minarets-api/ty
 import { getVenueUrl } from '../../../../../minarets-api/venueService';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const api = new Minarets();
-  const concerts = await api.concerts.listAllConcerts();
   const paths: string[] = [];
-  for (const concert of concerts.items) {
-    if (concert && concert.name && concert.date) {
-      paths.push(getConcertUrl(concert));
+
+  if (process.env.NODE_ENV === 'production') {
+    const api = new Minarets();
+    const concerts = await api.concerts.listAllConcerts();
+    for (const concert of concerts.items) {
+      if (concert && concert.name && concert.date) {
+        paths.push(getConcertUrl(concert));
+      }
     }
   }
 
