@@ -215,19 +215,6 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
         {concert.posterUrl && <link rel="preload" href={`https://api.minarets.io${concert.posterUrl}`} as="image" key={`preload-art-${concert.id}`} />}
       </Head>
 
-      <nav className="d-none d-lg-block" aria-label="breadcrumb">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item">
-            <Link href="/concerts">
-              <a>Concerts</a>
-            </Link>
-          </li>
-          <li className="breadcrumb-item active" aria-current="page">
-            {title}
-          </li>
-        </ol>
-      </nav>
-
       <header>
         {(previousConcert || nextConcert) && (
           <div className="row">
