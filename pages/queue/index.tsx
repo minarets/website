@@ -18,8 +18,8 @@ export default function Page(): ReactElement {
         <title>{title} · Minarets</title>
       </Head>
 
-      <nav>
-        <ul className="nav">
+      <nav className="mb-3">
+        <ul className="nav nav-pills">
           <li className="nav-item">
             <Link href="/queue">
               <a className="nav-link active">Queue</a>
