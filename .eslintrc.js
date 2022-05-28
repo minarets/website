@@ -326,6 +326,8 @@ module.exports = {
     '@typescript-eslint/sort-type-union-intersection-members': 'error',
     '@typescript-eslint/unbound-method': 'error',
     '@typescript-eslint/unified-signatures': 'error',
+
+    '@next/next/no-img-element': 'off',
   },
   overrides: [{
     files: ['components/**.tsx'],
