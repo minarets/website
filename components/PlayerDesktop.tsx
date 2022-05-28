@@ -1,5 +1,6 @@
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import ReactSlider from 'react-slider';
 
@@ -9,6 +10,8 @@ import styles from '../styles/PlayerDesktop.module.scss';
 
 export default function PlayerDesktop(): React.ReactElement | null {
   const { status: authStatus } = useSession();
+  const router = useRouter();
+
   const isAuthenticated = authStatus === 'authenticated';
   const playerState = usePlayerState();
   const playerDispatch = usePlayerDispatch();
@@ -215,13 +218,22 @@ export default function PlayerDesktop(): React.ReactElement | null {
         <div className={styles.nowPlayingBarRight}>
           <div className={styles.extraControls}>
             <div className="position-relative">
-              <Link href="/queue" passHref>
-                <button title="Queue" type="button">
+              {router.pathname === '/queue' && (
+                <button title="Queue" type="button" onClick={() => router.back()}>
                   <svg role="img" height="32" width="32" viewBox="0 0 31 31">
                     <path d="M3.996 4.059l8.595 4.995-8.595 4.995v-9.99M3.996 28.036v-1.998h27.972v1.998h-27.972M3.996 20.044v-1.998h27.972v1.998h-27.972M17.982 10.054h13.986v1.998h-13.986v-1.998z" />
                   </svg>
                 </button>
-              </Link>
+              )}
+              {router.pathname !== '/queue' && (
+                <Link href="/queue" passHref>
+                  <button title="Queue" type="button">
+                    <svg role="img" height="32" width="32" viewBox="0 0 31 31">
+                      <path d="M3.996 4.059l8.595 4.995-8.595 4.995v-9.99M3.996 28.036v-1.998h27.972v1.998h-27.972M3.996 20.044v-1.998h27.972v1.998h-27.972M17.982 10.054h13.986v1.998h-13.986v-1.998z" />
+                    </svg>
+                  </button>
+                </Link>
+              )}
             </div>
             <div className={styles.volumeBar}>
               {playerState.isMuted && (
