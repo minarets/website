@@ -2,6 +2,7 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import { useQuery } from 'react-query';
 
 import styles from '../styles/Header.module.scss';
 
@@ -11,11 +12,40 @@ export default function Header(): React.ReactElement {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
   const isAuthenticated = status === 'authenticated';
-  const [randomClicked, setRandomClicked] = React.useState(false);
   const router = useRouter();
 
   const mainMenuContainerRef = React.useRef<HTMLDivElement | null>(null);
   const [showMainMenu, setShowMainMenu] = React.useState<boolean>(false);
+  const {
+    data: randomConcertUrl,
+    isLoading: isLoadingRandomConcertUrl,
+    refetch: refreshRandomConcertUrl,
+  } = useQuery(
+    ['randomConcertUrl'],
+    async () => {
+      if (!isAuthenticated) {
+        return '/';
+      }
+
+      const response = await fetch('/api/minarets/getRandomConcert');
+      if (response.ok) {
+        const result = (await response.json()) as { url: string };
+
+        return result.url;
+      }
+
+      throw new Error('Error getting random show url');
+    },
+    {
+      useErrorBoundary: false,
+      suspense: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false,
+      refetchOnWindowFocus: false,
+      cacheTime: Number.POSITIVE_INFINITY,
+      staleTime: Number.POSITIVE_INFINITY,
+    },
+  );
 
   function handleMainMenuClick(e: React.KeyboardEvent | React.MouseEvent): void {
     e.preventDefault();
@@ -54,18 +84,6 @@ export default function Header(): React.ReactElement {
       router.events.off('routeChangeStart', handleRouteChange);
     };
   }, [router.events]);
-
-  async function handleRandomConcertClick(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>): Promise<void> {
-    e.preventDefault();
-    setRandomClicked(true);
-    const response = await fetch('/api/minarets/getRandomConcert');
-    if (response.ok) {
-      const result = (await response.json()) as { url: string };
-
-      await router.push(result.url);
-      setRandomClicked(false);
-    }
-  }
 
   return (
     <header className={`${styles.headerNavbar} px-3 py-3 navbar navbar-expand-lg`}>
@@ -159,28 +177,23 @@ export default function Header(): React.ReactElement {
           </div>
         </div>
       </div>
-      {isAuthenticated && !randomClicked && (
+      {isAuthenticated && !!randomConcertUrl && (
         <div className="pe-3 my-auto">
-          <a
-            href="/"
-            title="Random concert"
-            onClick={(e) => {
-              void handleRandomConcertClick(e);
-            }}
-            className={styles.randomConcert}
-            rel="nofollow"
-          >
-            <svg role="img" height="25" width="25" viewBox="0 0 24 24" className={styles.hoverGrow}>
-              <path d="M18 13v5h-5l1.607-1.608c-3.404-2.824-5.642-8.392-9.179-8.392-2.113 0-3.479 1.578-3.479 4s1.365 4 3.479 4c1.664 0 2.86-1.068 4.015-2.392l1.244 1.561c-1.499 1.531-3.05 2.831-5.259 2.831-3.197 0-5.428-2.455-5.428-6s2.231-6 5.428-6c4.839 0 7.34 6.449 10.591 8.981l1.981-1.981zm.57-7c-2.211 0-3.762 1.301-5.261 2.833l1.244 1.561c1.156-1.325 2.352-2.394 4.017-2.394 2.114 0 3.48 1.578 3.48 4 0 1.819-.771 3.162-2.051 3.718v2.099c2.412-.623 4-2.829 4-5.816.001-3.546-2.231-6.001-5.429-6.001z" />
-            </svg>
-          </a>
-        </div>
-      )}
-      {isAuthenticated && randomClicked && (
-        <div className="pe-3 my-auto">
-          <div className={`${styles.randomConcertLoading} spinner-border spinner-border-sm`} role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
+          <Link href={randomConcertUrl}>
+            <button
+              type="button"
+              title="Random concert"
+              className={`btn ${styles.randomConcert}`}
+              disabled={isLoadingRandomConcertUrl}
+              onClick={() => {
+                void refreshRandomConcertUrl();
+              }}
+            >
+              <svg role="img" height="25" width="25" viewBox="0 0 24 24" className={styles.hoverGrow}>
+                <path d="M18 13v5h-5l1.607-1.608c-3.404-2.824-5.642-8.392-9.179-8.392-2.113 0-3.479 1.578-3.479 4s1.365 4 3.479 4c1.664 0 2.86-1.068 4.015-2.392l1.244 1.561c-1.499 1.531-3.05 2.831-5.259 2.831-3.197 0-5.428-2.455-5.428-6s2.231-6 5.428-6c4.839 0 7.34 6.449 10.591 8.981l1.981-1.981zm.57-7c-2.211 0-3.762 1.301-5.261 2.833l1.244 1.561c1.156-1.325 2.352-2.394 4.017-2.394 2.114 0 3.48 1.578 3.48 4 0 1.819-.771 3.162-2.051 3.718v2.099c2.412-.623 4-2.829 4-5.816.001-3.546-2.231-6.001-5.429-6.001z" />
+              </svg>
+            </button>
+          </Link>
         </div>
       )}
       <div className="pe-3 my-auto">

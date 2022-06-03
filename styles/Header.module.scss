@@ -91,6 +91,17 @@
   height: 2rem;
 }
 
+.randomConcert {
+  color: $green !important;
+  fill: $green !important;
+  outline: 0;
+
+  &:focus {
+    outline: 0;
+    box-shadow: none;
+  }
+}
+
 //.navScroller {
 //  position: relative;
 //  z-index: 2;

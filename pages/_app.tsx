@@ -3,6 +3,7 @@ import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import type { ReactElement } from 'react';
 import * as React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import '../styles/globals.scss';
 import Layout from '../components/Layout';
@@ -26,6 +27,8 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
   init();
 }
 
+const queryClient = new QueryClient();
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function App({ Component, pageProps, err }: IProps): ReactElement {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -36,14 +39,16 @@ function App({ Component, pageProps, err }: IProps): ReactElement {
 
   return (
     <SessionProvider session={session}>
-      <PlayerProvider>
-        <ChatProvider>
-          <Layout>
-            {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-            <Component {...pageProps} err={err} />
-          </Layout>
-        </ChatProvider>
-      </PlayerProvider>
+      <QueryClientProvider client={queryClient}>
+        <PlayerProvider>
+          <ChatProvider>
+            <Layout>
+              {/* eslint-disable-next-line react/jsx-props-no-spreading */}
+              <Component {...pageProps} err={err} />
+            </Layout>
+          </ChatProvider>
+        </PlayerProvider>
+      </QueryClientProvider>
     </SessionProvider>
   );
 }
