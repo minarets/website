@@ -24,51 +24,20 @@ import type { LimitedConcert, LimitedTour } from '../../../../../minarets-api/ty
 import { getVenueUrl } from '../../../../../minarets-api/venueService';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const paths = new Set<string>();
+  const paths: string[] = [];
 
   if (process.env.NODE_ENV === 'production') {
     const api = new Minarets();
-    const [
-      popularConcertsResults, //
-      newConcertsResults,
-      latestConcertsResults,
-    ] = await Promise.all([
-      api.concerts.listConcerts({
-        sortDesc: 'Popular',
-        itemsPerPage: 50,
-        since: moment().subtract(1, 'w').startOf('day').toDate(),
-      }),
-      api.concerts.listConcerts({
-        sortDesc: 'ApprovedOn',
-        itemsPerPage: 10,
-      }),
-      api.concerts.listConcerts({
-        sortDesc: 'ConcertDate',
-        itemsPerPage: 50,
-      }),
-    ]);
-
-    for (const concert of popularConcertsResults.items) {
+    const concerts = await api.concerts.listAllConcerts();
+    for (const concert of concerts.items) {
       if (concert && concert.name && concert.date) {
-        paths.add(getConcertUrl(concert));
-      }
-    }
-
-    for (const concert of newConcertsResults.items) {
-      if (concert && concert.name && concert.date) {
-        paths.add(getConcertUrl(concert));
-      }
-    }
-
-    for (const concert of latestConcertsResults.items) {
-      if (concert && concert.name && concert.date) {
-        paths.add(getConcertUrl(concert));
+        paths.push(getConcertUrl(concert));
       }
     }
   }
 
   return {
-    paths: Array.from(paths),
+    paths,
     fallback: true,
   };
 }
