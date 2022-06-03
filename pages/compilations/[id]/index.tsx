@@ -5,15 +5,11 @@ import type { ReactElement } from 'react';
 
 import { Minarets } from '../../../minarets-api';
 import { getCompilationUrl } from '../../../minarets-api/compilationService';
-import type { CompilationSummary } from '../../../minarets-api/minarets/types';
+import type { Compilation, ErrorWithResponse } from '../../../minarets-api/minarets/types';
 
-export async function getStaticPaths(): Promise<GetStaticPathsResult> {
-  const api = new Minarets();
-  const compilations = await api.compilations.listAllCompilations();
-  const paths = compilations.items.map((compilation: CompilationSummary) => `/compilations/${compilation.id}`);
-
+export function getStaticPaths(): GetStaticPathsResult {
   return {
-    paths,
+    paths: [],
     fallback: true,
   };
 }
@@ -31,11 +27,22 @@ interface IProps {
 export async function getStaticProps({ params }: IParams): Promise<GetStaticPropsResult<IProps>> {
   const api = new Minarets();
 
-  const compilation = await api.compilations.getCompilation(params.id);
-  if (!compilation) {
-    return {
-      notFound: true,
-    };
+  let compilation: Compilation;
+  try {
+    compilation = await api.compilations.getCompilation(params.id);
+    if (!compilation) {
+      return {
+        notFound: true,
+      };
+    }
+  } catch (ex) {
+    if ((ex as ErrorWithResponse).response?.status === 404) {
+      return {
+        notFound: true,
+      };
+    }
+
+    throw ex;
   }
 
   const url = getCompilationUrl(compilation);
