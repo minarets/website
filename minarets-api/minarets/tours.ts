@@ -8,6 +8,11 @@ const cache = new LRUCache<string, TourWithChildren>({
   ttl: 60 * 60 * 1000, // 60 minutes
 });
 
+const toursCache = new LRUCache<string, ListResponse<Tour>>({
+  max: 100000,
+  ttl: 60 * 60 * 1000, // 60 minutes
+});
+
 export class Tours extends ApiBase {
   public async getTour(idOrSlug: number | string): Promise<TourWithChildren> {
     if (!idOrSlug) {
@@ -37,8 +42,18 @@ export class Tours extends ApiBase {
   }
 
   public async listTours(): Promise<ListResponse<Tour>> {
-    const response = await this.get(`${this.apiUrl}/api/tours`);
+    const cacheKey = 'listTours';
+    let result = toursCache.get(cacheKey);
+    if (!result) {
+      const response = await this.get(`${this.apiUrl}/api/tours`);
 
-    return (await response.json()) as ListResponse<Tour>;
+      result = (await response.json()) as ListResponse<Tour>;
+
+      if (result) {
+        toursCache.set(cacheKey, result);
+      }
+    }
+
+    return result;
   }
 }
