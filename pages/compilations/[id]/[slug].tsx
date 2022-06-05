@@ -15,41 +15,14 @@ import { Minarets } from '../../../minarets-api';
 import { getArtistUrl } from '../../../minarets-api/artistService';
 import { getCompilationUrl } from '../../../minarets-api/compilationService';
 import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../minarets-api/concertService';
-import type { BasicArtist, Compilation, ErrorWithResponse } from '../../../minarets-api/minarets/types';
+import type { BasicArtist, Compilation, CompilationSummary, ErrorWithResponse } from '../../../minarets-api/minarets/types';
 import { pick } from '../../../minarets-api/objectService';
 import type { LimitedArtist, LimitedConcert, LimitedConcertWithTokenDetails, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../minarets-api/types';
 
 export async function getStaticPaths(): Promise<GetStaticPathsResult> {
   const api = new Minarets();
-  const [
-    allCompilationResults, //
-    popularCompilationResults,
-    recentCompilationResults,
-  ] = await Promise.all([
-    api.compilations.listCompilations({
-      sortAsc: 'Name',
-      itemsPerPage: 30,
-    }),
-    api.compilations.listCompilations({
-      sortDesc: 'Popular',
-      itemsPerPage: 15,
-    }),
-    api.compilations.listCompilations({
-      sortDesc: 'ModifiedOn',
-      itemsPerPage: 15,
-    }),
-  ]);
-
-  const paths = new Set<string>();
-  for (const compilation of allCompilationResults.items) {
-    paths.add(getCompilationUrl(compilation));
-  }
-  for (const compilation of popularCompilationResults.items) {
-    paths.add(getCompilationUrl(compilation));
-  }
-  for (const compilation of recentCompilationResults.items) {
-    paths.add(getCompilationUrl(compilation));
-  }
+  const compilations = await api.compilations.listAllCompilations();
+  const paths = compilations.items.map((compilation: CompilationSummary) => getCompilationUrl(compilation));
 
   return {
     paths: Array.from(paths),
