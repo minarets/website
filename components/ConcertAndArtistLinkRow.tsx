@@ -1,7 +1,6 @@
 import moment from 'moment';
 import Link from 'next/link';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import { getArtistUrl } from '../minarets-api/artistService';
 import { getConcertUrl } from '../minarets-api/concertService';
@@ -13,7 +12,7 @@ interface IProps {
   concert: LimitedConcert;
 }
 
-function ConcertAndArtistLinkRow({ artist, concert }: IProps): ReactElement {
+function ConcertAndArtistLinkRow({ artist, concert }: IProps): JSX.Element {
   const concertDate = moment.utc(concert.date);
   return (
     <div className={styles.row}>

@@ -1,10 +1,9 @@
 import Head from 'next/head';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
-export default function NotFound(): ReactElement {
+export default function NotFound(): JSX.Element {
   const title = 'Page Not Found';
   useDocumentTitle(title);
 

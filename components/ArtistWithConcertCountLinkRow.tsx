@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import { getArtistUrl } from '../minarets-api/artistService';
 import type { Artist } from '../minarets-api/minarets/types';
@@ -9,7 +8,7 @@ interface IProps {
   artist: Pick<Artist, 'concertCount' | 'id' | 'name'>;
 }
 
-function ArtistWithConcertCountLinkRow({ artist }: IProps): ReactElement {
+function ArtistWithConcertCountLinkRow({ artist }: IProps): JSX.Element {
   return (
     <div className="row">
       <div className="col">

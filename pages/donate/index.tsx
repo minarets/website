@@ -1,11 +1,10 @@
 import Head from 'next/head';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import styles from '../../styles/Donate.module.scss';
 
-export default function Page(): ReactElement {
+export default function Page(): JSX.Element {
   const title = 'Donate';
   useDocumentTitle(title);
 

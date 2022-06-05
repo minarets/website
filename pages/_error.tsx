@@ -2,7 +2,6 @@ import * as Sentry from '@sentry/node';
 import type { NextPageContext } from 'next';
 import type { ErrorProps } from 'next/error';
 import NextErrorComponent from 'next/error';
-import type { ReactElement } from 'react';
 import * as React from 'react';
 
 interface IProps extends ErrorProps {
@@ -14,7 +13,7 @@ interface IProps extends ErrorProps {
     | null;
 }
 
-function SentryError({ statusCode, hasGetInitialPropsRun, err }: IProps): ReactElement {
+function SentryError({ statusCode, hasGetInitialPropsRun, err }: IProps): JSX.Element {
   if (!hasGetInitialPropsRun && err) {
     // getInitialProps is not called in case of
     // https://github.com/vercel/next.js/issues/8592. As a workaround, we pass

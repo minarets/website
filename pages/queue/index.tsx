@@ -1,13 +1,12 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import QueueTrackLinkRow from '../../components/QueueTrackLinkRow';
 import { usePlayerState } from '../../contexts/PlayerContext';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
-export default function Page(): ReactElement {
+export default function Page(): JSX.Element {
   const title = 'Play Queue';
   useDocumentTitle(title);
   const playerState = usePlayerState();

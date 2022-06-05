@@ -6,7 +6,7 @@ import SearchAutoComplete from './SearchAutoComplete';
 
 const searchClient = algoliasearch(process.env.NEXT_PUBLIC_ALGOLIA_APPLICATION_ID || '', process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_API_KEY || '');
 
-export default function Search(): React.ReactElement {
+export default function Search(): JSX.Element {
   return (
     <InstantSearch indexName="concerts" searchClient={searchClient}>
       <SearchAutoComplete />

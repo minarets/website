@@ -8,7 +8,7 @@ interface IProps {
   url: string;
 }
 
-function SearchPoweredBy({ url }: IProps): React.ReactElement {
+function SearchPoweredBy({ url }: IProps): JSX.Element {
   return (
     <Link href={url}>
       <a className={styles.poweredByLink}>

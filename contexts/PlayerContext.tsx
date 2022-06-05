@@ -184,7 +184,7 @@ interface IPlayerContextProviderProps {
   children: React.ReactNode;
 }
 
-export const PlayerProvider = ({ children }: IPlayerContextProviderProps): React.ReactElement<IPlayerContextProviderProps> => {
+export function PlayerProvider({ children }: IPlayerContextProviderProps): JSX.Element {
   const [state, dispatch] = React.useReducer(playerReducer, {
     priorityTracks: [],
     nextTracks: [],
@@ -227,7 +227,7 @@ export const PlayerProvider = ({ children }: IPlayerContextProviderProps): React
       <PlayerDispatchContext.Provider value={dispatch}>{children}</PlayerDispatchContext.Provider>
     </PlayerStateContext.Provider>
   );
-};
+}
 
 export function usePlayerState(): IPlayerState {
   const context = React.useContext<IPlayerState | undefined>(PlayerStateContext);

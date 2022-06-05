@@ -8,7 +8,7 @@ import { usePlayerState, usePlayerDispatch } from '../contexts/PlayerContext';
 import { getTimeDisplay } from '../minarets-api/Player';
 import styles from '../styles/PlayerDesktop.module.scss';
 
-export default function PlayerDesktop(): React.ReactElement | null {
+export default function PlayerDesktop(): JSX.Element | null {
   const { status: authStatus } = useSession();
   const router = useRouter();
 

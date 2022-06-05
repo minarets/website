@@ -1,7 +1,6 @@
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import { Minarets } from '../../../minarets-api';
 import { getCompilationUrl } from '../../../minarets-api/compilationService';
@@ -55,7 +54,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
   };
 }
 
-export default function Page({ url }: IProps): ReactElement {
+export default function Page({ url }: IProps): JSX.Element {
   return (
     <Head>
       <link rel="canonical" href={url} />

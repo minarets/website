@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import type { Track } from '../minarets-api/minarets/types';
 import { getTrackNotes } from '../minarets-api/trackService';
@@ -15,7 +14,7 @@ interface IProps {
   trackNumber?: number;
 }
 
-function TrackLinkRow({ artistUrl, concertUrl, concertName, concertAdditionalDetailsByToken, track, trackNumber }: IProps): ReactElement {
+function TrackLinkRow({ artistUrl, concertUrl, concertName, concertAdditionalDetailsByToken, track, trackNumber }: IProps): JSX.Element {
   const trackNotes = getTrackNotes(track, concertAdditionalDetailsByToken);
   const hasTrackNotes = trackNotes.firstTimePlayedText || trackNotes.notes;
 

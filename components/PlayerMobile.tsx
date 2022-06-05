@@ -5,7 +5,7 @@ import ReactSlider from 'react-slider';
 import { usePlayerState, usePlayerDispatch } from '../contexts/PlayerContext';
 import styles from '../styles/PlayerMobile.module.scss';
 
-export default function PlayerMobile(): React.ReactElement | null {
+export default function PlayerMobile(): JSX.Element | null {
   const { status: authStatus } = useSession();
   const isAuthenticated = authStatus === 'authenticated';
   const playerState = usePlayerState();

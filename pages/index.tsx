@@ -2,7 +2,6 @@ import moment from 'moment';
 import type { GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import ConcertAndArtistLinkRow from '../components/ConcertAndArtistLinkRow';
 import TourBreadcrumbRow from '../components/TourBreadcrumbRow';
@@ -101,7 +100,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
   };
 }
 
-export default function Page({ popularConcerts, newConcerts, latestConcertsByTour, artistsById, toursById }: IProps): ReactElement {
+export default function Page({ popularConcerts, newConcerts, latestConcertsByTour, artistsById, toursById }: IProps): JSX.Element {
   const title = 'A community for Dave Matthews Band fans';
   useDocumentTitle(title);
 

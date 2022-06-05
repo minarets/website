@@ -25,7 +25,7 @@ interface SearchAutoCompleteProps<TDoc = BasicDoc> {
   refine(value?: string): void;
 }
 
-function SearchAutoComplete({ currentRefinement, hits, refine }: SearchAutoCompleteProps<IndexedDocument>): React.ReactElement {
+function SearchAutoComplete({ currentRefinement, hits, refine }: SearchAutoCompleteProps<IndexedDocument>): JSX.Element {
   const [value, setValue] = React.useState<string>(currentRefinement);
   const router = useRouter();
   const hitIds: string[] = [];
@@ -47,7 +47,7 @@ function SearchAutoComplete({ currentRefinement, hits, refine }: SearchAutoCompl
     return '';
   }
 
-  function renderSuggestion(hit: Hit): React.ReactElement {
+  function renderSuggestion(hit: Hit): JSX.Element {
     return <Highlight attribute="name" hit={hit} tagName="mark" />;
   }
 
@@ -117,7 +117,7 @@ function SearchAutoComplete({ currentRefinement, hits, refine }: SearchAutoCompl
       onSuggestionsClearRequested={(): void => onSuggestionsClearRequested()}
       onSuggestionSelected={(event, params: SuggestionSelectedEventData<AutoCompleteType>): void => onSuggestionSelected(event, params)}
       getSuggestionValue={(): string => getSuggestionValue()}
-      renderSuggestion={(suggestion: Hit): React.ReactElement => renderSuggestion(suggestion)}
+      renderSuggestion={(suggestion: Hit): JSX.Element => renderSuggestion(suggestion)}
       inputProps={inputProps}
       renderSectionTitle={(section: { index: string; isFooter?: boolean }): React.ReactNode => renderSectionTitle(section)}
       getSectionSuggestions={(section: { hits: AutoCompleteType[] }): AutoCompleteType[] => getSectionSuggestions(section)}

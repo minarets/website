@@ -13,10 +13,10 @@ import Header from './Header';
 const Player = dynamic(() => import('./Player'), { ssr: false });
 
 interface LayoutParams {
-  children: React.ReactElement;
+  children: JSX.Element;
 }
 
-function Layout({ children }: LayoutParams): React.ReactElement {
+function Layout({ children }: LayoutParams): JSX.Element {
   const { data: session, status: authStatus } = useSession();
   const isAuthenticated = authStatus === 'authenticated';
 

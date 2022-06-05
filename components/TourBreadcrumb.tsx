@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import { getTourUrl } from '../minarets-api/tourService';
 import type { LimitedTour } from '../minarets-api/types';
@@ -11,7 +10,7 @@ interface IProps {
   skipParent?: boolean;
 }
 
-function TourBreadcrumb({ tour, toursById, skipParent }: IProps): ReactElement {
+function TourBreadcrumb({ tour, toursById, skipParent }: IProps): JSX.Element {
   let parentTour: LimitedTour | undefined;
   if (!skipParent && tour.parentId) {
     parentTour = toursById[tour.parentId];

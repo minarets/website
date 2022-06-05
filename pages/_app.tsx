@@ -1,7 +1,6 @@
 import type { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
-import type { ReactElement } from 'react';
 import * as React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
@@ -30,7 +29,7 @@ if (process.env.NEXT_PUBLIC_SENTRY_DSN) {
 const queryClient = new QueryClient();
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-function App({ Component, pageProps, err }: IProps): ReactElement {
+function App({ Component, pageProps, err }: IProps): JSX.Element {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const session: Session = {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

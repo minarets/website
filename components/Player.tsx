@@ -12,7 +12,7 @@ import PlayerDesktop from './PlayerDesktop';
 import PlayerMobile from './PlayerMobile';
 import PlayerMobileFull from './PlayerMobileFull';
 
-export default function Player(): React.ReactElement | null {
+export default function Player(): JSX.Element | null {
   const { status: authStatus } = useSession();
   const isAuthenticated = authStatus === 'authenticated';
   const playerState = usePlayerState();

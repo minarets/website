@@ -3,7 +3,6 @@ import { isTag, isText } from 'domutils';
 import { parseDocument } from 'htmlparser2';
 import moment from 'moment';
 import Link from 'next/link';
-import type { ReactElement } from 'react';
 import * as React from 'react';
 
 import type { ChatMessage } from '../minarets-api/minarets/types';
@@ -14,7 +13,7 @@ interface IProps {
   previousMessage?: ChatMessage;
 }
 
-function Smiley({ text, prefixWithSpace }: { text: string; prefixWithSpace: boolean }): ReactElement {
+function Smiley({ text, prefixWithSpace }: { text: string; prefixWithSpace: boolean }): JSX.Element {
   switch (text) {
     case ':)':
     case ':-)':
@@ -143,7 +142,7 @@ function Smiley({ text, prefixWithSpace }: { text: string; prefixWithSpace: bool
   }
 }
 
-function TextOrLink({ text, prefixWithSpace }: { text: string; prefixWithSpace: boolean }): ReactElement {
+function TextOrLink({ text, prefixWithSpace }: { text: string; prefixWithSpace: boolean }): JSX.Element {
   if (/^http?s:\/\//i.test(text)) {
     const isInternalLink = /^http?s:\/\/(meetattheshow\.com|minarets\.io)/i.test(text);
     let href = text;
@@ -171,7 +170,7 @@ function TextOrLink({ text, prefixWithSpace }: { text: string; prefixWithSpace: 
 }
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
-function TextOrImage({ node, expandTextLinks }: { node: Node; expandTextLinks: boolean }): ReactElement | null {
+function TextOrImage({ node, expandTextLinks }: { node: Node; expandTextLinks: boolean }): JSX.Element | null {
   if (isText(node)) {
     // Skip empty text node
     if (/^\s*$/.test(node.data)) {
@@ -214,7 +213,7 @@ function TextOrImage({ node, expandTextLinks }: { node: Node; expandTextLinks: b
   return null;
 }
 
-function MessageText({ text }: { text: string }): ReactElement {
+function MessageText({ text }: { text: string }): JSX.Element {
   // Do not show more than 2 blank lines in a row
   const document = parseDocument(text.replace(/[\n\r]{3,}/, '\n\n'), { decodeEntities: true });
 
@@ -262,7 +261,7 @@ function MessageText({ text }: { text: string }): ReactElement {
 }
 /* eslint-enable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 
-function ChatMessageRow({ message, previousMessage }: IProps): ReactElement {
+function ChatMessageRow({ message, previousMessage }: IProps): JSX.Element {
   const createdOnMoment = moment(message.createdOn);
   const isSystemMessage = message.createdBy.id < 1;
   const isToday = createdOnMoment.isSame(moment(), 'day');

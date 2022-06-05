@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import { getArtistUrl } from '../minarets-api/artistService';
 import type { BasicArtist } from '../minarets-api/minarets/types';
@@ -10,7 +9,7 @@ interface IProps {
   artist: BasicArtist;
 }
 
-function ArtistRandomConcertLink({ artist }: IProps): ReactElement {
+function ArtistRandomConcertLink({ artist }: IProps): JSX.Element {
   const router = useRouter();
   const [randomClicked, setRandomClicked] = React.useState(false);
 

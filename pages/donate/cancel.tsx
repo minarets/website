@@ -1,10 +1,9 @@
 import Head from 'next/head';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 
-export default function Page(): ReactElement {
+export default function Page(): JSX.Element {
   const title = 'Donation Cancelled';
   useDocumentTitle(title);
 

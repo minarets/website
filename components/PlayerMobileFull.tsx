@@ -7,7 +7,7 @@ import { usePlayerDispatch, usePlayerState } from '../contexts/PlayerContext';
 import { getTimeDisplay } from '../minarets-api/Player';
 import styles from '../styles/PlayerMobileFull.module.scss';
 
-export default function PlayerMobileFull(): React.ReactElement | null {
+export default function PlayerMobileFull(): JSX.Element | null {
   const { status: authStatus } = useSession();
   const isAuthenticated = authStatus === 'authenticated';
   const playerState = usePlayerState();

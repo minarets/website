@@ -1,7 +1,6 @@
 import type { GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import VenueWithConcertCountLinkRow from '../../components/VenueWithConcertCountLinkRow';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
@@ -28,7 +27,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
   };
 }
 
-export default function Page({ venues }: IProps): ReactElement {
+export default function Page({ venues }: IProps): JSX.Element {
   const title = 'Venues';
   useDocumentTitle(title);
 

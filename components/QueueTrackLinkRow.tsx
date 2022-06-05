@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import type { PlaybackTrack } from '../minarets-api/types';
 import styles from '../styles/components/TrackLinkRow.module.scss';
@@ -10,7 +9,7 @@ interface IProps {
   trackNumber?: number;
 }
 
-function QueueTrackLinkRow({ track, trackNumber }: IProps): ReactElement {
+function QueueTrackLinkRow({ track, trackNumber }: IProps): JSX.Element {
   // TODO: Add hover to row to show play button, for non-touch devices. Otherwise, replace track number with play button
   // If touch, then entire track name & notes block is clickable to play
   // TODO: Add swipe right to add to queue. Swipe left to heart?

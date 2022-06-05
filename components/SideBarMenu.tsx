@@ -20,7 +20,7 @@ async function getPlaylists(): Promise<PlaylistSummary[]> {
   return [];
 }
 
-export default function SideBarMenu(): React.ReactElement {
+export default function SideBarMenu(): JSX.Element {
   const { status: authStatus } = useSession();
   const isAuthenticated = authStatus === 'authenticated';
   const chatState = useChatState();

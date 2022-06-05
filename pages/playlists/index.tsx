@@ -1,7 +1,6 @@
 import type { GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import PlaylistLinkRow from '../../components/PlaylistLinkRow';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
@@ -47,7 +46,7 @@ export async function getStaticProps(): Promise<GetStaticPropsResult<IProps>> {
   };
 }
 
-export default function Page({ allPlaylists, popularPlaylists, recentPlaylists }: IProps): ReactElement {
+export default function Page({ allPlaylists, popularPlaylists, recentPlaylists }: IProps): JSX.Element {
   const title = 'Playlists';
   useDocumentTitle(title);
 

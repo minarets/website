@@ -1,7 +1,6 @@
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import { Minarets } from '../../../minarets-api';
 import { getTourUrl } from '../../../minarets-api/tourService';
@@ -54,7 +53,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
   };
 }
 
-export default function Page({ url }: IProps): ReactElement {
+export default function Page({ url }: IProps): JSX.Element {
   return (
     <Head>
       <meta httpEquiv="refresh" content={`0;url=${url}`} />

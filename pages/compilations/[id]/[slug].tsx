@@ -4,7 +4,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 import ContentLoader from 'react-content-loader';
 
 import ConcertLinkRow from '../../../components/ConcertLinkRow';
@@ -133,7 +132,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
   };
 }
 
-export default function Page({ compilation, concertsById, relatedConcertsByTour, toursById, artistsById }: IProps): ReactElement {
+export default function Page({ compilation, concertsById, relatedConcertsByTour, toursById, artistsById }: IProps): JSX.Element {
   const router = useRouter();
   const title = router.isFallback ? 'Loading compilation...' : compilation.name;
   useDocumentTitle(title);

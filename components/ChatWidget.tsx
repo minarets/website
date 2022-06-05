@@ -48,7 +48,7 @@ async function sendMessage(text: string, chatDispatch: React.Dispatch<ChatAction
   }
 }
 
-export default function ChatWidget(): React.ReactElement {
+export default function ChatWidget(): JSX.Element {
   const [windowIsActive, setWindowIsActive] = React.useState(true);
   const [isFirstLoad, setIsFirstLoad] = React.useState(true);
   const [isSendingMessage, setIsSendingMessage] = React.useState(false);

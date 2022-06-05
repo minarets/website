@@ -111,7 +111,7 @@ interface IChatContextProviderProps {
   children: React.ReactNode;
 }
 
-export const ChatProvider = ({ children }: IChatContextProviderProps): React.ReactElement<IChatContextProviderProps> => {
+export function ChatProvider({ children }: IChatContextProviderProps): JSX.Element {
   const [state, dispatch] = React.useReducer(chatReducer, {
     messages: [],
     onlineUsers: [],
@@ -123,7 +123,7 @@ export const ChatProvider = ({ children }: IChatContextProviderProps): React.Rea
       <ChatDispatchContext.Provider value={dispatch}>{children}</ChatDispatchContext.Provider>
     </ChatStateContext.Provider>
   );
-};
+}
 
 export function useChatState(): IChatState {
   const context = React.useContext<IChatState | undefined>(ChatStateContext);

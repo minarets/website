@@ -8,7 +8,7 @@ import styles from '../styles/Header.module.scss';
 
 import Search from './Search';
 
-export default function Header(): React.ReactElement {
+export default function Header(): JSX.Element {
   const { data: session, status } = useSession();
   const loading = status === 'loading';
   const isAuthenticated = status === 'authenticated';

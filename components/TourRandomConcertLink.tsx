@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import type { BasicTour } from '../minarets-api/minarets/types';
 import styles from '../styles/RandomConcertLink.module.scss';
@@ -9,7 +8,7 @@ interface IProps {
   tour: BasicTour;
 }
 
-function TourRandomConcertLink({ tour }: IProps): ReactElement {
+function TourRandomConcertLink({ tour }: IProps): JSX.Element {
   const router = useRouter();
   const [randomClicked, setRandomClicked] = React.useState(false);
 

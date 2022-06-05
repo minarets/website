@@ -2,7 +2,6 @@ import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import * as React from 'react';
-import type { ReactElement } from 'react';
 
 import ConcertLinkRow from '../../components/ConcertLinkRow';
 import TourBreadcrumbRow from '../../components/TourBreadcrumbRow';
@@ -90,7 +89,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
   };
 }
 
-export default function Page({ tour, concertCount, concertsByTour, toursById }: IProps): ReactElement {
+export default function Page({ tour, concertCount, concertsByTour, toursById }: IProps): JSX.Element {
   const title = tour.name;
   useDocumentTitle(title);
 
