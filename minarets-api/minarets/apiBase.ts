@@ -71,6 +71,11 @@ export abstract class ApiBase {
     const response = await fetch(urlString.href, {
       method: 'GET',
       headers: new Headers(this.defaultHeaders),
+      retry: {
+        retries: 10,
+        factor: 2,
+        minTimeout: 1000,
+      },
     });
 
     if (response.ok) {
