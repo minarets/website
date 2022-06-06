@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { usePlayerState } from '../contexts/PlayerContext';
 import { useMediaSession } from '../hooks/useMediaSession';
 
@@ -10,39 +12,28 @@ export default function PlayerNativeControls(): JSX.Element | null {
     artist: playerState.currentTrack?.artist.name,
     artwork: playerState.currentTrack?.album.imageUrl ? [{ src: playerState.currentTrack?.album.imageUrl }] : undefined,
     position: playerState.currentTime,
-    playbackRate: 1,
+    isPaused: playerState.isPaused,
     duration: playerState.duration,
-    onPlay() {
+    onPlay: useCallback(() => {
       playerState.player.play();
-    },
-    onPause() {
+    }, [playerState.player]),
+    onPause: useCallback(() => {
       playerState.player.pause();
-    },
-    onPreviousTrack() {
+    }, [playerState.player]),
+    onPreviousTrack: useCallback(() => {
       playerState.player.previousTrack();
-    },
-    onNextTrack() {
+    }, [playerState.player]),
+    onNextTrack: useCallback(() => {
       playerState.player.nextTrack();
-    },
-    onSeek(params) {
-      if (params.seekTime != null) {
-        playerState.player.seek(params.seekTime);
-      }
-    },
-    onSeekForward(params) {
-      if (params.seekOffset != null) {
-        playerState.player.seek(Math.min(playerState.currentTime + params.seekOffset, playerState.duration));
-      } else {
-        playerState.player.seek(Math.min(playerState.currentTime + 15, playerState.duration));
-      }
-    },
-    onSeekBackward(params) {
-      if (params.seekOffset != null) {
-        playerState.player.seek(Math.max(playerState.currentTime - params.seekOffset, 0));
-      } else {
-        playerState.player.seek(Math.max(playerState.currentTime - 15, 0));
-      }
-    },
+    }, [playerState.player]),
+    onSeek: useCallback(
+      (params) => {
+        if (params.seekTime != null) {
+          playerState.player.seek(params.seekTime);
+        }
+      },
+      [playerState.player],
+    ),
   });
 
   return null;

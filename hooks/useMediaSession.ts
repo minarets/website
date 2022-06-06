@@ -1,27 +1,40 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 interface MediaSessionProps extends MediaMetadataInit, MediaPositionState {
+  isPaused: boolean;
   onPlay: () => void;
   onPause: () => void;
   onSeek: (params: Pick<MediaSessionActionDetails, 'fastSeek' | 'seekTime'>) => void;
-  onSeekBackward: (params: Pick<MediaSessionActionDetails, 'seekOffset'>) => void;
-  onSeekForward: (params: Pick<MediaSessionActionDetails, 'seekOffset'>) => void;
   onPreviousTrack: () => void;
   onNextTrack: () => void;
 }
 
-export function useMediaSession(params: MediaSessionProps): void {
+export function useMediaSession({ title, album, artist, artwork, isPaused, duration, playbackRate, position, onPlay, onPause, onSeek, onPreviousTrack, onNextTrack }: MediaSessionProps): void {
+  const artworkUrl = useMemo(() => {
+    if (artwork && artwork.length) {
+      return artwork[0].src;
+    }
+
+    return undefined;
+  }, [artwork]);
+
   // Update track metadata
   useEffect(() => {
     if (navigator.mediaSession) {
       navigator.mediaSession.metadata = new MediaMetadata({
-        title: params.title,
-        album: params.album,
-        artist: params.artist,
-        artwork: params.artwork,
+        title,
+        album,
+        artist,
+        artwork: artworkUrl ? [{ src: artworkUrl }] : undefined,
       });
     }
-  }, [params.title, params.album, params.artist, params.artwork]);
+  }, [title, album, artist, artworkUrl]);
+
+  useEffect(() => {
+    if (navigator.mediaSession) {
+      navigator.mediaSession.playbackState = isPaused ? 'paused' : 'playing';
+    }
+  }, [isPaused]);
 
   // Update playback position
   useEffect(() => {
@@ -29,66 +42,92 @@ export function useMediaSession(params: MediaSessionProps): void {
       return;
     }
 
-    if (params.duration) {
+    if (duration) {
       navigator.mediaSession.setPositionState({
-        duration: params.duration,
-        playbackRate: params.playbackRate,
-        position: params.position,
+        duration,
+        playbackRate,
+        position,
       });
     } else {
       // Reset position
       navigator.mediaSession.setPositionState();
     }
-  }, [params.duration, params.playbackRate, params.position]);
+  }, [duration, playbackRate, position]);
 
   // Hook all the events
   useEffect(() => {
-    navigator.mediaSession?.setActionHandler('play', params.onPlay);
+    try {
+      navigator.mediaSession?.setActionHandler('play', onPlay);
+    } catch (ex) {
+      console.error(ex);
+    }
 
     return () => {
-      navigator.mediaSession?.setActionHandler('play', null);
+      try {
+        navigator.mediaSession?.setActionHandler('play', null);
+      } catch (ex) {
+        console.error(ex);
+      }
     };
-  }, [params.onPlay]);
+  }, [onPlay]);
   useEffect(() => {
-    navigator.mediaSession?.setActionHandler('pause', params.onPause);
+    try {
+      navigator.mediaSession?.setActionHandler('pause', onPause);
+    } catch (ex) {
+      console.error(ex);
+    }
 
     return () => {
-      navigator.mediaSession?.setActionHandler('pause', null);
+      try {
+        navigator.mediaSession?.setActionHandler('pause', null);
+      } catch (ex) {
+        console.error(ex);
+      }
     };
-  }, [params.onPause]);
+  }, [onPause]);
   useEffect(() => {
-    navigator.mediaSession?.setActionHandler('seekto', params.onSeek);
+    try {
+      navigator.mediaSession?.setActionHandler('seekto', onSeek);
+    } catch (ex) {
+      console.error(ex);
+    }
 
     return () => {
-      navigator.mediaSession?.setActionHandler('seekto', null);
+      try {
+        navigator.mediaSession?.setActionHandler('seekto', null);
+      } catch (ex) {
+        console.error(ex);
+      }
     };
-  }, [params.onSeek]);
+  }, [onSeek]);
   useEffect(() => {
-    navigator.mediaSession?.setActionHandler('seekbackward', params.onSeekBackward);
+    try {
+      navigator.mediaSession?.setActionHandler('previoustrack', onPreviousTrack);
+    } catch (ex) {
+      console.error(ex);
+    }
 
     return () => {
-      navigator.mediaSession?.setActionHandler('seekbackward', null);
+      try {
+        navigator.mediaSession?.setActionHandler('previoustrack', null);
+      } catch (ex) {
+        console.error(ex);
+      }
     };
-  }, [params.onSeekBackward]);
+  }, [onPreviousTrack]);
   useEffect(() => {
-    navigator.mediaSession?.setActionHandler('seekforward', params.onSeekForward);
+    try {
+      navigator.mediaSession?.setActionHandler('nexttrack', onNextTrack);
+    } catch (ex) {
+      console.error(ex);
+    }
 
     return () => {
-      navigator.mediaSession?.setActionHandler('seekforward', null);
+      try {
+        navigator.mediaSession?.setActionHandler('nexttrack', null);
+      } catch (ex) {
+        console.error(ex);
+      }
     };
-  }, [params.onSeekForward]);
-  useEffect(() => {
-    navigator.mediaSession?.setActionHandler('previoustrack', params.onPreviousTrack);
-
-    return () => {
-      navigator.mediaSession?.setActionHandler('previoustrack', null);
-    };
-  }, [params.onPreviousTrack]);
-  useEffect(() => {
-    navigator.mediaSession?.setActionHandler('nexttrack', params.onNextTrack);
-
-    return () => {
-      navigator.mediaSession?.setActionHandler('nexttrack', null);
-    };
-  }, [params.onNextTrack]);
+  }, [onNextTrack]);
 }
