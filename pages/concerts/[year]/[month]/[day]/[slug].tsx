@@ -201,6 +201,22 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
   const keywords = getConcertKeywords(concert);
   const concertUrl = getConcertUrl(concert);
   const artistUrl = getArtistUrl(concert.artist);
+  let venueLocation = concert.venue.city;
+  if (concert.venue.state) {
+    if (venueLocation) {
+      venueLocation += ', ';
+    }
+
+    venueLocation += concert.venue.state;
+  }
+
+  if (concert.venue.country && concert.venue.country !== 'United States') {
+    if (venueLocation) {
+      venueLocation += ' ';
+    }
+
+    venueLocation += concert.venue.country;
+  }
 
   return (
     <>
@@ -290,6 +306,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
                   <Link href={getVenueUrl(concert.venue)}>
                     <a title={concert.venue.name}>{concert.venue.name}</a>
                   </Link>
+                  <div>{venueLocation}</div>
                 </td>
               </tr>
             </tbody>
