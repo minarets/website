@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/browser';
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import { useSession } from 'next-auth/react';
@@ -151,7 +150,7 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
   const playerState = usePlayerState();
 
   const playCb = React.useCallback(() => {
-    playerState.player.playTracks(playlist.tracks.map((track) => getPlaybackTrack(track, concertsById[track.concert.id].tokenDetails || {}))).catch((ex) => Sentry.captureException(ex));
+    playerState.player.playTracks(playlist.tracks.map((track) => getPlaybackTrack(track, concertsById[track.concert.id].tokenDetails || {})));
   }, [playerState, playlist, concertsById]);
   const queueCb = React.useCallback(() => {
     playerState.player.queuePriorityTracks(playlist.tracks.map((track) => getPlaybackTrack(track, concertsById[track.concert.id].tokenDetails || {})));

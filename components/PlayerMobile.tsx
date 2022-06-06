@@ -57,7 +57,7 @@ export default function PlayerMobile(): JSX.Element | null {
         {!playerState.currentTrack && <div className={styles.nowPlayingBarCenter} />}
         <div className={styles.nowPlayingBarRight}>
           {playerState.isPaused && (
-            <button title="Play" type="button" className={styles.playPause} disabled={!playerState.currentTrack} onClick={(): Promise<void> => playerState.player.play()}>
+            <button title="Play" type="button" className={styles.playPause} disabled={!playerState.currentTrack} onClick={(): void => playerState.player.play()}>
               <svg role="img" height="16" width="16" viewBox="0 0 16 16">
                 <path d="M4.018 14L14.41 8 4.018 2z" />
               </svg>

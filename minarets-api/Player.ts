@@ -1,3 +1,5 @@
+import { Howl } from 'howler';
+
 export enum RepeatMode {
   noRepeat = 0,
   repeatOnce = 1,
@@ -38,6 +40,11 @@ interface PlayerParams<Track extends PlayerTrack = PlayerTrack> {
   onError?: (error: PlayerError<Track>) => void;
   // Optionally override default shuffle logic
   shuffle?: (nonShuffledNextTracks: Track[], state: PlayerState<Track>) => Track[];
+}
+
+interface AudioPlayer {
+  player: Howl;
+  url: string;
 }
 
 export function getTimeDisplay(seconds: number): string {
@@ -82,13 +89,13 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
 
   private readonly shuffle?: (nonShuffledNextTracks: Track[], state: PlayerState<Track>) => Track[];
 
-  private isAudio1Active = true;
+  private isAudio1Active = false;
 
   private isGaplessTransition = false;
 
-  private audio1: HTMLAudioElement | null;
+  private audio1: AudioPlayer | null;
 
-  private audio2: HTMLAudioElement | null;
+  private audio2: AudioPlayer | null;
 
   private nonShuffledNextTracks: Track[] = [];
 
@@ -120,12 +127,13 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     try {
       this.state.volume = volumePercent;
       const volume = volumePercent / 100;
+      Howler.volume(volume);
       if (this.audio1) {
-        this.audio1.volume = volume;
+        this.audio1.player.volume(volume);
       }
 
       if (this.audio2) {
-        this.audio2.volume = volume;
+        this.audio2.player.volume(volume);
       }
 
       if (triggerStateChange) {
@@ -141,10 +149,10 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
   public setRepeatMode(repeatMode: RepeatMode): void {
     try {
       this.state.repeatMode = repeatMode;
-      const audio = this.activeAudioElement;
+      const audio = this.activeAudioPlayer;
 
       if (audio) {
-        audio.loop = repeatMode !== RepeatMode.noRepeat;
+        audio.player.loop(repeatMode !== RepeatMode.noRepeat);
       }
 
       this.triggerOnStateChange();
@@ -175,9 +183,9 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
 
   public pause(): void {
     try {
-      const audio = this.activeAudioElement;
+      const audio = this.activeAudioPlayer;
       if (audio) {
-        audio.pause();
+        audio.player.pause();
       }
 
       if (!this.state.isPaused) {
@@ -191,16 +199,16 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     }
   }
 
-  public async play(): Promise<void> {
+  public play(): void {
     try {
-      const audio = this.activeAudioElement;
+      const audio = this.activeAudioPlayer;
       if (audio) {
-        await audio.play();
+        audio.player.play();
         this.state.isPaused = false;
 
         this.triggerOnStateChange();
       } else {
-        await this.playNextTrack(this.state.currentTrack);
+        this.playNextTrack(this.state.currentTrack);
       }
     } catch (ex) {
       if (this.onError) {
@@ -209,9 +217,9 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     }
   }
 
-  public async togglePlay(): Promise<void> {
+  public togglePlay(): void {
     if (this.state.isPaused) {
-      await this.play();
+      this.play();
     } else {
       this.pause();
     }
@@ -219,9 +227,9 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
 
   public seek(position: number): void {
     try {
-      const audio = this.activeAudioElement;
+      const audio = this.activeAudioPlayer;
       if (audio) {
-        audio.currentTime = Math.max(0, position);
+        audio.player.seek(Math.max(0, Math.min(audio.player.duration(), position)));
 
         this.triggerOnStateChange();
       }
@@ -232,32 +240,29 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     }
   }
 
-  public async previousTrack(): Promise<void> {
+  public previousTrack(): void {
     try {
-      const audio = this.activeAudioElement;
+      this.isGaplessTransition = false;
+      const audio = this.activeAudioPlayer;
       if (audio) {
-        audio.pause();
+        audio.player.pause();
 
         // If the current song has played for more than 3 seconds, rewind it to the beginning
         // If there are no previously played tracks, rewind the current track
-        if (audio.currentTime >= 3 || !this.state.previousTracks.length) {
-          audio.currentTime = 0;
+        if (audio.player.seek() >= 3 || !this.state.previousTracks.length) {
+          audio.player.seek(0);
 
           if (this.state.currentTrack) {
             this.triggerOnTrackStart();
           }
 
-          await this.play();
+          this.play();
           return;
         }
-
-        // Remove event hook since the active audio element will become a buffer
-        audio.oncanplaythrough = null;
-        audio.currentTime = 0;
       }
 
       if (this.state.previousTracks.length) {
-        // If a song was playing, prepend it back to to nextTracks
+        // If a song was playing, prepend it back to nextTracks
         if (this.state.currentTrack) {
           this.state.nextTracks = [this.state.currentTrack, ...this.state.nextTracks];
 
@@ -267,7 +272,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
         // Pop last played track and make it the current track
         // NOTE: saving to currentTrack to prevent playNextTrack from re-adding to previousTracks
         this.state.currentTrack = this.state.previousTracks.shift();
-        await this.playNextTrack(this.state.currentTrack);
+        this.playNextTrack(this.state.currentTrack);
       }
     } catch (ex) {
       if (this.onError) {
@@ -276,15 +281,16 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     }
   }
 
-  public async nextTrack(): Promise<void> {
+  public nextTrack(): void {
     try {
-      const audio = this.activeAudioElement;
+      this.isGaplessTransition = false;
+      const audio = this.activeAudioPlayer;
       if (audio) {
-        audio.pause();
+        audio.player.pause();
         this.state.isPaused = true;
       }
 
-      await this.playNextTrack();
+      this.playNextTrack();
     } catch (ex) {
       if (this.onError) {
         this.onError(ex as Error);
@@ -322,15 +328,22 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
    * @param {object[]} tracks
    * @param {number} [playIndex=0]
    */
-  public async playTracks(tracks: Track[], playIndex = 0): Promise<void> {
-    const audio = this.activeAudioElement;
-    if (audio) {
-      audio.pause();
+  public playTracks(tracks: Track[], playIndex = 0): void {
+    if (this.audio1) {
+      this.audio1.player.pause();
+      this.audio1.player.unload();
+      this.audio1 = null;
     }
 
-    this.audio1 = null;
-    this.audio2 = null;
+    if (this.audio2) {
+      this.audio2.player.pause();
+      this.audio2.player.unload();
+      this.audio2 = null;
+    }
+
+    this.isGaplessTransition = false;
     this.isAudio1Active = true;
+    this.state.currentTrack = undefined;
 
     this.state.priorityTracks = [];
     if (playIndex > 0 && playIndex < tracks.length) {
@@ -341,10 +354,10 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
 
     this.state.nextTracks = tracks.slice(playIndex);
 
-    await this.play();
+    this.play();
   }
 
-  private get activeAudioElement(): HTMLAudioElement | null {
+  private get activeAudioPlayer(): AudioPlayer | null {
     if (this.isAudio1Active) {
       return this.audio1;
     }
@@ -352,22 +365,25 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     return this.audio2;
   }
 
-  private onPlayerProgress(): void {
-    const audio = this.activeAudioElement;
+  /**
+   * Update progress from player
+   * @param {boolean} updateLoop - Continually loop to update progress. Should be true when called from play event; otherwise false
+   * @private
+   */
+  private onPlayerProgress(updateLoop: boolean): void {
+    const audio = this.activeAudioPlayer;
     if (audio) {
-      this.state.position = audio.currentTime;
-      this.state.duration = audio.duration;
+      this.state.position = Math.round((audio.player.seek() || 0) * 100) / 100;
+      this.state.duration = audio.player.duration();
 
-      if (!this.isGaplessTransition) {
-        const diff = audio.duration - audio.currentTime;
+      // If not currently in a gapless transition and there's less than 0.3s left of the current song, start the next
+      // song as a 'gapless transition"
+      if (!this.isGaplessTransition && audio.player.state() === 'loaded') {
+        const diff = this.state.duration - this.state.position;
         // NOTE: 0.3 is a magic number that I guessed at. Maybe this should be configurable or better calculated?
         if (diff < 0.3 && this.state.repeatMode === RepeatMode.noRepeat) {
           this.isGaplessTransition = true;
-          this.playNextTrack().catch((err): void => {
-            if (this.onError) {
-              this.onError(err);
-            }
-          });
+          this.playNextTrack();
           return;
         }
       }
@@ -377,6 +393,12 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     }
 
     this.triggerOnStateChange();
+
+    if (updateLoop && !this.state.isPaused) {
+      requestAnimationFrame(() => {
+        this.onPlayerProgress(updateLoop);
+      });
+    }
   }
 
   private onPlayerTrackEnd(): void {
@@ -388,12 +410,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
         if (this.isGaplessTransition) {
           this.isGaplessTransition = false;
         } else {
-          console.log('Playing next track!');
-          this.playNextTrack().catch((err): void => {
-            if (this.onError) {
-              this.onError(err);
-            }
-          });
+          this.playNextTrack();
         }
         break;
       case RepeatMode.repeatFull:
@@ -402,7 +419,7 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     }
   }
 
-  private async playNextTrack(manualNextTrack?: Track): Promise<void> {
+  private playNextTrack(manualNextTrack?: Track): void {
     let nextTrack = manualNextTrack;
 
     if (!nextTrack) {
@@ -424,67 +441,40 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     }
 
     if (nextTrack) {
+      if (manualNextTrack) {
+        this.activeAudioPlayer?.player.pause();
+      }
+
       this.state.currentTrack = nextTrack;
-      const activeAudio = this.activeAudioElement;
-      const activeTrackSource = activeAudio ? activeAudio.src : '';
       this.isAudio1Active = !this.isAudio1Active;
 
-      let audio: HTMLAudioElement;
+      let audio: AudioPlayer['player'];
       // Create the audio element if it was not previously buffered
       if (this.isAudio1Active) {
-        if (!this.audio1) {
-          this.audio1 = new Audio();
-          this.audio1.addEventListener('error', () => {
-            if (this.onError) {
-              this.onError(this.audio2?.error || new Error('An unknown error occurred with the audio element'));
-            }
-          });
+        if (this.audio1?.url !== nextTrack.url) {
+          this.audio1?.player.unload();
+
+          this.audio1 = this.createAudioPlayer(nextTrack.url);
         }
 
-        audio = this.audio1;
+        audio = this.audio1.player;
       } else {
-        if (!this.audio2) {
-          this.audio2 = new Audio();
-          this.audio2.addEventListener('error', () => {
-            if (this.onError) {
-              this.onError(this.audio2?.error || new Error('An unknown error occurred with the audio element'));
-            }
-          });
+        if (this.audio2?.url !== nextTrack.url) {
+          this.audio2?.player.unload();
+
+          this.audio2 = this.createAudioPlayer(nextTrack.url);
         }
 
-        audio = this.audio2;
+        audio = this.audio2.player;
       }
 
-      audio.addEventListener('canplaythrough', () => {
-        this.bufferNextTrack();
-      });
-      audio.addEventListener('timeupdate', () => {
-        this.onPlayerProgress();
-      });
-      audio.addEventListener('ended', () => {
-        this.onPlayerTrackEnd();
-      });
-
-      audio.volume = this.state.volume / 100;
-      audio.src = nextTrack.url;
-      audio.currentTime = 0;
-
-      if (Number.isFinite(audio.duration)) {
-        this.state.duration = audio.duration;
-      }
+      audio.volume(this.state.volume / 100);
+      audio.seek(0);
+      this.state.duration = audio.duration();
 
       this.triggerOnTrackStart();
 
-      await this.play();
-
-      // Destroy the previous track audio element if it hasn't changed since playing the next track
-      if (!manualNextTrack) {
-        if (this.isAudio1Active && this.audio2 && this.audio2.src === activeTrackSource) {
-          this.audio2 = null;
-        } else if (!this.isAudio1Active && this.audio1 && this.audio1.src === activeTrackSource) {
-          this.audio1 = null;
-        }
-      }
+      this.play();
     } else if (this.state.currentTrack) {
       this.state.currentTrack = undefined;
       this.triggerOnStateChange();
@@ -500,43 +490,26 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     }
 
     if (nextTrack) {
-      let buffer: HTMLAudioElement;
       if (this.isAudio1Active) {
         // Destroy previous buffer if it's not buffering the correct track
-        if (this.audio2 && this.audio2.src !== nextTrack.url) {
+        if (this.audio2 && this.audio2.url !== nextTrack.url) {
+          this.audio2.player.unload();
           this.audio2 = null;
         }
 
         if (!this.audio2) {
-          this.audio2 = new Audio();
-          this.audio2.addEventListener('error', () => {
-            if (this.onError) {
-              this.onError(this.audio2?.error || new Error('An unknown error occurred with the audio element'));
-            }
-          });
+          this.audio2 = this.createAudioPlayer(nextTrack.url);
         }
-
-        buffer = this.audio2;
       } else {
         // Destroy previous buffer if it's not buffering the correct track
-        if (this.audio1 && this.audio1.src !== nextTrack.url) {
+        if (this.audio1 && this.audio1.url !== nextTrack.url) {
           this.audio1 = null;
         }
 
         if (!this.audio1) {
-          this.audio1 = new Audio();
-          this.audio1.addEventListener('error', () => {
-            if (this.onError) {
-              this.onError(this.audio2?.error || new Error('An unknown error occurred with the audio element'));
-            }
-          });
+          this.audio1 = this.createAudioPlayer(nextTrack.url);
         }
-
-        buffer = this.audio1;
       }
-
-      buffer.preload = 'auto';
-      buffer.src = nextTrack.url;
     }
   }
 
@@ -573,5 +546,49 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     if (this.onStateChanged) {
       this.onStateChanged({ ...this.state });
     }
+  }
+
+  private createAudioPlayer(url: string): AudioPlayer {
+    const audioPlayer = {
+      url,
+      player: new Howl({
+        src: url,
+        format: 'mp3',
+        html5: true,
+        volume: this.state.volume / 100,
+        onplay: () => {
+          this.onPlayerProgress(true);
+        },
+        onseek: () => {
+          this.onPlayerProgress(false);
+        },
+        onload: () => {
+          this.bufferNextTrack();
+        },
+        onend: () => {
+          this.onPlayerTrackEnd();
+        },
+        onloaderror: (_id, code) => {
+          if (this.onError) {
+            switch (code) {
+              case MediaError.MEDIA_ERR_NETWORK:
+                this.onError(new Error('A network error of some description caused the user agent to stop fetching the media resource, after the resource was established to be usable.'));
+                break;
+              case MediaError.MEDIA_ERR_DECODE:
+                this.onError(new Error('An error of some description occurred while decod        ing the media resource, after the resource was established to be usable.'));
+                break;
+              case MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                this.onError(new Error('The media resource indicated by the src attribute or assigned media provider object was not suitable.'));
+                break;
+              default:
+                // Ignore
+                break;
+            }
+          }
+        },
+      }),
+    };
+
+    return audioPlayer;
   }
 }

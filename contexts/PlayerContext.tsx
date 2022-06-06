@@ -217,6 +217,7 @@ export function PlayerProvider({ children }: IPlayerContextProviderProps): JSX.E
         });
       },
       onError(error): void {
+        console.error(error);
         Sentry.captureException(error);
       },
     }),
