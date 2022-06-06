@@ -10,6 +10,7 @@ import type { PlaybackTrack, PlaybackTrackAlbum } from '../minarets-api/types';
 import PlayerDesktop from './PlayerDesktop';
 import PlayerMobile from './PlayerMobile';
 import PlayerMobileFull from './PlayerMobileFull';
+import PlayerNativeControls from './PlayerNativeControls';
 
 export default function Player(): JSX.Element | null {
   const { status: authStatus } = useSession();
@@ -68,6 +69,7 @@ export default function Player(): JSX.Element | null {
           <link rel="preload" href={album.imageUrl} as="image" key={`preload-art-${album.id}`} />
         ))}
       </Head>
+      <PlayerNativeControls />
       {isMobile && !playerState.showFullPlayer && <PlayerMobile />}
       {isMobile && playerState.showFullPlayer && <PlayerMobileFull />}
       {!isMobile && <PlayerDesktop />}
