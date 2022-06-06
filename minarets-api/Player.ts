@@ -1,17 +1,14 @@
 import { Howl } from 'howler';
 
+import type { PlaybackTrack } from './types';
+
 export enum RepeatMode {
   noRepeat = 0,
   repeatOnce = 1,
   repeatFull = 2,
 }
 
-export interface PlayerTrack {
-  uniqueId: string;
-  url: string;
-}
-
-interface PlayerState<Track extends PlayerTrack = PlayerTrack> {
+interface PlayerState<Track extends PlaybackTrack = PlaybackTrack> {
   volume: number;
   isPaused: boolean;
   position: number;
@@ -27,12 +24,12 @@ interface PlayerState<Track extends PlayerTrack = PlayerTrack> {
   previousTracks: Track[];
 }
 
-interface PlayerError<Track extends PlayerTrack = PlayerTrack> {
+interface PlayerError<Track extends PlaybackTrack = PlaybackTrack> {
   message: string;
   track?: Track;
 }
 
-interface PlayerParams<Track extends PlayerTrack = PlayerTrack> {
+interface PlayerParams<Track extends PlaybackTrack = PlaybackTrack> {
   volume: number;
   onTrackStart?: (track: Track) => void;
   onTrackEnd?: (track: Track) => void;
@@ -44,7 +41,7 @@ interface PlayerParams<Track extends PlayerTrack = PlayerTrack> {
 
 interface AudioPlayer {
   player: Howl;
-  url: string;
+  metadata: PlaybackTrack;
 }
 
 export function getTimeDisplay(seconds: number): string {
@@ -76,7 +73,7 @@ export function getTimeDisplay(seconds: number): string {
   return result;
 }
 
-export class Player<Track extends PlayerTrack = PlayerTrack> {
+export class Player<Track extends PlaybackTrack = PlaybackTrack> {
   private readonly state: PlayerState<Track>;
 
   private readonly onTrackStart?: (track: Track) => void;
@@ -451,18 +448,18 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
       let audio: AudioPlayer['player'];
       // Create the audio element if it was not previously buffered
       if (this.isAudio1Active) {
-        if (this.audio1?.url !== nextTrack.url) {
+        if (this.audio1?.metadata.url !== nextTrack.url) {
           this.audio1?.player.unload();
 
-          this.audio1 = this.createAudioPlayer(nextTrack.url);
+          this.audio1 = this.createAudioPlayer(nextTrack);
         }
 
         audio = this.audio1.player;
       } else {
-        if (this.audio2?.url !== nextTrack.url) {
+        if (this.audio2?.metadata.url !== nextTrack.url) {
           this.audio2?.player.unload();
 
-          this.audio2 = this.createAudioPlayer(nextTrack.url);
+          this.audio2 = this.createAudioPlayer(nextTrack);
         }
 
         audio = this.audio2.player;
@@ -492,22 +489,22 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     if (nextTrack) {
       if (this.isAudio1Active) {
         // Destroy previous buffer if it's not buffering the correct track
-        if (this.audio2 && this.audio2.url !== nextTrack.url) {
+        if (this.audio2 && this.audio2.metadata.url !== nextTrack.url) {
           this.audio2.player.unload();
           this.audio2 = null;
         }
 
         if (!this.audio2) {
-          this.audio2 = this.createAudioPlayer(nextTrack.url);
+          this.audio2 = this.createAudioPlayer(nextTrack);
         }
       } else {
         // Destroy previous buffer if it's not buffering the correct track
-        if (this.audio1 && this.audio1.url !== nextTrack.url) {
+        if (this.audio1 && this.audio1.metadata.url !== nextTrack.url) {
           this.audio1 = null;
         }
 
         if (!this.audio1) {
-          this.audio1 = this.createAudioPlayer(nextTrack.url);
+          this.audio1 = this.createAudioPlayer(nextTrack);
         }
       }
     }
@@ -548,11 +545,11 @@ export class Player<Track extends PlayerTrack = PlayerTrack> {
     }
   }
 
-  private createAudioPlayer(url: string): AudioPlayer {
+  private createAudioPlayer(track: Track): AudioPlayer {
     const audioPlayer = {
-      url,
+      metadata: track,
       player: new Howl({
-        src: url,
+        src: track.url,
         format: 'mp3',
         html5: true,
         volume: this.state.volume / 100,
