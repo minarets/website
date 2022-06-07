@@ -28,6 +28,16 @@ interface ISetVolumeAction {
   volume: number;
 }
 
+interface ISeek {
+  type: 'Seek';
+  position: number;
+}
+
+interface ISeekByAction {
+  type: 'SeekBy';
+  offset: number;
+}
+
 interface IProgressAction {
   type: 'Progress';
   currentTime: number;
@@ -56,7 +66,7 @@ interface IShowHideFullPlayerAction {
   type: 'HideFullPlayer' | 'ShowFullPlayer';
 }
 
-type PlayerAction = IMuteAction | IProgressAction | ISetVolumeAction | IShowHideFullPlayerAction | ITrackStartEndAction | IUpdatePlayerStateAction;
+type PlayerAction = IMuteAction | IProgressAction | ISeek | ISeekByAction | ISetVolumeAction | IShowHideFullPlayerAction | ITrackStartEndAction | IUpdatePlayerStateAction;
 
 function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState {
   try {
@@ -154,6 +164,32 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
           ...state,
           isMuted: false,
           volume: action.volume,
+        };
+      }
+      case 'Seek': {
+        Sentry.addBreadcrumb({
+          category: 'Player',
+          message: 'Seek',
+          level: Sentry.Severity.Info,
+        });
+        const position = state.player.seek(action.position);
+
+        return {
+          ...state,
+          currentTime: position,
+        };
+      }
+      case 'SeekBy': {
+        Sentry.addBreadcrumb({
+          category: 'Player',
+          message: 'SeekBy',
+          level: Sentry.Severity.Info,
+        });
+        const position = state.player.seekBy(action.offset);
+
+        return {
+          ...state,
+          currentTime: position,
         };
       }
       case 'ShowFullPlayer': {

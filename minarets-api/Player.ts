@@ -222,19 +222,46 @@ export class Player<Track extends PlaybackTrack = PlaybackTrack> {
     }
   }
 
-  public seek(position: number): void {
+  public seek(position: number): number {
     try {
       const audio = this.activeAudioPlayer;
       if (audio) {
-        audio.player.seek(Math.max(0, Math.min(audio.player.duration(), position)));
+        const newPosition = Math.max(0, Math.min(audio.player.duration(), position));
+        audio.player.seek(newPosition);
 
         this.triggerOnStateChange();
+
+        return newPosition;
       }
     } catch (ex) {
       if (this.onError) {
         this.onError(ex as Error);
       }
     }
+
+    return 0;
+  }
+
+  public seekBy(amount: number): number {
+    try {
+      console.log(`seekBy ${amount}`);
+      const audio = this.activeAudioPlayer;
+      if (audio) {
+        const position = Math.min(audio.player.duration(), Math.max(0, audio.player.seek() + amount));
+
+        audio.player.seek(position);
+
+        this.triggerOnStateChange();
+
+        return position;
+      }
+    } catch (ex) {
+      if (this.onError) {
+        this.onError(ex as Error);
+      }
+    }
+
+    return 0;
   }
 
   public previousTrack(): void {

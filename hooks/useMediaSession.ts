@@ -1,15 +1,33 @@
 import { useEffect, useMemo } from 'react';
 
-interface MediaSessionProps extends MediaMetadataInit, MediaPositionState {
+export interface MediaSessionProps extends MediaMetadataInit, MediaPositionState {
   isPaused: boolean;
   onPlay: () => void;
   onPause: () => void;
   onSeek: (params: Pick<MediaSessionActionDetails, 'fastSeek' | 'seekTime'>) => void;
+  onSeekBackward: (params: Pick<MediaSessionActionDetails, 'seekOffset'>) => void;
+  onSeekForward: (params: Pick<MediaSessionActionDetails, 'seekOffset'>) => void;
   onPreviousTrack: () => void;
   onNextTrack: () => void;
 }
 
-export function useMediaSession({ title, album, artist, artwork, isPaused, duration, playbackRate, position, onPlay, onPause, onSeek, onPreviousTrack, onNextTrack }: MediaSessionProps): void {
+export function useMediaSession({
+  title,
+  album,
+  artist,
+  artwork,
+  isPaused,
+  duration,
+  playbackRate,
+  position,
+  onPlay,
+  onPause,
+  onSeek,
+  onSeekBackward,
+  onSeekForward,
+  onPreviousTrack,
+  onNextTrack,
+}: MediaSessionProps): void {
   const artworkUrl = useMemo(() => {
     if (artwork && artwork.length) {
       return artwork[0].src;
@@ -100,6 +118,38 @@ export function useMediaSession({ title, album, artist, artwork, isPaused, durat
       }
     };
   }, [onSeek]);
+  useEffect(() => {
+    console.log('Seek back setup');
+    try {
+      navigator.mediaSession?.setActionHandler('seekbackward', onSeekBackward);
+    } catch (ex) {
+      console.error(ex);
+    }
+
+    return () => {
+      try {
+        navigator.mediaSession?.setActionHandler('seekbackward', null);
+      } catch (ex) {
+        console.error(ex);
+      }
+    };
+  }, [onSeekBackward]);
+  useEffect(() => {
+    console.log('Seek forward setup');
+    try {
+      navigator.mediaSession?.setActionHandler('seekforward', onSeekForward);
+    } catch (ex) {
+      console.error(ex);
+    }
+
+    return () => {
+      try {
+        navigator.mediaSession?.setActionHandler('seekforward', null);
+      } catch (ex) {
+        console.error(ex);
+      }
+    };
+  }, [onSeekForward]);
   useEffect(() => {
     try {
       navigator.mediaSession?.setActionHandler('previoustrack', onPreviousTrack);
