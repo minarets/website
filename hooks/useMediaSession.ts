@@ -60,13 +60,13 @@ export function useMediaSession({
       return;
     }
 
-    if (duration) {
+    if (duration && position && position <= duration) {
       navigator.mediaSession.setPositionState({
         duration,
         playbackRate,
         position,
       });
-    } else {
+    } else if (!duration) {
       // Reset position
       navigator.mediaSession.setPositionState();
     }
