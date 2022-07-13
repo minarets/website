@@ -309,6 +309,26 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
                   <div>{venueLocation}</div>
                 </td>
               </tr>
+              {!!concert.dmbalmanacUrl && (
+                <tr>
+                  <th>Show Info:</th>
+                  <td>
+                    <Link href={concert.dmbalmanacUrl}>
+                      <a title="DMB Almanac">DMB Almanac</a>
+                    </Link>
+                  </td>
+                </tr>
+              )}
+              {!!concert.downloadUrl && (
+                <tr>
+                  <th>Download:</th>
+                  <td>
+                    <Link href={concert.downloadUrl}>
+                      <a title="Download Torrent">Dreaming Tree (Torrent)</a>
+                    </Link>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
