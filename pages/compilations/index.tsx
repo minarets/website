@@ -53,7 +53,7 @@ export default function Page({ allCompilations, popularCompilations, recentCompi
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <div className="row">

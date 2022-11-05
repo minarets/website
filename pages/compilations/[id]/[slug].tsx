@@ -141,7 +141,7 @@ export default function Page({ compilation, concertsById, relatedConcertsByTour,
     return (
       <>
         <Head>
-          <title>{title} · Minarets</title>
+          <title>{`${title} · Minarets`}</title>
         </Head>
 
         <ContentLoader speed={2} width={700} height={350} viewBox="0 0 700 350" backgroundColor="#e9ecef" foregroundColor="#ced4da">
@@ -181,7 +181,7 @@ export default function Page({ compilation, concertsById, relatedConcertsByTour,
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <nav aria-label="breadcrumb">

@@ -10,7 +10,7 @@ export default function Page(): JSX.Element {
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <div className="row">

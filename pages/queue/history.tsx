@@ -14,7 +14,7 @@ export default function Page(): JSX.Element {
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <nav className="mb-3">

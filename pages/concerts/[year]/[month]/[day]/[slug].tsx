@@ -162,7 +162,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
     return (
       <>
         <Head>
-          <title>{title} · Minarets</title>
+          <title>{`${title} · Minarets`}</title>
         </Head>
 
         <ContentLoader speed={2} width={700} height={350} viewBox="0 0 700 350" backgroundColor="#e9ecef" foregroundColor="#ced4da">
@@ -221,7 +221,7 @@ export default function Page({ concert, noteLines, detailsByToken, previousConce
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
         <meta name="description" content={description} />
         <meta name="keywords" content={keywords} />
         {concert.posterUrl && <link rel="preload" href={`https://api.minarets.io${concert.posterUrl}`} as="image" key={`preload-art-${concert.id}`} />}

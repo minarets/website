@@ -55,7 +55,7 @@ export default function Page({ tours }: IProps): JSX.Element {
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <div className="card">

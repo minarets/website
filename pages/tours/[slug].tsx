@@ -101,7 +101,7 @@ export default function Page({ tour, concertCount, concertsByTour, toursById }: 
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <nav aria-label="breadcrumb">

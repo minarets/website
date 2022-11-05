@@ -10,7 +10,7 @@ export default function NotFound(): JSX.Element {
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <div className="py-2 mb-4 border-bottom">

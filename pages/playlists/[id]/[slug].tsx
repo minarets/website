@@ -160,7 +160,7 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
     return (
       <>
         <Head>
-          <title>{title} · Minarets</title>
+          <title>{`${title} · Minarets`}</title>
         </Head>
 
         <ContentLoader speed={2} width={700} height={350} viewBox="0 0 700 350" backgroundColor="#e9ecef" foregroundColor="#ced4da">
@@ -200,7 +200,7 @@ export default function Page({ playlist, concertsById, relatedConcertsByTour, to
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <nav className="d-none d-lg-block" aria-label="breadcrumb">

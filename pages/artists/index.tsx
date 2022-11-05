@@ -45,7 +45,7 @@ export default function Page({ allArtists, popularArtists }: IProps): JSX.Elemen
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <div className="row">

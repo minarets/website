@@ -53,7 +53,7 @@ export default function Page({ allPlaylists, popularPlaylists, recentPlaylists }
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <div className="row">

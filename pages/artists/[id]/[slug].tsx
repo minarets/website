@@ -106,7 +106,7 @@ export default function Page({ artist, latestConcertsByTour, popularConcerts, ne
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <nav className="d-none d-lg-block" aria-label="breadcrumb">

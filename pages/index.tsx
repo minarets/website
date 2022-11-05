@@ -107,7 +107,7 @@ export default function Page({ popularConcerts, newConcerts, latestConcertsByTou
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <div className="row">

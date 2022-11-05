@@ -34,7 +34,7 @@ export default function Page({ venues }: IProps): JSX.Element {
   return (
     <>
       <Head>
-        <title>{title} · Minarets</title>
+        <title>{`${title} · Minarets`}</title>
       </Head>
 
       <section className="card">
