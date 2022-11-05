@@ -6,13 +6,14 @@ import { getSession } from 'next-auth/react';
 import { Minarets } from '../../../minarets-api';
 import * as compilationService from '../../../minarets-api/compilationService';
 import * as concertService from '../../../minarets-api/concertService';
+import type { SessionWithUserToken } from '../../../types';
 
 interface ResponseJson extends Record<string, unknown> {
   ok: boolean;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-  const session = await getSession({ req });
+  const session: SessionWithUserToken | null = await getSession({ req });
   let body: ResponseJson = {
     ok: false,
     message: 'Something went wrong :(',
@@ -37,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const client = algoliasearch(process.env.ALGOLIA_APPLICATION_ID, process.env.ALGOLIA_ADMIN_API_KEY);
 
       const { query } = req;
-      const [action] = query.search;
+      const [action] = query.search as string[];
       switch (action) {
         case 'indexAllConcerts': {
           console.log(`Starting ${action}`);
@@ -130,7 +131,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         case 'indexConcert': {
           console.log(`Starting ${action}`);
-          const [, id] = query.search;
+          const [, id] = query.search as string[];
           body = {
             ok: false,
             message: `Unable to find concert by id ${id}`,
@@ -193,7 +194,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         case 'indexCompilation': {
           console.log(`Starting ${action}`);
-          const [, id] = query.search;
+          const [, id] = query.search as string[];
           body = {
             ok: false,
             message: `Unable to find compilation by id ${id}`,

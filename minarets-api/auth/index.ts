@@ -4,7 +4,6 @@ import Redis from 'ioredis';
 import LRUCache from 'lru-cache';
 import type { Account } from 'next-auth';
 import type { Adapter, AdapterUser, AdapterSession, VerificationToken } from 'next-auth/adapters';
-import { v4 as uuid } from 'uuid';
 
 import { Minarets } from '../minarets';
 import type { User } from '../minarets/types';
@@ -142,23 +141,20 @@ export default function MinaretsAdapter(): Adapter {
       return asAdapterUser(user);
     },
     async linkAccount(account: Account): Promise<void> {
-      const api = new Minarets();
-      await api.users.linkUserWithProvider({
-        id: account.userId,
-        providerId: account.provider,
-        providerAccountId: account.providerAccountId,
-      });
+      if (account.userId) {
+        const api = new Minarets();
+        await api.users.linkUserWithProvider({
+          id: account.userId,
+          providerId: account.provider,
+          providerAccountId: account.providerAccountId,
+        });
+      }
     },
-    async createSession(session: Omit<AdapterSession, 'id'>): Promise<AdapterSession> {
-      const adapterSession: AdapterSession = {
-        id: uuid(),
-        ...session,
-      };
+    async createSession(session: AdapterSession): Promise<AdapterSession> {
+      await redisClient.set(`s_${session.sessionToken}`, JSON.stringify(session), 'PX', thirtyDaysAsMilliseconds);
+      sessionCache.set(session.sessionToken, session);
 
-      await redisClient.set(`s_${adapterSession.sessionToken}`, JSON.stringify(adapterSession), 'PX', thirtyDaysAsMilliseconds);
-      sessionCache.set(adapterSession.sessionToken, adapterSession);
-
-      return adapterSession;
+      return session;
     },
     async getSessionAndUser(sessionToken: string): Promise<{
       session: AdapterSession;

@@ -4,23 +4,24 @@ import { getSession } from 'next-auth/react';
 
 import { Minarets } from '../../../minarets-api';
 import { getConcertUrl } from '../../../minarets-api/concertService';
+import type { SessionWithUserToken } from '../../../types';
 
 interface ResponseJson extends Record<string, unknown> {
   ok: boolean;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
-  const session = await getSession({ req });
+  const session: SessionWithUserToken | null = await getSession({ req });
   let body: ResponseJson;
 
   res.status(200);
   res.setHeader('Content-Type', 'application/json');
 
-  if (session) {
-    const api = new Minarets(session.userToken as string);
+  if (session && session.userToken) {
+    const api = new Minarets(session.userToken);
 
     const { query } = req;
-    const [action] = query.minarets;
+    const [action] = query.minarets as string[];
     switch (action) {
       case 'getRandomConcert': {
         const concert = await api.concerts.getRandomConcert();
@@ -32,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
       }
       case 'getArtistRandomConcert': {
-        const [, id] = query.minarets;
+        const [, id] = query.minarets as string[];
         const concert = await api.concerts.getRandomConcert({
           artistId: id,
         });
@@ -44,7 +45,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
       }
       case 'getTourRandomConcert': {
-        const [, id] = query.minarets;
+        const [, id] = query.minarets as string[];
         const concert = await api.concerts.getRandomConcert({
           tourId: id,
         });
@@ -65,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
       }
       case 'playTrack': {
-        const [, id] = query.minarets;
+        const [, id] = query.minarets as string[];
         if (id) {
           try {
             const response = await api.tracks.play(id);
@@ -87,7 +88,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         break;
       }
       case 'getChatMessages': {
-        const [, lastMessageId] = query.minarets;
+        const [, lastMessageId] = query.minarets as string[];
         try {
           const response = await api.chatMessages.listLatest({
             maxItems: 20,
@@ -111,7 +112,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
       case 'getPassiveChatMessages': {
         // Same as above, just skips getting online users
-        const [, lastMessageId] = query.minarets;
+        const [, lastMessageId] = query.minarets as string[];
         try {
           const response = await api.chatMessages.listLatest({
             maxItems: 20,

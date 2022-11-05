@@ -7,6 +7,7 @@ import Google from 'next-auth/providers/google';
 
 import MinaretsAdapter from '../../../minarets-api/auth';
 import type { User } from '../../../minarets-api/minarets/types';
+import type { SessionWithUserToken } from '../../../types';
 
 const providers: AppProviders = [
   Email({
@@ -37,7 +38,7 @@ const options: NextAuthOptions = {
   providers,
   callbacks: {
     session({ session, user }): Promise<Session> {
-      const sessionWithUserToken = { ...session };
+      const sessionWithUserToken: SessionWithUserToken = { ...session };
       if (user) {
         sessionWithUserToken.userToken = (user as unknown as User).token;
       }

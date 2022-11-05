@@ -86,7 +86,7 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
         Sentry.addBreadcrumb({
           category: 'Player',
           message: 'TrackStart',
-          level: Sentry.Severity.Info,
+          level: 'info',
         });
         fetch(`/api/minarets/playTrack/${action.track.id}`).catch((err) => Sentry.captureException(err));
 
@@ -103,7 +103,7 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
         Sentry.addBreadcrumb({
           category: 'Player',
           message: 'TrackEnd',
-          level: Sentry.Severity.Info,
+          level: 'info',
         });
         return {
           ...state,
@@ -115,7 +115,7 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
           Sentry.addBreadcrumb({
             category: 'Player',
             message: 'Unmute',
-            level: Sentry.Severity.Info,
+            level: 'info',
           });
 
           state.player.setVolume(state.volume);
@@ -128,7 +128,7 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
         Sentry.addBreadcrumb({
           category: 'Player',
           message: 'Mute',
-          level: Sentry.Severity.Info,
+          level: 'info',
         });
 
         state.player.setVolume(0);
@@ -142,7 +142,7 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
           Sentry.addBreadcrumb({
             category: 'Player',
             message: 'SetVolume - Mute',
-            level: Sentry.Severity.Info,
+            level: 'info',
           });
 
           state.player.setVolume(0);
@@ -156,7 +156,7 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
         Sentry.addBreadcrumb({
           category: 'Player',
           message: 'SetVolume',
-          level: Sentry.Severity.Info,
+          level: 'info',
         });
 
         state.player.setVolume(action.volume);
@@ -170,7 +170,7 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
         Sentry.addBreadcrumb({
           category: 'Player',
           message: 'Seek',
-          level: Sentry.Severity.Info,
+          level: 'info',
         });
         const position = state.player.seek(action.position);
 
@@ -183,7 +183,7 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
         Sentry.addBreadcrumb({
           category: 'Player',
           message: 'SeekBy',
-          level: Sentry.Severity.Info,
+          level: 'info',
         });
         const position = state.player.seekBy(action.offset);
 

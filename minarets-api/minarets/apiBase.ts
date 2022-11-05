@@ -44,7 +44,7 @@ export abstract class ApiBase {
     };
   }
 
-  protected queryParams<T>(input: T): Record<string, string> {
+  protected queryParams<T extends { [K in keyof T]: T[K] }>(input: T): Record<string, string> {
     const result: Record<string, string> = {};
     for (const [key, value] of Object.entries(input)) {
       if (value === null || value === '' || value === undefined) {

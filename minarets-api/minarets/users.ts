@@ -2,7 +2,7 @@ import { ApiBase } from './apiBase';
 import type { User } from './types';
 
 export interface ICreateUserRequest {
-  name?: string;
+  name?: string | null;
   email?: string | null;
   image?: string | null;
 }
