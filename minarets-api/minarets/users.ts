@@ -19,64 +19,46 @@ interface ILinkUserWithProviderRequest {
 }
 
 export class Users extends ApiBase {
-  public async getUser(id: number | string): Promise<User | null> {
+  public getUser(id: number | string): Promise<User> | null {
     try {
-      const response = await this.get(`${this.apiUrl}/api/users/${id}`);
-
-      return (await response.json()) as User;
+      return this.get<User>(`${this.apiUrl}/api/users/${id}`);
     } catch (ex) {
       return null;
     }
   }
 
-  public async getUserByEmail(email: string): Promise<User | null> {
+  public getUserByEmail(email: string): Promise<User> | null {
     try {
       const query = this.queryParams({
         email,
       });
-      const response = await this.get(`${this.apiUrl}/api/users/findByEmail`, { query });
-
-      return (await response.json()) as User;
+      return this.get<User>(`${this.apiUrl}/api/users/findByEmail`, { query });
     } catch (ex) {
       return null;
     }
   }
 
-  public async getUserByProvider(providerId: string, providerAccountId: string): Promise<User | null> {
+  public getUserByProvider(providerId: string, providerAccountId: string): Promise<User> | null {
     try {
       const query = this.queryParams({
         providerId,
         providerAccountId,
       });
-      const response = await this.get(`${this.apiUrl}/api/users/findByProvider`, { query });
-
-      return (await response.json()) as User;
+      return this.get<User>(`${this.apiUrl}/api/users/findByProvider`, { query });
     } catch (ex) {
       return null;
     }
   }
 
-  public async createUser(request: ICreateUserRequest): Promise<User> {
-    const response = await this.post(`${this.apiUrl}/api/users/create`, {
-      body: JSON.stringify(request),
-    });
-
-    return (await response.json()) as User;
+  public createUser(request: ICreateUserRequest): Promise<User> {
+    return this.post<User>(`${this.apiUrl}/api/users/create`, request);
   }
 
-  public async setEmailVerified(request: ISetEmailVerifiedRequest): Promise<User> {
-    const response = await this.post(`${this.apiUrl}/api/users/${request.id}/setEmailVerified`, {
-      body: JSON.stringify(request),
-    });
-
-    return (await response.json()) as User;
+  public setEmailVerified(request: ISetEmailVerifiedRequest): Promise<User> {
+    return this.post<User>(`${this.apiUrl}/api/users/${request.id}/setEmailVerified`, request);
   }
 
-  public async linkUserWithProvider(request: ILinkUserWithProviderRequest): Promise<User> {
-    const response = await this.post(`${this.apiUrl}/api/users/${request.id}/linkWithProvider`, {
-      body: JSON.stringify(request),
-    });
-
-    return (await response.json()) as User;
+  public linkUserWithProvider(request: ILinkUserWithProviderRequest): Promise<User> {
+    return this.post<User>(`${this.apiUrl}/api/users/${request.id}/linkWithProvider`, request);
   }
 }

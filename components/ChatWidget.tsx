@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import axios from 'axios';
 import * as React from 'react';
 import type { KeyboardEvent } from 'react';
 
@@ -14,15 +15,14 @@ import ChatMessageRow from './ChatMessageRow';
 async function getChatMessages(isPassive: boolean, lastMessageId?: number): Promise<IListLatestResponse> {
   const url = isPassive ? '/api/minarets/getPassiveChatMessages' : '/api/minarets/getChatMessages';
   const lastMessageUrl = lastMessageId ? `/${lastMessageId}` : '';
-  const response = await fetch(`${url}${lastMessageUrl}`);
-  if (response.ok) {
-    return (await response.json()) as IListLatestResponse;
+  try {
+    const response = await axios.get<IListLatestResponse>(`${url}${lastMessageUrl}`);
+    return response.data;
+  } catch (ex) {
+    return {
+      messages: [],
+    };
   }
-
-  console.log(`getChatMessages - :(`);
-  return {
-    messages: [],
-  };
 }
 
 async function sendMessage(text: string, chatDispatch: React.Dispatch<ChatAction>): Promise<void> {
@@ -30,21 +30,12 @@ async function sendMessage(text: string, chatDispatch: React.Dispatch<ChatAction
     return;
   }
 
-  const response = await fetch(`/api/minarets/sendChatMessage`, {
-    method: 'POST',
-    body: text,
-  });
-
-  if (response.ok) {
-    const sentMessage = (await response.json()) as ISendResponse;
-    if (sentMessage.message) {
-      chatDispatch({
-        type: 'SendMessage',
-        message: sentMessage.message,
-      });
-    }
-  } else {
-    throw new Error(response.statusText);
+  const response = await axios.post<ISendResponse>(`/api/minarets/sendChatMessage`, text);
+  if (response.data.message) {
+    chatDispatch({
+      type: 'SendMessage',
+      message: response.data.message,
+    });
   }
 }
 

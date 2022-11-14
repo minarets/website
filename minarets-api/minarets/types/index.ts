@@ -15,7 +15,6 @@ export * from './Compilation';
 export * from './CompilationSummary';
 export * from './Concert';
 export * from './ConcertSummary';
-export * from './ErrorWithResponse';
 export * from './ListAllResponse';
 export * from './ListResponse';
 export * from './Playlist';

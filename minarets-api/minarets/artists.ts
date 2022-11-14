@@ -24,28 +24,19 @@ export class Artists extends ApiBase {
     const cacheKey = `artists/${id}`;
     let result = cache.get(cacheKey);
     if (!result) {
-      const response = await this.get(`${this.apiUrl}/api/artists/${id}`);
-
-      result = (await response.json()) as Artist;
-
-      if (result) {
-        cache.set(cacheKey, result);
-      }
+      result = await this.get<Artist>(`${this.apiUrl}/api/artists/${id}`);
+      cache.set(cacheKey, result);
     }
 
     return result;
   }
 
-  public async listAllArtists(): Promise<ListAllResponse<ArtistSummary>> {
-    const response = await this.get(`${this.apiUrl}/api/artists/all`);
-
-    return (await response.json()) as ListAllResponse<ArtistSummary>;
+  public listAllArtists(): Promise<ListAllResponse<ArtistSummary>> {
+    return this.get<ListAllResponse<ArtistSummary>>(`${this.apiUrl}/api/artists/all`);
   }
 
-  public async listArtists(request: IListArtistsRequest): Promise<ListResponse<Artist>> {
+  public listArtists(request: IListArtistsRequest): Promise<ListResponse<Artist>> {
     const query = this.queryParams(request);
-    const response = await this.get(`${this.apiUrl}/api/artists`, { query });
-
-    return (await response.json()) as ListResponse<Artist>;
+    return this.get<ListResponse<Artist>>(`${this.apiUrl}/api/artists`, { query });
   }
 }

@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import * as React from 'react';
@@ -10,14 +11,8 @@ import { getPlaylistUrl } from '../minarets-api/playlistService';
 import ChatWidget from './ChatWidget';
 
 async function getPlaylists(): Promise<PlaylistSummary[]> {
-  const response = await fetch('/api/minarets/getMyPlaylists');
-  if (response.ok) {
-    const result = (await response.json()) as ListAllResponse<PlaylistSummary>;
-    return result.items;
-  }
-
-  console.log(`getPlaylist - :(`);
-  return [];
+  const response = await axios.get<ListAllResponse<PlaylistSummary>>('/api/minarets/getMyPlaylists');
+  return response.data.items;
 }
 
 export default function SideBarMenu(): JSX.Element {

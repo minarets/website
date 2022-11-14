@@ -22,36 +22,25 @@ export class Tours extends ApiBase {
     const cacheKey = `tours/${idOrSlug}`;
     let result = cache.get(cacheKey);
     if (!result) {
-      const response = await this.get(`${this.apiUrl}/api/tours/${idOrSlug}`);
-
-      result = (await response.json()) as TourWithChildren;
-      if (result) {
-        cache.set(cacheKey, result);
-        cache.set(`tours/${result.id}`, result);
-        cache.set(`tours/${result.slug}`, result);
-      }
+      result = await this.get<TourWithChildren>(`${this.apiUrl}/api/tours/${idOrSlug}`);
+      cache.set(cacheKey, result);
+      cache.set(`tours/${result.id}`, result);
+      cache.set(`tours/${result.slug}`, result);
     }
 
     return result;
   }
 
-  public async listAllTours(): Promise<ListAllResponse<TourSummary>> {
-    const response = await this.get(`${this.apiUrl}/api/tours/all`);
-
-    return (await response.json()) as ListAllResponse<TourSummary>;
+  public listAllTours(): Promise<ListAllResponse<TourSummary>> {
+    return this.get<ListAllResponse<TourSummary>>(`${this.apiUrl}/api/tours/all`);
   }
 
   public async listTours(): Promise<ListResponse<Tour>> {
     const cacheKey = 'listTours';
     let result = toursCache.get(cacheKey);
     if (!result) {
-      const response = await this.get(`${this.apiUrl}/api/tours`);
-
-      result = (await response.json()) as ListResponse<Tour>;
-
-      if (result) {
-        toursCache.set(cacheKey, result);
-      }
+      result = await this.get<ListResponse<Tour>>(`${this.apiUrl}/api/tours`);
+      toursCache.set(cacheKey, result);
     }
 
     return result;

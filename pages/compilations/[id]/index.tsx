@@ -1,10 +1,11 @@
+import type { AxiosError } from 'axios';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
 import * as React from 'react';
 
 import { Minarets } from '../../../minarets-api';
 import { getCompilationUrl } from '../../../minarets-api/compilationService';
-import type { Compilation, ErrorWithResponse } from '../../../minarets-api/minarets/types';
+import type { Compilation } from '../../../minarets-api/minarets/types';
 
 export function getStaticPaths(): GetStaticPathsResult {
   return {
@@ -35,7 +36,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
       };
     }
   } catch (ex) {
-    if ((ex as ErrorWithResponse).response?.status === 404) {
+    if ((ex as AxiosError).response?.status === 404) {
       return {
         notFound: true,
       };

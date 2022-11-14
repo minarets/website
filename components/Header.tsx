@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -27,14 +28,8 @@ export default function Header(): JSX.Element {
         return '/';
       }
 
-      const response = await fetch('/api/minarets/getRandomConcert');
-      if (response.ok) {
-        const result = (await response.json()) as { url: string };
-
-        return result.url;
-      }
-
-      throw new Error('Error getting random show url');
+      const response = await axios.get<{ url: string }>('/api/minarets/getRandomConcert');
+      return response.data.url;
     },
     {
       useErrorBoundary: false,

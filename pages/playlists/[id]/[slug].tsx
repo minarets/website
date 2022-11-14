@@ -1,3 +1,4 @@
+import type { AxiosError } from 'axios';
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import { useSession } from 'next-auth/react';
@@ -15,7 +16,7 @@ import { useDocumentTitle } from '../../../hooks/useDocumentTitle';
 import { Minarets } from '../../../minarets-api';
 import { getArtistUrl } from '../../../minarets-api/artistService';
 import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../minarets-api/concertService';
-import type { BasicArtist, ErrorWithResponse, Playlist } from '../../../minarets-api/minarets/types';
+import type { BasicArtist, Playlist } from '../../../minarets-api/minarets/types';
 import { pick } from '../../../minarets-api/objectService';
 import { getPlaylistUrl } from '../../../minarets-api/playlistService';
 import { getPlaybackTrack } from '../../../minarets-api/trackService';
@@ -67,7 +68,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
       };
     }
   } catch (ex) {
-    if ((ex as ErrorWithResponse).response?.status === 404) {
+    if ((ex as AxiosError).response?.status === 404) {
       return {
         notFound: true,
       };

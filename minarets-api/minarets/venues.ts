@@ -25,28 +25,20 @@ export class Venues extends ApiBase {
     const cacheKey = `venues/${id}`;
     let result = cache.get(cacheKey);
     if (!result) {
-      const response = await this.get(`${this.apiUrl}/api/venues/${id}`);
-
-      result = (await response.json()) as Venue;
-      if (result) {
-        cache.set(cacheKey, result);
-      }
+      result = await this.get<Venue>(`${this.apiUrl}/api/venues/${id}`);
+      cache.set(cacheKey, result);
     }
 
     return result;
   }
 
-  public async listAllVenues(): Promise<ListAllResponse<VenueSummary>> {
-    const response = await this.get(`${this.apiUrl}/api/venues/all`);
-
-    return (await response.json()) as ListAllResponse<VenueSummary>;
+  public listAllVenues(): Promise<ListAllResponse<VenueSummary>> {
+    return this.get<ListAllResponse<VenueSummary>>(`${this.apiUrl}/api/venues/all`);
   }
 
-  public async listVenues(request: IListVenuesRequest): Promise<ListResponse<Venue>> {
+  public listVenues(request: IListVenuesRequest): Promise<ListResponse<Venue>> {
     const query = this.queryParams(request);
-    const response = await this.get(`${this.apiUrl}/api/venues`, { query });
-
-    return (await response.json()) as ListResponse<Venue>;
+    return this.get<ListResponse<Venue>>(`${this.apiUrl}/api/venues`, { query });
   }
 
   public async setVenueFormattedAddress(venue: Venue): Promise<string> {
@@ -82,10 +74,8 @@ export class Venues extends ApiBase {
           console.log(`Found address for venue: ${venue.id}:\n${formattedAddress}`);
 
           await this.post(`${this.apiUrl}/api/venues/${venue.id}/setFormattedAddress`, {
-            body: JSON.stringify({
-              id: venue.id,
-              formattedAddress,
-            }),
+            id: venue.id,
+            formattedAddress,
           });
 
           return formattedAddress;

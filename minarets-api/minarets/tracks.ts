@@ -14,18 +14,12 @@ export interface IListTracksRequest {
 }
 
 export class Tracks extends ApiBase {
-  public async play(id: string): Promise<IPlayResponse> {
-    const response = await this.post(`${this.apiUrl}/api/tracks/${id}/play`, {
-      body: '',
-    });
-
-    return (await response.json()) as IPlayResponse;
+  public play(id: string): Promise<IPlayResponse> {
+    return this.post<IPlayResponse>(`${this.apiUrl}/api/tracks/${id}/play`);
   }
 
-  public async listTracks(request: IListTracksRequest): Promise<ListResponse<TrackWithExtendedInformation>> {
+  public listTracks(request: IListTracksRequest): Promise<ListResponse<TrackWithExtendedInformation>> {
     const query = this.queryParams(request);
-    const response = await this.get(`${this.apiUrl}/api/tracks`, { query });
-
-    return (await response.json()) as ListResponse<TrackWithExtendedInformation>;
+    return this.get<ListResponse<TrackWithExtendedInformation>>(`${this.apiUrl}/api/tracks`, { query });
   }
 }

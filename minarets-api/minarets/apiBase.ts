@@ -1,15 +1,8 @@
 import { URL } from 'url';
 
-import setupFetch from '@vercel/fetch';
-import type { RequestInit, Response } from 'node-fetch';
-import nodeFetch, { Headers } from 'node-fetch';
-
-import type { ErrorWithResponse } from './types';
-
-const fetch = setupFetch({
-  Headers,
-  default: nodeFetch,
-});
+import type { AxiosInstance } from 'axios';
+import axios from 'axios';
+import axiosRetry from 'axios-retry';
 
 interface IGetParams {
   query: Record<string, string>;
@@ -30,18 +23,23 @@ export abstract class ApiBase {
 
   protected apiUrl: string;
 
-  protected defaultHeaders: Record<string, string>;
+  protected client: AxiosInstance;
 
   public constructor(apiKey: string, apiToken: string, apiUrl: string) {
     this.apiKey = apiKey;
     this.apiToken = apiToken;
     this.apiUrl = apiUrl;
 
-    this.defaultHeaders = {
-      Authorization: `Basic ${convertToBase64(`${this.apiToken}`)}`,
-      'Content-Type': 'application/json',
-      'X-ApiKey': this.apiKey,
-    };
+    this.client = axios.create({
+      headers: {
+        Authorization: `Basic ${convertToBase64(`${this.apiToken}`)}`,
+        'Content-Type': 'application/json',
+        'X-ApiKey': this.apiKey,
+      },
+    });
+    axiosRetry(this.client, {
+      retryDelay: (retryCount) => axiosRetry.exponentialDelay(retryCount),
+    });
   }
 
   protected queryParams<T extends { [K in keyof T]: T[K] }>(input: T): Record<string, string> {
@@ -62,64 +60,18 @@ export abstract class ApiBase {
     return result;
   }
 
-  protected async get(url: string, { query }: IGetParams = { query: {} }): Promise<Response> {
+  protected async get<TResponse>(url: string, { query }: IGetParams = { query: {} }): Promise<TResponse> {
     const urlString = new URL(url);
     for (const [key, value] of Object.entries(query)) {
       urlString.searchParams.set(key, value);
     }
 
-    const response = await fetch(urlString.href, {
-      method: 'GET',
-      headers: new Headers(this.defaultHeaders),
-      retry: {
-        retries: 10,
-        factor: 2,
-        minTimeout: 1000,
-      },
-    });
-
-    if (response.ok) {
-      return response;
-    }
-
-    let message = response.statusText;
-    try {
-      const responseBody = (await response.json()) as Record<string, unknown>;
-      if (responseBody) {
-        message += ` \n${JSON.stringify(responseBody, null, 1)}`;
-      }
-    } catch (ex) {
-      // ignore
-    }
-
-    const error: ErrorWithResponse = new Error(message);
-    error.response = response;
-    throw error;
+    const response = await this.client.get<TResponse>(urlString.href);
+    return response.data;
   }
 
-  protected async post(url: string, { body }: Pick<RequestInit, 'body'>): Promise<Response> {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: new Headers(this.defaultHeaders),
-      body,
-    });
-
-    if (response.ok) {
-      return response;
-    }
-
-    let message = response.statusText;
-    try {
-      const responseBody = (await response.json()) as Record<string, unknown>;
-      if (responseBody) {
-        message += ` \n${JSON.stringify(responseBody, null, 1)}`;
-      }
-    } catch (ex) {
-      // ignore
-    }
-
-    const error: ErrorWithResponse = new Error(message);
-    error.response = response;
-    throw error;
+  protected async post<TResponse, D = unknown>(url: string, data?: D): Promise<TResponse> {
+    const response = await this.client.post<TResponse>(url, data);
+    return response.data;
   }
 }

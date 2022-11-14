@@ -24,33 +24,23 @@ export class Playlists extends ApiBase {
     const cacheKey = `playlists/${id}`;
     let result = cache.get(cacheKey);
     if (!result) {
-      const response = await this.get(`${this.apiUrl}/api/playlists/${id}`);
-
-      result = (await response.json()) as Playlist;
-      if (result) {
-        cache.set(cacheKey, result);
-      }
+      result = await this.get<Playlist>(`${this.apiUrl}/api/playlists/${id}`);
+      cache.set(cacheKey, result);
     }
 
     return result;
   }
 
-  public async listAllPlaylists(): Promise<ListAllResponse<PlaylistSummary>> {
-    const response = await this.get(`${this.apiUrl}/api/playlists/all`);
-
-    return (await response.json()) as ListAllResponse<PlaylistSummary>;
+  public listAllPlaylists(): Promise<ListAllResponse<PlaylistSummary>> {
+    return this.get<ListAllResponse<PlaylistSummary>>(`${this.apiUrl}/api/playlists/all`);
   }
 
-  public async listPlaylists(request: IListPlaylistsRequest): Promise<ListResponse<Playlist>> {
+  public listPlaylists(request: IListPlaylistsRequest): Promise<ListResponse<Playlist>> {
     const query = this.queryParams(request);
-    const response = await this.get(`${this.apiUrl}/api/playlists`, { query });
-
-    return (await response.json()) as ListResponse<Playlist>;
+    return this.get<ListResponse<Playlist>>(`${this.apiUrl}/api/playlists`, { query });
   }
 
-  public async listMyPlaylists(): Promise<ListAllResponse<PlaylistSummary>> {
-    const response = await this.get(`${this.apiUrl}/api/playlists/my`);
-
-    return (await response.json()) as ListAllResponse<PlaylistSummary>;
+  public listMyPlaylists(): Promise<ListAllResponse<PlaylistSummary>> {
+    return this.get<ListAllResponse<PlaylistSummary>>(`${this.apiUrl}/api/playlists/my`);
   }
 }

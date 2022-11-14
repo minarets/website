@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/browser';
+import axios from 'axios';
 import * as React from 'react';
 
 import { Player, RepeatMode } from '../minarets-api/Player';
@@ -88,7 +89,7 @@ function playerReducer(state: IPlayerState, action: PlayerAction): IPlayerState 
           message: 'TrackStart',
           level: 'info',
         });
-        fetch(`/api/minarets/playTrack/${action.track.id}`).catch((err) => Sentry.captureException(err));
+        axios.post(`/api/minarets/playTrack/${action.track.id}`).catch((err) => Sentry.captureException(err));
 
         return state;
       }

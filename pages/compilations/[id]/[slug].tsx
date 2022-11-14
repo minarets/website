@@ -1,3 +1,4 @@
+import type { AxiosError } from 'axios';
 import moment from 'moment';
 import type { GetStaticPathsResult, GetStaticPropsResult } from 'next';
 import Head from 'next/head';
@@ -14,7 +15,7 @@ import { Minarets } from '../../../minarets-api';
 import { getArtistUrl } from '../../../minarets-api/artistService';
 import { getCompilationUrl } from '../../../minarets-api/compilationService';
 import { extractTokenDetailsFromConcertNote, getConcertName, getConcertUrl } from '../../../minarets-api/concertService';
-import type { BasicArtist, Compilation, CompilationSummary, ErrorWithResponse } from '../../../minarets-api/minarets/types';
+import type { BasicArtist, Compilation, CompilationSummary } from '../../../minarets-api/minarets/types';
 import { pick } from '../../../minarets-api/objectService';
 import type { LimitedArtist, LimitedConcert, LimitedConcertWithTokenDetails, LimitedTour, LimitedTourWithLimitedConcerts } from '../../../minarets-api/types';
 
@@ -60,7 +61,7 @@ export async function getStaticProps({ params }: IParams): Promise<GetStaticProp
       };
     }
   } catch (ex) {
-    if ((ex as ErrorWithResponse).response?.status === 404) {
+    if ((ex as AxiosError).response?.status === 404) {
       return {
         notFound: true,
       };

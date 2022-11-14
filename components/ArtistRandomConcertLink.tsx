@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 
@@ -16,13 +17,9 @@ function ArtistRandomConcertLink({ artist }: IProps): JSX.Element {
   async function handleRandomConcertClick(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>): Promise<void> {
     e.preventDefault();
     setRandomClicked(true);
-    const response = await fetch(`/api/minarets/getArtistRandomConcert/${artist.id}`);
-    if (response.ok) {
-      const result = (await response.json()) as { url: string };
-
-      await router.push(result.url);
-      setRandomClicked(false);
-    }
+    const response = await axios.get<{ url: string }>(`/api/minarets/getArtistRandomConcert/${artist.id}`);
+    await router.push(response.data.url);
+    setRandomClicked(false);
   }
 
   if (randomClicked) {

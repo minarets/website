@@ -32,36 +32,26 @@ export interface ISendResponse {
 }
 
 export class ChatMessages extends ApiBase {
-  public async listLatest(request: IListLatestRequest = {}): Promise<IListLatestResponse> {
+  public listLatest(request: IListLatestRequest = {}): Promise<IListLatestResponse> {
     const query = this.queryParams(request);
-    const response = await this.get(`${this.apiUrl}/api/chatmessages`, { query });
-
-    return (await response.json()) as IListLatestResponse;
+    return this.get<IListLatestResponse>(`${this.apiUrl}/api/chatmessages`, { query });
   }
 
   public async listOnlineUsers(request: IHistoryRequest = {}): Promise<BasicUser[]> {
     const query = this.queryParams(request);
-    const response = await this.get(`${this.apiUrl}/api/chatmessages/users`, { query });
+    const response = await this.get<IListOnlineUsersResponse>(`${this.apiUrl}/api/chatmessages/users`, { query });
 
-    const json = (await response.json()) as IListOnlineUsersResponse;
-
-    return json.users;
+    return response.users;
   }
 
-  public async history(request: IHistoryRequest = {}): Promise<IHistoryResponse> {
+  public history(request: IHistoryRequest = {}): Promise<IHistoryResponse> {
     const query = this.queryParams(request);
-    const response = await this.get(`${this.apiUrl}/api/chatmessages/history`, { query });
-
-    return (await response.json()) as IHistoryResponse;
+    return this.get<IHistoryResponse>(`${this.apiUrl}/api/chatmessages/history`, { query });
   }
 
-  public async send(message: string): Promise<ISendResponse> {
-    const response = await this.post(`${this.apiUrl}/api/chatmessages/add`, {
-      body: JSON.stringify({
-        message,
-      }),
+  public send(message: string): Promise<ISendResponse> {
+    return this.post<ISendResponse>(`${this.apiUrl}/api/chatmessages/add`, {
+      message,
     });
-
-    return (await response.json()) as ISendResponse;
   }
 }
